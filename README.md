@@ -1,4 +1,2 @@
 crypto_bond
 ===========
-
-sgsgsadrgd
