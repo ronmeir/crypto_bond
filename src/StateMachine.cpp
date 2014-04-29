@@ -170,7 +170,7 @@ int StateMachine::getIndexOfAcceptanceStateInTheAcceptanceStatesVector(int state
 void StateMachine::resetMachineToInitialState()
 {
 	mCurrentStateID=mInitialState;
-}//end of resetMachineToInitialState()
+}//end of resetMachineToInitialState()/
 
 //Returns a string representation of the current state
 std::string StateMachine::toString() const
