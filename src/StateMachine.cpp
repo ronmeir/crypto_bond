@@ -108,7 +108,8 @@ const bool StateMachine::getisAcceptanceState()
 
 /*
  * Creates a full vector with all available transitions, sorted in 2 levels:
- * The first level contains states sorted by state_ID
+ * The first level contains states sorted by state_ID.
+ * IMPORTANT: THE TRANSITIONS VECTOR IS INVALID PRIOR THIS FUNCTION BEING CALLED!!
  * The second level contains transitions sorted by input (sigma).
  * For example, the location of the transition <x,y,sigma> is located at index [x*ALPHABET_SIZE + sigma]
  * Returns a ptr to an std::vector containing all the transition 3-tuples
@@ -133,8 +134,9 @@ const int StateMachine::getTotalNumOfStates()
 	return mTotalNumOfStates;
 }//end of getTotalNumOfStates()
 
-const int StateMachine::getTotalNumOfTransition(){
-	return mTransitionTuples.size();
+const int StateMachine::getTotalNumOfTransitions(){
+
+	 return mTotalNumOfStates*ALPHABET_SIZE;
 }//end of getTotalNumOfTransition()
 
 const int StateMachine::getTotalNumOfAcceptenceStates(){
@@ -170,7 +172,7 @@ int StateMachine::getIndexOfAcceptanceStateInTheAcceptanceStatesVector(int state
 void StateMachine::resetMachineToInitialState()
 {
 	mCurrentStateID=mInitialState;
-}//end of resetMachineToInitialState()/
+}//end of resetMachineToInitialState()
 
 //Returns a string representation of the current state
 std::string StateMachine::toString() const

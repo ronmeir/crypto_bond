@@ -12,6 +12,7 @@
 #include <string>
 #include "BilinearMappingHandler.h"
 #include "StateMachine.h"
+#include "EncryptionHandler.h"
 
 #define PARAM_FILE_PATH "./param/a.param" //the relative path of the parameter file
 
@@ -22,13 +23,18 @@ void debug_mapperTest();
 
 int main()
 {
-	debug_mapperTest();
+//	debug_mapperTest();
 
-//	StateMachine machineOfStates(6,0); //a new machine with 6 states. initial state is '0'
-//	debug_initializeStateMachine(&machineOfStates); //init the machine
-//
-//	cout << machineOfStates.toString() << "\n";
-//
+	char* filePath = PARAM_FILE_PATH;
+
+	StateMachine machineOfStates(6,0); //a new machine with 6 states. initial state is '0'
+	debug_initializeStateMachine(&machineOfStates); //init the machine
+	EncryptionHandler encHand(filePath,&machineOfStates);
+
+	const EncryptionHandler::SK* sk=encHand.KeyGen();
+
+
+
 //	machineOfStates.moveToNextState('a');
 //	cout << machineOfStates.toString() << "\n";
 //

@@ -10,7 +10,8 @@ src/Eng_final_proj.d: ../src/Eng_final_proj.cpp \
  /usr/local/include/pbc/pbc_g_param.h \
  /usr/local/include/pbc/pbc_i_param.h /usr/local/include/pbc/pbc_random.h \
  /usr/local/include/pbc/pbc_memory.h ../src/BilinearMappingHandler.h \
- ../src/StateMachine.h ../src/State.h ../src/Transition3Tuple.h
+ ../src/StateMachine.h ../src/State.h ../src/Transition3Tuple.h \
+ ../src/EncryptionHandler.h
 
 /usr/local/include/pbc/pbc.h:
 
@@ -51,3 +52,5 @@ src/Eng_final_proj.d: ../src/Eng_final_proj.cpp \
 ../src/State.h:
 
 ../src/Transition3Tuple.h:
+
+../src/EncryptionHandler.h:

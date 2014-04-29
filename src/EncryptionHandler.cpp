@@ -249,7 +249,7 @@ EncryptionHandler::SK::SK(BilinearMappingHandler* mapper,StateMachine* M, MSK* m
 	mMapper=mapper														 ;
 	mMasterKey=msk														 ;
 	m_D_ElementSet  = new memberElement[M->getTotalNumOfStates()]		 ; //init. size
-	m_Rt_ExpSet		= new expElement[M->getTotalNumOfTransition()]	 	 ; //init. size
+	m_Rt_ExpSet		= new expElement[M->getTotalNumOfTransitions()]	 	 ; //init. size
 	m_R_end_ExpSet	= new expElement[M->getTotalNumOfAcceptenceStates()] ; //init. size
 
 
@@ -262,7 +262,7 @@ EncryptionHandler::SK::SK(BilinearMappingHandler* mapper,StateMachine* M, MSK* m
 	}//for
 
 	//init. all the random elements in m_Rt_ExpSet
-	for(int i =0; i<M->getTotalNumOfTransition();i++)
+	for(int i =0; i<M->getTotalNumOfTransitions();i++)
 	{
 		mMapper->initRandomExpElement(m_Rt_ExpSet[i])				;//init. a random member element @Zp
 	}//for
@@ -291,7 +291,7 @@ EncryptionHandler::SK::SK(BilinearMappingHandler* mapper,StateMachine* M, MSK* m
 	//allocate the m_Ks 2nd dimension
 	for(int i=0;i<3;i++)
 	{
-		m_K_t[i]=new memberElement[M->getTotalNumOfTransition()];
+		m_K_t[i]=new memberElement[M->getTotalNumOfTransitions()];
 	}//for
 
 	//will be used by the constructor:
@@ -307,7 +307,7 @@ EncryptionHandler::SK::SK(BilinearMappingHandler* mapper,StateMachine* M, MSK* m
 	//s.t:   {  k_t1 = < ((d_x)^-1)z^(r_t),	k_t2 = g^(r_t),	k_t3 = d_y*(h_sigma)^(r_t) >  }
 
 	//calculating of the 3-tuples set :{k_t}
-	for (int i=0;i<M->getTotalNumOfTransition();i++)
+	for (int i=0;i<M->getTotalNumOfTransitions();i++)
 	{
 
 		//Definition of K_t1

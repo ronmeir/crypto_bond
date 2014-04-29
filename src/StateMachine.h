@@ -37,7 +37,7 @@ public:
 	const int getTotalNumOfStates();
 	const std::vector<int>*  getAcceptanceStates();
 	int getIndexOfAcceptanceStateInTheAcceptanceStatesVector(int stateID);
-	const int getTotalNumOfTransition();
+	const int getTotalNumOfTransitions();
 	const int getTotalNumOfAcceptenceStates();
 	void resetMachineToInitialState();
 
