@@ -21,6 +21,7 @@ using namespace std;                      //using the 'string' library
 void debug_initializeStateMachine(StateMachine* machine);
 void debug_mapperTest();
 
+
 int main()
 {
 //	debug_mapperTest();
@@ -32,6 +33,12 @@ int main()
 	EncryptionHandler encHand(filePath,&machineOfStates);
 
 	const EncryptionHandler::SK* sk=encHand.KeyGen();
+	EncryptionHandler::CT* ct;
+	const string virus= "vir";
+	memberElement msg;
+	encHand.mapStringToElementFromGT(msg,virus);
+
+
 
 
 

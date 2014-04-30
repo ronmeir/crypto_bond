@@ -119,6 +119,9 @@ public:
 	EncryptionHandler(char* ParamFilePath,  StateMachine* stateMachine);
 	virtual ~EncryptionHandler();
 
+	//TODO remove the following line
+	static memberElement msgElement;
+
 private	:
 	//member variables
 	BilinearMappingHandler* mMapper;
