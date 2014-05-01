@@ -63,11 +63,11 @@ void EncryptionHandler::createPartialEncryption (CT& ct,const string& w, memberE
 	mMapper->initEmptyMemberElementFromG1(tempFromG_1); //init as a member of G
 	mMapper->initEmptyMemberElementFromG1(tempFromG_2); //init as a member of G
 
-	int virus_length = (int)w.length(); //get the virus' string length
+	int virus_length = (int)w.length(); 	//get the virus' string length
 	//Initializing the S_i array:
-	s = new expElement[virus_length]; //create a new exp_element array
+	s = new expElement[virus_length+1]; 	//create a new exp_element array (virus_length+1) elements
 
-	for (int i=0; i< virus_length ;i++)
+	for (int i=0; i < virus_length+1 ;i++)
 		mMapper->initRandomExpElement(s[i]);   //init as a random  exp element
 	//done.
 
@@ -91,12 +91,9 @@ void EncryptionHandler::createPartialEncryption (CT& ct,const string& w, memberE
 		//now we have to fill the remaining 256 cells with all possible h_wi:
 		for (int row=1 ; row <= ALPHABET_SIZE ;row++)
 		{
-			i=row;                     //done so the annotation will keep true to the document
+			i=col+1;                     //done so the annotation will keep true to the document
 			mMapper->power_Zn(tempFromG_1,mMasterKey->h_sigma[i],s[i]);  //calc (h_wi)^s_i
 			mMapper->power_Zn(tempFromG_2,mMasterKey->z,s[i-1]);  	//calc z^s_(i-1)
-			element_printf("%B\n", tempFromG_1);
-			element_printf("%B\n", tempFromG_2);
-			element_printf("%B\n", ct.m_Ci[row][col]);
 			mMapper->mul(ct.m_Ci[row][col],tempFromG_1,tempFromG_2);  //save the mul result
 		}//end of inner for
 	}//end of outer for
@@ -114,12 +111,20 @@ void EncryptionHandler::completePartialEncryption (CT& partial_ct, const std::st
 {
 	memberElement** new_m_Ci = new memberElement*[2];  //will be used to hold an array of [2][virus.length()]
 
+	int virus_length  = virus.length();
 	//creating a new C_i array that'll replace the current, eliminating all irrelevant h_wi
-	new_m_Ci[0] = new memberElement[virus.length()];
-	new_m_Ci[1] = new memberElement[virus.length()];
+	new_m_Ci[0] = new memberElement[virus_length];
+	new_m_Ci[1] = new memberElement[virus_length];
+
+	//init the elements:
+	for (int i=0; i<virus_length ;i++)
+	{
+		mMapper->initEmptyMemberElementFromG1(new_m_Ci[0][i]);
+		mMapper->initEmptyMemberElementFromG1(new_m_Ci[1][i]);
+	}
 
 	//copying only the relevant C_i (based on the given virus string):
-	for (unsigned int col=0; col<virus.length() ;col++)
+	for (unsigned int col=0; col<virus_length ;col++)
 	{
 		partial_ct.get_C_i_1(new_m_Ci[0][col],col); //copy C_i_1
 		//According to the actual virus string, we need only 1 of the 256 different h_wi:
@@ -134,7 +139,7 @@ void EncryptionHandler::completePartialEncryption (CT& partial_ct, const std::st
 
 	partial_ct.m_Ci=new_m_Ci;  //set the new array
 
-	partial_ct.mVirus.assign(virus);  //set the virus
+	partial_ct.mVirus = virus;  //set the virus
 
 	partial_ct.mIsPartialCT=false;       //note that this encryption is no longer partial
 }//end of completePartialEncryption()
@@ -177,24 +182,34 @@ void EncryptionHandler::decrypt(memberElement& decryptedMsgElem, SK& secretKey, 
 
 	mMapper->element_cpy(B_i_minus_1,B_0); 									  //cpy B_0 to B_i_minus_1
 
+
+	stateMachine.resetMachineToInitialState();  //init the state-machine
+
 	//calculating B_i:
 	for (int i=1; i <= virusLength ;i++)
 	{
+	    stateMachine.moveToNextState(cipherText.mVirus.at(i-1));
 		//getting the index of the current transition in the transition table:
 		int indexAt_K_t = secretKey.getIndexInKeyComponentsByTransition(stateMachine.getCurrentStateID(),
 				cipherText.mVirus.at(i-1));
 
 		//let the calculations begin:
-		cipherText.get_C_i_1(temp0,i-1); //extract C_i-1_1
+
+		if (i==1) //if we're calculating B_1
+			mMapper->element_cpy(temp0,cipherText.m_C_start1); //extract C_0,1
+		else
+			//i>=2
+			cipherText.get_C_i_1(temp0,i-2); //extract C_i-1_1
+
 		mMapper->bilinearMap(temp1,temp0,secretKey.m_K_t[0][indexAt_K_t]); //calc the 1st bilinear map
 
-		cipherText.get_C_i_2(temp0,i,0,false); //extract C_i_2
+		cipherText.get_C_i_2(temp0,i-1,0,false); //extract C_i_2
 		mMapper->bilinearMap(temp2,temp0,secretKey.m_K_t[1][indexAt_K_t]); //calc the 2nd bilinear map
 		mMapper->invert(temp2,temp2);										//invert
 
 		mMapper->mul(temp1,temp1,temp2);									//multiplication of the first 2 mapped elements -> temp1
 
-		cipherText.get_C_i_1(temp0,i); //extract C_i_1
+		cipherText.get_C_i_1(temp0,i-1); //extract C_i_1
 		mMapper->bilinearMap(temp2,temp0,secretKey.m_K_t[2][indexAt_K_t]); //calc the 2nd bilinear map
 
 		mMapper->mul(temp1,temp1,temp2);                               //multiplication of the last 3 elements -> temp1
