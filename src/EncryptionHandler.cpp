@@ -91,7 +91,7 @@ void EncryptionHandler::createPartialEncryption (CT& ct,const string& w, memberE
 		//now we have to fill the remaining 256 cells with all possible h_wi:
 		for (int row=1 ; row <= ALPHABET_SIZE ;row++)
 		{
-			i=row-1;                     //done so the annotation will keep true to the document
+			i=row;                     //done so the annotation will keep true to the document
 			mMapper->power_Zn(tempFromG_1,mMasterKey->h_sigma[i],s[i]);  //calc (h_wi)^s_i
 			mMapper->power_Zn(tempFromG_2,mMasterKey->z,s[i-1]);  	//calc z^s_(i-1)
 			element_printf("%B\n", tempFromG_1);
