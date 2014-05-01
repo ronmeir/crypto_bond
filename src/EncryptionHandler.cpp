@@ -188,10 +188,14 @@ void EncryptionHandler::decrypt(memberElement& decryptedMsgElem, SK& secretKey, 
 	//calculating B_i:
 	for (int i=1; i <= virusLength ;i++)
 	{
-	    stateMachine.moveToNextState(cipherText.mVirus.at(i-1));
-		//getting the index of the current transition in the transition table:
+
+		//getting the index of the current transition in the transition table
+		//(the transition is defined by the current state and the input):
 		int indexAt_K_t = secretKey.getIndexInKeyComponentsByTransition(stateMachine.getCurrentStateID(),
 				cipherText.mVirus.at(i-1));
+
+		//move the state machine to the next state:
+		stateMachine.moveToNextState(cipherText.mVirus.at(i-1));
 
 		//let the calculations begin:
 
@@ -218,8 +222,6 @@ void EncryptionHandler::decrypt(memberElement& decryptedMsgElem, SK& secretKey, 
 
 		mMapper->element_cpy(B_i_minus_1,B_i);					//set B_i-1 to be B_i for the next iteration.
 
-		stateMachine.moveToNextState(cipherText.mVirus.at(i-1));  //move the machine to the next state,
-																  //when sigma is the current virus letter.
 	}//for
 
 	//Finished with B_i. At this point: B_i = B_l
