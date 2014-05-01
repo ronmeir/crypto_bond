@@ -24,7 +24,8 @@
 class EncryptionHandler
 {
 
-private:
+public:
+
 
 
 		// __  __           _              _  __
@@ -51,7 +52,6 @@ private:
 
 
 
-public:
 
 		//	  _____                    _     _  __
 		//	 / ____|                  | |   | |/ /
@@ -104,28 +104,27 @@ public:
 			bool mIsPartialCT;
 			std::string mVirus;
 
-			CT(MSK* msk, int virus_string_length);
+			CT(const MSK* msk, int virus_string_length);
 			void get_C_i_1 (memberElement& ans, int i);
 			void get_C_i_2 (memberElement& ans, int i, unsigned char letter, bool isUsedWithPartialCT);
 			virtual ~CT();
 		};//end of class CT
 
 	//public methods:
-	const EncryptionHandler::SK* KeyGen();
-	void createPartialEncryption (CT* ct, const std::string& virus,const std::string& msg);
-	void completePartialEncryption (CT* ct,const std::string& virus);
+	MSK* setup();
+	EncryptionHandler::SK* keyGen();
+	void createPartialEncryption (CT& ct,const std::string& w, memberElement& m);
+	void completePartialEncryption (CT& ct,const std::string& virus);
 	void mapStringToElementFromGT (memberElement& ans, const std::string& str);
-	void decrypt(memberElement& decryptedMSG, SK& secretKey, CT& cipherText, StateMachine stateMachine);
+	void decrypt(memberElement& decryptedMSG,SK& secretKey, CT& cipherText, StateMachine stateMachine);
+	BilinearMappingHandler* getBilinearMappingHandler();
 	EncryptionHandler(char* ParamFilePath,  StateMachine* stateMachine);
 	virtual ~EncryptionHandler();
-
-	//TODO remove the following line
-	static memberElement msgElement;
 
 private	:
 	//member variables
 	BilinearMappingHandler* mMapper;
-	EncryptionHandler::MSK* mMasterKey;
+	MSK* mMasterKey;
 	StateMachine* mStateMachine;
 	SK* mSecretKey;
 };//end of class EncryptionHandler

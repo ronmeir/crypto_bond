@@ -20,7 +20,8 @@ using namespace std;
 
 /**
  * this constructor get a paramFilePath , a state-machine and builds everything it needs
- * in order to get a SecretKey use the function KeyGen()
+ * in order to get a MasterKey, use the function setup()
+ * in order to get a SecretKeym use the function keyGen()
  */
 EncryptionHandler::EncryptionHandler(char* paramFilePath,  StateMachine* stateMachine)
 {
@@ -38,35 +39,33 @@ EncryptionHandler::~EncryptionHandler()
 
 }//end of Destructor ~EncryptionHandler()
 
+EncryptionHandler::MSK* EncryptionHandler::setup(){ return mMasterKey;} //end of setup()
+
 /**
  * this function returns a SecretKey SK
  * note that SK is a public-nested-class inside the EncryptionHandler!!
  */
-const EncryptionHandler::SK* EncryptionHandler::KeyGen(){return mSecretKey;}//end of KeyGen()
+EncryptionHandler::SK* EncryptionHandler::keyGen(){return mSecretKey;}//end of KeyGen()
 
 /*
  * Used by the client to create a partial encryption of the bond
  * @param ct - ptr to a CT the result will be saved at
  * @param virus - a random length virus string
- * @param msg - the message to be partially encrypted
+ * @param m - an element representing the message.
  */
-void EncryptionHandler::createPartialEncryption (CT* ct,const string& virus,const string& msg)
+void EncryptionHandler::createPartialEncryption (CT& ct,const string& w, memberElement& m)
 {
-	memberElement m;							//new element that'll represent the message
 	expElement* s;								//ptr array for  S_i
 	memberElement tempFrom_GT;
 	memberElement tempFromG_1, tempFromG_2;
-
-	mMapper->initEmptyMemberElementFromGT(m);	//init as a member of GT
-	mapStringToElementFromGT(m,msg);			//map the msg to an element
 
 	mMapper->initEmptyMemberElementFromGT(tempFrom_GT);	//init as a member of GT
 	mMapper->initEmptyMemberElementFromG1(tempFromG_1); //init as a member of G
 	mMapper->initEmptyMemberElementFromG1(tempFromG_2); //init as a member of G
 
-	int virus_length = (int)virus.length(); //get the virus' string length
+	int virus_length = (int)w.length(); //get the virus' string length
 	//Initializing the S_i array:
-	s = new expElement[virus.length()]; //create a new exp_element array
+	s = new expElement[virus_length]; //create a new exp_element array
 
 	for (int i=0; i< virus_length ;i++)
 		mMapper->initRandomExpElement(s[i]);   //init as a random  exp element
@@ -76,26 +75,29 @@ void EncryptionHandler::createPartialEncryption (CT* ct,const string& virus,cons
 	mMapper->power_Zn(tempFromG_1,mMasterKey->g,mMasterKey->alpha); //calc g^alpha
 	mMapper->power_Zn(tempFromG_2,mMasterKey->g,s[virus_length-1]); //calc g^s_l
 	mMapper->bilinearMap(tempFrom_GT,tempFromG_1,tempFromG_2);      //calc e(g,g)^(alpha*s_l)
-	mMapper->mul(ct->m_Cm,m,tempFrom_GT);                           //calc m * e(g,g)^(alpha*s_l) == Cm
+	mMapper->mul(ct.m_Cm,m,tempFrom_GT);                           //calc m * e(g,g)^(alpha*s_l) == Cm
 
-	mMapper->power_Zn(ct->m_C_start1,mMasterKey->g,s[0]);			 	//calc g^s_0 = C_start1
-	mMapper->power_Zn(ct->m_C_end1,mMasterKey->g,s[virus_length-1]); 	//calc g^s_l = C_end1
+	mMapper->power_Zn(ct.m_C_start1,mMasterKey->g,s[0]);			 	//calc g^s_0 = C_start1
+	mMapper->power_Zn(ct.m_C_end1,mMasterKey->g,s[virus_length-1]); 	//calc g^s_l = C_end1
 
-	mMapper->power_Zn(ct->m_C_start2,mMasterKey->h_start,s[0]);		    //calc (h_start)^s_0 = C_start2
-	mMapper->power_Zn(ct->m_C_end2,mMasterKey->h_end,s[virus_length-1]);//calc (h_end)^s_l = C_end2
+	mMapper->power_Zn(ct.m_C_start2,mMasterKey->h_start,s[0]);		    //calc (h_start)^s_0 = C_start2
+	mMapper->power_Zn(ct.m_C_end2,mMasterKey->h_end,s[virus_length-1]);//calc (h_end)^s_l = C_end2
 
 	int i;
 	//generating C_i:
 	for (int col=0; col<virus_length ;col++)
 	{
-		mMapper->power_Zn(ct->m_Ci[0][col],mMasterKey->g,s[col]);   //calc g^s_j
+		mMapper->power_Zn(ct.m_Ci[0][col],mMasterKey->g,s[col]);   //calc g^s_j
 		//now we have to fill the remaining 256 cells with all possible h_wi:
 		for (int row=1 ; row <= ALPHABET_SIZE ;row++)
 		{
 			i=row-1;                     //done so the annotation will keep true to the document
 			mMapper->power_Zn(tempFromG_1,mMasterKey->h_sigma[i],s[i]);  //calc (h_wi)^s_i
 			mMapper->power_Zn(tempFromG_2,mMasterKey->z,s[i-1]);  	//calc z^s_(i-1)
-			mMapper->mul(ct->m_Ci[row][col],tempFromG_1,tempFromG_2);  //save the mul result
+			element_printf("%B\n", tempFromG_1);
+			element_printf("%B\n", tempFromG_2);
+			element_printf("%B\n", ct.m_Ci[row][col]);
+			mMapper->mul(ct.m_Ci[row][col],tempFromG_1,tempFromG_2);  //save the mul result
 		}//end of inner for
 	}//end of outer for
 
@@ -108,7 +110,7 @@ void EncryptionHandler::createPartialEncryption (CT* ct,const string& virus,cons
  * @param partial_ct - A partial encryption that'll be updated to be a full encryption
  * @param virus - the virus string
  */
-void EncryptionHandler::completePartialEncryption (CT* partial_ct, const std::string& virus)
+void EncryptionHandler::completePartialEncryption (CT& partial_ct, const std::string& virus)
 {
 	memberElement** new_m_Ci = new memberElement*[2];  //will be used to hold an array of [2][virus.length()]
 
@@ -119,22 +121,22 @@ void EncryptionHandler::completePartialEncryption (CT* partial_ct, const std::st
 	//copying only the relevant C_i (based on the given virus string):
 	for (unsigned int col=0; col<virus.length() ;col++)
 	{
-		partial_ct->get_C_i_1(new_m_Ci[0][col],col); //copy C_i_1
+		partial_ct.get_C_i_1(new_m_Ci[0][col],col); //copy C_i_1
 		//According to the actual virus string, we need only 1 of the 256 different h_wi:
-		partial_ct->get_C_i_2(new_m_Ci[1][col],col,virus.at(col),true);   //copy C_i_2
+		partial_ct.get_C_i_2(new_m_Ci[1][col],col,virus.at(col),true);   //copy C_i_2
 	}
 
 	//deleting the old array:
 	for (int i=0; i<ALPHABET_SIZE+1 ;i++)
-		delete[] (partial_ct->m_Ci[i]);
+		delete[] (partial_ct.m_Ci[i]);
 
-	delete[] partial_ct->m_Ci;
+	delete[] partial_ct.m_Ci;
 
-	partial_ct->m_Ci=new_m_Ci;  //set the new array
+	partial_ct.m_Ci=new_m_Ci;  //set the new array
 
-	partial_ct->mVirus.assign(virus);  //set the virus
+	partial_ct.mVirus.assign(virus);  //set the virus
 
-	partial_ct->mIsPartialCT=false;       //note that this encryption is no longer partial
+	partial_ct.mIsPartialCT=false;       //note that this encryption is no longer partial
 }//end of completePartialEncryption()
 
 /**
@@ -142,15 +144,14 @@ void EncryptionHandler::completePartialEncryption (CT* partial_ct, const std::st
  */
 void EncryptionHandler::mapStringToElementFromGT (memberElement& ans, const std::string& str)
 {
-//TODO DO IT.
-
-
+	//TODO create a mapping table from bond-strings to elements
+	mMapper->initRandomMemberElementFromGT(ans);
 }//end of mapStringToElementFromGT()
 
 /*
  *
  */
-void EncryptionHandler::decrypt(memberElement& decryptedMSG, SK& secretKey, CT& cipherText, StateMachine stateMachine)
+void EncryptionHandler::decrypt(memberElement& decryptedMsgElem, SK& secretKey, CT& cipherText, StateMachine stateMachine)
 {
 	int virusLength=0;
 	memberElement B_0, B_i, B_i_minus_1, B_end,temp0, temp1, temp2;
@@ -163,7 +164,7 @@ void EncryptionHandler::decrypt(memberElement& decryptedMSG, SK& secretKey, CT& 
 	mMapper->initEmptyMemberElementFromGT(temp1); 		 //init
 	mMapper->initEmptyMemberElementFromGT(temp2); 		 //init
 
-	mMapper->initEmptyMemberElementFromGT(decryptedMSG);  //init the result var
+	mMapper->initEmptyMemberElementFromGT(decryptedMsgElem);  //init the result var
 	stateMachine.resetMachineToInitialState();           //reset the given state machine
 
 	virusLength = cipherText.mVirus.length();             //get the virus string length
@@ -208,7 +209,7 @@ void EncryptionHandler::decrypt(memberElement& decryptedMSG, SK& secretKey, CT& 
 
 	//Finished with B_i. At this point: B_i = B_l
 
-	/*getting the index of the current state in the accept-state vecotr.
+	/*getting the index of the current state in the accept-state vector.
 	required for a direct access to the m_K_for_q_x	array */
 	int indexAt_K_end = stateMachine.getIndexOfAcceptanceStateInTheAcceptanceStatesVector(
 			stateMachine.getCurrentStateID());
@@ -226,9 +227,14 @@ void EncryptionHandler::decrypt(memberElement& decryptedMSG, SK& secretKey, CT& 
 	 */
 
 	mMapper->invert(temp2,B_end);             //invert
-	mMapper->mul(decryptedMSG,temp2,cipherText.m_Cm); //HALELUJA
+	mMapper->mul(decryptedMsgElem,temp2,cipherText.m_Cm); //HALELUJA
 
 }//end of decrypt()
+
+/*
+ * Returns a BilinearMappingHandler
+ */
+BilinearMappingHandler* EncryptionHandler::getBilinearMappingHandler() {return mMapper; }
 
 
 //	  _____                    _     _  __
@@ -274,13 +280,13 @@ EncryptionHandler::SK::SK(BilinearMappingHandler* mapper,StateMachine* M, MSK* m
 	}//for
 
 	//K_start1= d_0*(h_start)^r_start
-	mMapper->initEmptyMemberElementFromG1(m_K_start1)				;//init. k1
-	mMapper->power_Zn(m_K_start1,mMasterKey->h_start,m_Rstart)		;//k1=(h_start)^r_start
-	mMapper->mul(m_K_start1,m_K_start1,m_D_ElementSet[0])			;//k1=d_0*(h_start)^r_start
+	mMapper->initEmptyMemberElementFromG1(m_K_start1)				;//init. k_start1
+	mMapper->power_Zn(m_K_start1,mMasterKey->h_start,m_Rstart)		;//k_start1=(h_start)^r_start
+	mMapper->mul(m_K_start1,m_K_start1,m_D_ElementSet[0])			;//kk_start1=d_0*(h_start)^r_start
 
 	//K_start2=g^(r_start)
-	mMapper->initEmptyMemberElementFromG1(m_K_start2)				;//init. k2
-	mMapper->power_Zn(m_K_start2,mMasterKey->g,m_Rstart)			;//k2==g^(r_start)
+	mMapper->initEmptyMemberElementFromG1(m_K_start2)				;//init. k_start2
+	mMapper->power_Zn(m_K_start2,mMasterKey->g,m_Rstart)			;//k_start2==g^(r_start)
 
 
 	//Generating a 2d array with 3 rows and t column. The i-th column contains the parameters for Ki
@@ -295,6 +301,13 @@ EncryptionHandler::SK::SK(BilinearMappingHandler* mapper,StateMachine* M, MSK* m
 		m_K_t[i]=new memberElement[M->getTotalNumOfTransitions()];
 	}//for
 
+	//init the 2d element array:
+	for(int i=0;i<3;i++)
+		for(int j=0;j<M->getTotalNumOfTransitions();j++)
+		{
+			mMapper->initEmptyMemberElementFromG1(m_K_t[i][j]); //init
+		}
+
 	//will be used by the constructor:
 	const std::vector<Transition3Tuple>* T =M->translateStateMachineToTriples(); //T is a transitions vector
 	int x_id,y_id;
@@ -307,7 +320,7 @@ EncryptionHandler::SK::SK(BilinearMappingHandler* mapper,StateMachine* M, MSK* m
 	//for each transition tuple: {t=<x,y,sigma>}, we build a 3-tuple:{k_t = <k_t1,k_t2,k_t3>}
 	//s.t:   {  k_t1 = < ((d_x)^-1)z^(r_t),	k_t2 = g^(r_t),	k_t3 = d_y*(h_sigma)^(r_t) >  }
 
-	//calculating of the 3-tuples set :{k_t}
+	//calculating the 3-tuples set :{k_t}
 	for (int i=0;i<M->getTotalNumOfTransitions();i++)
 	{
 
@@ -316,14 +329,12 @@ EncryptionHandler::SK::SK(BilinearMappingHandler* mapper,StateMachine* M, MSK* m
 		x_id =t.get_X();														//gets the ID of x
 		mMapper->invert(tmp1,m_D_ElementSet[x_id]);								//tmp1 = (D_x)^(-1)
 		mMapper->power_Zn(tmp2,mMasterKey->z,m_Rt_ExpSet[i]);					//tmp2 = z^(r_t)
-		mMapper->mul(m_K_t[0][i],tmp1,tmp2);									// Done With K_t1
+		mMapper->mul(m_K_t[0][i],tmp1,tmp2);									//multiply
 		//// Done With K_t1
-
 
 		//Definition of K_t2
 		mMapper->power_Zn(m_K_t[1][i],mMasterKey->g,m_Rt_ExpSet[i]);			//K_t2= g^(r_t)
 		//// Done With K_t2
-
 
 		//Definition of K_t3
 		sigma =t.get_Sigma();													//get sigma
@@ -347,7 +358,7 @@ EncryptionHandler::SK::SK(BilinearMappingHandler* mapper,StateMachine* M, MSK* m
 		m_K_for_q_x[0]=new memberElement[F->size()];
 		m_K_for_q_x[1]=new memberElement[F->size()];
 
-		//for each q_x from F
+		//for each q_x from F (F are the accept states)
 		for (unsigned int i=0; i<F->size() ;i++){
 			//init. m_K_for_q_x[0][i],m_K_for_q_x[1][i]
 				mMapper->initEmptyMemberElementFromG1(m_K_for_q_x[0][i]);			//init. K_endx1
@@ -456,19 +467,25 @@ EncryptionHandler::MSK::~MSK(){}
 //	          | |
 //	          |_|
 
-
-EncryptionHandler::CT::CT(MSK* msk, int virus_string_length)
+/*
+ * @param msk
+ */
+EncryptionHandler::CT::CT(const MSK* msk, int virusLength)
 {
 	mMapper=msk->mMapper;
 	mIsPartialCT = true;
 
-	int virusLength = virus_string_length;  //get the virus' length
-
 	m_Ci = new memberElement* [ALPHABET_SIZE+1]; //allocate the 1st dimension
-
 	//allocate the 2nd dimension:
 	for (int i=0; i<ALPHABET_SIZE+1 ;i++)
 		m_Ci[i] = new memberElement[virusLength];
+
+	//init the 2d element array:
+	for (int i=0; i< (ALPHABET_SIZE+1) ;i++)
+		for (int j=0; j<virusLength ;j++)
+		{
+			mMapper->initEmptyMemberElementFromG1(m_Ci[i][j]);  //init as an empty member
+		}
 
 	mMapper->initEmptyMemberElementFromGT(m_Cm);
 	mMapper->initEmptyMemberElementFromG1(m_C_start1);

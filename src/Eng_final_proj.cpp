@@ -15,6 +15,7 @@
 #include "EncryptionHandler.h"
 
 #define PARAM_FILE_PATH "./param/a.param" //the relative path of the parameter file
+#define DEBUG 1
 
 using namespace std;                      //using the 'string' library
 
@@ -30,15 +31,31 @@ int main()
 
 	StateMachine machineOfStates(6,0); //a new machine with 6 states. initial state is '0'
 	debug_initializeStateMachine(&machineOfStates); //init the machine
-	EncryptionHandler encHand(filePath,&machineOfStates);
+	EncryptionHandler encHand(filePath,&machineOfStates); //init enc. handler
 
-	const EncryptionHandler::SK* sk=encHand.KeyGen();
-	EncryptionHandler::CT* ct;
-	const string virus= "vir";
-	memberElement msg;
-	encHand.mapStringToElementFromGT(msg,virus);
+	const EncryptionHandler::MSK* msk = encHand.setup(); //gen. master key
+	EncryptionHandler::SK* sk = encHand.keyGen();	//gen. secret key
 
+	const string virus= "virus";
+	memberElement theMsgElem;
+	memberElement decryptRes;
 
+	//map the bond to some random element in G1
+	encHand.mapStringToElementFromGT(theMsgElem,"BOND STRING");
+
+	element_printf("%B\n", theMsgElem);
+
+	EncryptionHandler::CT cipherText(msk,virus.length());  //creating a new empty CT
+	encHand.createPartialEncryption(cipherText,virus,theMsgElem);  //generate a partial CT
+	encHand.completePartialEncryption(cipherText,virus);		//complete the enc.
+	encHand.decrypt(decryptRes,*sk,cipherText,machineOfStates);  //decrypt
+
+	BilinearMappingHandler* mapper = encHand.getBilinearMappingHandler();
+
+	if (!mapper->compareElements(theMsgElem, decryptRes))
+	    cout << "Elements match!\n";
+	else
+	    cout << "No match!\n";
 
 
 

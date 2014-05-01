@@ -134,11 +134,17 @@ const int StateMachine::getTotalNumOfStates()
 	return mTotalNumOfStates;
 }//end of getTotalNumOfStates()
 
+/*
+ * Returns the total number of transitions in the state machine.
+ */
 const int StateMachine::getTotalNumOfTransitions(){
 
 	 return mTotalNumOfStates*ALPHABET_SIZE;
 }//end of getTotalNumOfTransition()
 
+/*
+ * Returns the total number of acceptance states in the state machine.
+ */
 const int StateMachine::getTotalNumOfAcceptenceStates(){
 	return mIDsOfAcceptanceStates.size();
 }//end of getTotalNumOfAcceptenceStates()

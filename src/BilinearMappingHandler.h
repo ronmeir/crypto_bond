@@ -83,6 +83,13 @@ void initRandomExpElement(expElement& elem);
 void initEmptyMemberElementFromGT(expElement& elem);
 
 /*
+ * Initializes an element to a random element from GT.
+ * @param elem - the element to be initialized
+ * MEMBER ELEMENT MEANS THIS ELEMENT WON'T BE USED AS AN EXPONENT
+ */
+void initRandomMemberElementFromGT(memberElement& elem);
+
+/*
  * Performs a power operation in Zn: base^exp mod N
  * @param result - the result will be saved here
  */

@@ -13,7 +13,6 @@
 
 #include "BilinearMappingHandler.h"
 
-
 /*
  * Constructor
  */
@@ -80,6 +79,12 @@ void BilinearMappingHandler::initEmptyMemberElementFromGT(memberElement& elem)
 {
 	element_init_GT(elem, pairing);
 }//end of initEmptyMemberElementFromGT()
+
+void BilinearMappingHandler::initRandomMemberElementFromGT(memberElement& elem)
+{
+	element_init_GT(elem, pairing);
+	element_random(elem);
+}//end of initRandomMemberElementFromGT()
 
 /*
  * Initializes an exponent element of Zr to an empty value. Works with all groups
