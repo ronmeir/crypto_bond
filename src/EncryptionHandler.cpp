@@ -160,7 +160,7 @@ void EncryptionHandler::mapStringToElementFromGT (memberElement& ans, const std:
 void EncryptionHandler::decrypt(memberElement& decryptedMsgElem, SK& secretKey, CT& cipherText, StateMachine stateMachine)
 {
 	int virusLength=0;
-	memberElement B_0, B_i, B_i_minus_1, B_end,temp0, temp1, temp2;
+	memberElement B_0, B_i, B_i_minus_1, B_end,temp0, temp1, temp2, temp3;
 
 	mMapper->initEmptyMemberElementFromGT(B_0);  		 //init
 	mMapper->initEmptyMemberElementFromGT(B_i);  		 //init
@@ -169,6 +169,7 @@ void EncryptionHandler::decrypt(memberElement& decryptedMsgElem, SK& secretKey, 
 	mMapper->initEmptyMemberElementFromG1(temp0); 		 //init
 	mMapper->initEmptyMemberElementFromGT(temp1); 		 //init
 	mMapper->initEmptyMemberElementFromGT(temp2); 		 //init
+	mMapper->initEmptyMemberElementFromGT(temp3); 		 //init
 
 	mMapper->initEmptyMemberElementFromGT(decryptedMsgElem);  //init the result var
 	stateMachine.resetMachineToInitialState();           //reset the given state machine
@@ -212,14 +213,13 @@ void EncryptionHandler::decrypt(memberElement& decryptedMsgElem, SK& secretKey, 
 		mMapper->bilinearMap(temp2,temp0,secretKey.m_K_t[1][indexAt_K_t]); //calc the 2nd bilinear map
 		mMapper->invert(temp2,temp2);										//invert
 
-		mMapper->mul(temp1,temp1,temp2);									//multiplication of the first 2 mapped elements -> temp1
-
 		cipherText.get_C_i_1(temp0,i-1); //extract C_i_1
-		mMapper->bilinearMap(temp2,temp0,secretKey.m_K_t[2][indexAt_K_t]); //calc the 2nd bilinear map
+		mMapper->bilinearMap(temp3,temp0,secretKey.m_K_t[2][indexAt_K_t]); //calc the 3rd bilinear map
 
-		mMapper->mul(temp1,temp1,temp2);                               //multiplication of the last 3 elements -> temp1
+    	mMapper->mul(temp2,temp2,temp3);	//multiplication of the last 2 elements -> temp2
+    	mMapper->mul(temp1,temp1,temp2);	//multiplication of the last 3 elements -> temp1
+		mMapper->mul(B_i,B_i_minus_1,temp1);   //calc the multiplication of all 4 elements -> B_i
 
-		mMapper->mul(B_i,B_i_minus_1,temp1);                    //calc B_i
 
 		mMapper->element_cpy(B_i_minus_1,B_i);					//set B_i-1 to be B_i for the next iteration.
 
@@ -237,8 +237,8 @@ void EncryptionHandler::decrypt(memberElement& decryptedMsgElem, SK& secretKey, 
 
 	mMapper->bilinearMap(temp2,cipherText.m_C_end2,secretKey.m_K_for_q_x[1][indexAt_K_end]); //map
 
-	mMapper->mul(temp1,temp1,temp2);
-	mMapper->mul(B_end,B_i,temp1);
+	mMapper->mul(temp1,temp1,temp2);    //mul the 2 last elements into temp1
+	mMapper->mul(B_end,B_i,temp1);		//b_l * (the 2 last elements)
 
 	/*DONE WITH THE HEAVY CALCULATIONS. THE ONLY THING LEFT NOW IS TO INVERT B_end AND MULTIPLY IT
 	 * WITH THE CT TO RECEIVE THE PT
