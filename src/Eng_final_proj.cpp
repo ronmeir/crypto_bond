@@ -29,21 +29,22 @@ int main()
 
 	char* filePath = PARAM_FILE_PATH;
 
-	StateMachine machineOfStates(6,0); //a new machine with 6 states. initial state is '0'
+	StateMachine machineOfStates(2,0); //a new machine with 6 states. initial state is '0'
 	debug_initializeStateMachine(&machineOfStates); //init the machine
+
 	EncryptionHandler encHand(filePath,&machineOfStates); //init enc. handler
 
 	const EncryptionHandler::MSK* msk = encHand.setup(); //gen. master key
 	EncryptionHandler::SK* sk = encHand.keyGen();	//gen. secret key
 
-	const string virus= "virus";
+	const string virus= "vi";
 	memberElement theMsgElem;
 	memberElement decryptRes;
 
 	//map the bond to some random element in G1
 	encHand.mapStringToElementFromGT(theMsgElem,"BOND STRING");
 
-	element_printf("%B\n", theMsgElem);
+	//element_printf("%B\n", theMsgElem);
 
 	EncryptionHandler::CT cipherText(msk,virus.length());  //creating a new empty CT
 	encHand.createPartialEncryption(cipherText,virus,theMsgElem);  //generate a partial CT
@@ -110,43 +111,43 @@ void debug_initializeStateMachine(StateMachine* machine)
 	transitions[1][0]='b';
 	transitions[1][1]=1;
 	transitions[2][0]='i';
-	transitions[2][1]=2;
+	transitions[2][1]=1;
 
-	machine->addState(1,transitions,3,false);
-
-	//state 2:
-	transitions[0][0]='a';
-	transitions[0][1]=2;
-	transitions[1][0]='b';
-	transitions[1][1]=2;
-	transitions[2][0]='r';
-	transitions[2][1]=3;
-
-	machine->addState(2,transitions,3,false);
-
-	//state 3:
-	transitions[0][0]='a';
-	transitions[0][1]=3;
-	transitions[1][0]='b';
-	transitions[1][1]=3;
-	transitions[2][0]='u';
-	transitions[2][1]=4;
-
-	machine->addState(3,transitions,3,false);
-
-	//state 4:
-	transitions[0][0]='a';
-	transitions[0][1]=4;
-	transitions[1][0]='b';
-	transitions[1][1]=4;
-	transitions[2][0]='s';
-	transitions[2][1]=5;
-
-	machine->addState(4,transitions,3,false);
-
-	//state 5:
-
-	machine->addState(5,transitions,0,true);
+	machine->addState(1,transitions,3,true);
+//
+//	//state 2:
+//	transitions[0][0]='a';
+//	transitions[0][1]=2;
+//	transitions[1][0]='b';
+//	transitions[1][1]=2;
+//	transitions[2][0]='r';
+//	transitions[2][1]=3;
+//
+//	machine->addState(2,transitions,3,false);
+//
+//	//state 3:
+//	transitions[0][0]='a';
+//	transitions[0][1]=3;
+//	transitions[1][0]='b';
+//	transitions[1][1]=3;
+//	transitions[2][0]='u';
+//	transitions[2][1]=4;
+//
+//	machine->addState(3,transitions,3,false);
+//
+//	//state 4:
+//	transitions[0][0]='a';
+//	transitions[0][1]=4;
+//	transitions[1][0]='b';
+//	transitions[1][1]=4;
+//	transitions[2][0]='s';
+//	transitions[2][1]=5;
+//
+//	machine->addState(4,transitions,3,false);
+//
+//	//state 5:
+//
+//	machine->addState(5,transitions,0,true);
 
 }//end of debug_initializeStateMachine
 
