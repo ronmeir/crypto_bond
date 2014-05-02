@@ -73,26 +73,28 @@ void EncryptionHandler::createPartialEncryption (CT& ct,const string& w, memberE
 
 	//generating C_m:
 	mMapper->power_Zn(tempFromG_1,mMasterKey->g,mMasterKey->alpha); //calc g^alpha
-	mMapper->power_Zn(tempFromG_2,mMasterKey->g,s[virus_length-1]); //calc g^s_l
+	mMapper->power_Zn(tempFromG_2,mMasterKey->g,s[virus_length]); //calc g^s_l
 	mMapper->bilinearMap(tempFrom_GT,tempFromG_1,tempFromG_2);      //calc e(g,g)^(alpha*s_l)
 	mMapper->mul(ct.m_Cm,m,tempFrom_GT);                           //calc m * e(g,g)^(alpha*s_l) == Cm
 
 	mMapper->power_Zn(ct.m_C_start1,mMasterKey->g,s[0]);			 	//calc g^s_0 = C_start1
-	mMapper->power_Zn(ct.m_C_end1,mMasterKey->g,s[virus_length-1]); 	//calc g^s_l = C_end1
+	mMapper->power_Zn(ct.m_C_end1,mMasterKey->g,s[virus_length]); 	//calc g^s_l = C_end1
 
 	mMapper->power_Zn(ct.m_C_start2,mMasterKey->h_start,s[0]);		    //calc (h_start)^s_0 = C_start2
-	mMapper->power_Zn(ct.m_C_end2,mMasterKey->h_end,s[virus_length-1]);//calc (h_end)^s_l = C_end2
+	mMapper->power_Zn(ct.m_C_end2,mMasterKey->h_end,s[virus_length]);//calc (h_end)^s_l = C_end2
 
 	int i;
 	//generating C_i:
 	for (int col=0; col<virus_length ;col++)
 	{
-		mMapper->power_Zn(ct.m_Ci[0][col],mMasterKey->g,s[col]);   //calc g^s_j
-		//now we have to fill the remaining 256 cells with all possible h_wi:
+		i=col+1;                     //done so the annotation will be true to the document
+
+		mMapper->power_Zn(ct.m_Ci[0][col],mMasterKey->g,s[i]);   //calc C_i_1 (g^s_i)
+		//now we have to fill the remaining 256 cells with all possible C_i_2:
 		for (int row=1 ; row <= ALPHABET_SIZE ;row++)
 		{
-			i=col+1;                     //done so the annotation will keep true to the document
-			mMapper->power_Zn(tempFromG_1,mMasterKey->h_sigma[i],s[i]);  //calc (h_wi)^s_i
+
+			mMapper->power_Zn(tempFromG_1,mMasterKey->h_sigma[row-1],s[i]);  //calc (h_wi)^s_i
 			mMapper->power_Zn(tempFromG_2,mMasterKey->z,s[i-1]);  	//calc z^s_(i-1)
 			mMapper->mul(ct.m_Ci[row][col],tempFromG_1,tempFromG_2);  //save the mul result
 		}//end of inner for
@@ -279,7 +281,7 @@ EncryptionHandler::SK::SK(BilinearMappingHandler* mapper,StateMachine* M, MSK* m
 
 	mMapper->initRandomExpElement(m_Rstart)								 ; //init m_Rstart
 
-	//init. all the random elements in  D_ElementsSet
+	//init. all the random elements in  D_ElementSet
 	for(int i =0; i<M->getTotalNumOfStates();i++)
 	{
 		mMapper->initRandomMemberElementFromG1(m_D_ElementSet[i])	;//init. a random member element @d_i
@@ -306,7 +308,7 @@ EncryptionHandler::SK::SK(BilinearMappingHandler* mapper,StateMachine* M, MSK* m
 	mMapper->power_Zn(m_K_start2,mMasterKey->g,m_Rstart)			;//k_start2==g^(r_start)
 
 
-	//Generating a 2d array with 3 rows and t column. The i-th column contains the parameters for Ki
+	//Generating a 2d array with 3 rows and t columns. The i-th column contains the parameters for Ki
 
 
 	//allocate the m_Ks 1st dimension
@@ -363,43 +365,43 @@ EncryptionHandler::SK::SK(BilinearMappingHandler* mapper,StateMachine* M, MSK* m
 	}//for
 		////done with calculating the 3-tuples set :{k_t}
 
-		//for each q_x from F (F is the acceptance-states set) we compute 2 members, K_end_x1 and K_end_x2:
-		//K_end_x1= g^(-alpha)*Dx*(h_end)^(r_endx) - from G
-		//K_end_x2= g^(r_endx) - from G
+	//for each q_x from F (F is the acceptance-states set) we compute 2 members, K_end_x1 and K_end_x2:
+	//K_end_x1= g^(-alpha)*Dx*(h_end)^(r_endx) - from G
+	//K_end_x2= g^(r_endx) - from G
 
-		const std::vector<int>* F = M->getAcceptanceStates();						//F is the acceptance states set
-		//allocate the m_K_for_q_x 1st dimension
-		m_K_for_q_x = new memberElement*[2];										//k.size()= [2][|F|]
+	const std::vector<int>* F = M->getAcceptanceStates();						//F is the acceptance states set
+	//allocate the m_K_for_q_x 1st dimension
+	m_K_for_q_x = new memberElement*[2];										//k.size()= [2][|F|]
 
-		//allocate the m_K_for_q_x 2nd dimension
-		m_K_for_q_x[0]=new memberElement[F->size()];
-		m_K_for_q_x[1]=new memberElement[F->size()];
+	//allocate the m_K_for_q_x 2nd dimension
+	m_K_for_q_x[0]=new memberElement[F->size()];
+	m_K_for_q_x[1]=new memberElement[F->size()];
 
-		//for each q_x from F (F are the accept states)
-		for (unsigned int i=0; i<F->size() ;i++){
-			//init. m_K_for_q_x[0][i],m_K_for_q_x[1][i]
-				mMapper->initEmptyMemberElementFromG1(m_K_for_q_x[0][i]);			//init. K_endx1
-				mMapper->initEmptyMemberElementFromG1(m_K_for_q_x[1][i]);			//init. K_endx2
+	//for each q_x from F (F are the accept states)
+	for (int i=0; i<F->size() ;i++){
+		//init. m_K_for_q_x[0][i],m_K_for_q_x[1][i]
+			mMapper->initEmptyMemberElementFromG1(m_K_for_q_x[0][i]);			//init. K_endx1
+			mMapper->initEmptyMemberElementFromG1(m_K_for_q_x[1][i]);			//init. K_endx2
 
-			//Definition of  K_end_x1
-				x_id =F->at(i);													   	//get the ID of x
-				mMapper->power_Zn(tmp2,mMasterKey->h_end,m_R_end_ExpSet[i]);		//tmp2= (h_end)^r_endx
+		//Definition of  K_end_x1
+			x_id =F->at(i);													   	//get the ID of x
+			mMapper->power_Zn(tmp2,mMasterKey->h_end,m_R_end_ExpSet[i]);		//tmp2= (h_end)^r_endx
 
-				mMapper->mul(tmp1,m_D_ElementSet[x_id],tmp2);						//tmp1= D_x*(h_end)^r_endx
-				//here we have tmp1= tmp1= D_x*(h_end)^r_endx
+			mMapper->mul(tmp1,m_D_ElementSet[x_id],tmp2);						//tmp1= D_x*(h_end)^r_endx
+			//here we have tmp1= tmp1= D_x*(h_end)^r_endx
 
-				mMapper->power_Zn(tmp2,mMasterKey->g,mMasterKey->alpha);			//tmp2= g^(alpha)
-				mMapper->invert(tmp2,tmp2);											//tmp2= g^(-alpha)
-				//here we have tmp2= g^(-alpha)
+			mMapper->power_Zn(tmp2,mMasterKey->g,mMasterKey->alpha);			//tmp2= g^(alpha)
+			mMapper->invert(tmp2,tmp2);											//tmp2= g^(-alpha)
+			//here we have tmp2= g^(-alpha)
 
-				//to get K_end_x1 we need to do:tmp1*tmp2
-				mMapper->mul(m_K_for_q_x[0][i],tmp1,tmp2);							//K_end_x1= g^(-alpha)*Dx*(h_end)^(r_end_x)
-			////done with K_end_x1
+			//to get K_end_x1 we need to do:tmp1*tmp2
+			mMapper->mul(m_K_for_q_x[0][i],tmp1,tmp2);							//K_end_x1= g^(-alpha)*Dx*(h_end)^(r_end_x)
+		////done with K_end_x1
 
 
-		//Definition of  K_end_x2
-				mMapper->power_Zn(m_K_for_q_x[1][i],mMasterKey->g,m_R_end_ExpSet[i]);//K_endx2= g^(R_end_x)
-		////done with K_end_x2
+	//Definition of  K_end_x2
+			mMapper->power_Zn(m_K_for_q_x[1][i],mMasterKey->g,m_R_end_ExpSet[i]);//K_endx2= g^(R_end_x)
+	////done with K_end_x2
 	}//for
 
 }//end of SK Constructor

@@ -51,7 +51,7 @@ int StateMachine::addState (int stateID, int transitionTable[][2], int numOfRows
 		return -1;
 		}
 	mStates[stateID] = new State(stateID,transitionTable,numOfRows,IsAcceptanceState); //create a new state
-	//At the state-machine level, x allows a direct access to the state's transition block [256 entries per state]
+	//At the state-machine level, x allows a direct access to the state's transition block [ALPHABET_SIZE entries per state]
 
 	//checking if this is an acceptance state:
 	if (IsAcceptanceState)
