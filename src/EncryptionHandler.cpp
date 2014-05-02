@@ -93,7 +93,6 @@ void EncryptionHandler::createPartialEncryption (CT& ct,const string& w, memberE
 		//now we have to fill the remaining 256 cells with all possible C_i_2:
 		for (int row=1 ; row <= ALPHABET_SIZE ;row++)
 		{
-
 			mMapper->power_Zn(tempFromG_1,mMasterKey->h_sigma[row-1],s[i]);  //calc (h_wi)^s_i
 			mMapper->power_Zn(tempFromG_2,mMasterKey->z,s[i-1]);  	//calc z^s_(i-1)
 			mMapper->mul(ct.m_Ci[row][col],tempFromG_1,tempFromG_2);  //save the mul result
@@ -126,7 +125,7 @@ void EncryptionHandler::completePartialEncryption (CT& partial_ct, const std::st
 	}
 
 	//copying only the relevant C_i (based on the given virus string):
-	for (unsigned int col=0; col<virus_length ;col++)
+	for (int col=0; col<virus_length ;col++)
 	{
 		partial_ct.get_C_i_1(new_m_Ci[0][col],col); //copy C_i_1
 		//According to the actual virus string, we need only 1 of the 256 different h_wi:
