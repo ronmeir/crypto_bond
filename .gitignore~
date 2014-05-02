@@ -19,3 +19,12 @@
 *.exe
 *.out
 *.app
+
+<<<<<<< HEAD
+# Directories
+Debug/
+=======
+#Directories
+Debug/
+
+>>>>>>> f48dbb52bcdeaa83dff72ce690d76b97c8a0b3c4
