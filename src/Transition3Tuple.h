@@ -11,6 +11,7 @@
  * Transition3Tuple.h
  */
 #include <string>
+#include "Constants.h"
 
 #ifndef TRANSITION3TUPLE_H_
 #define TRANSITION3TUPLE_H_

@@ -63,7 +63,7 @@ void EncryptionHandler::createPartialEncryption (CT& ct,const string& w, memberE
 	mMapper->initEmptyMemberElementFromG1(tempFromG_1); //init as a member of G
 	mMapper->initEmptyMemberElementFromG1(tempFromG_2); //init as a member of G
 
-	int virus_length = (int)w.length(); 	//get the virus' string length
+	int virus_length = MAX_MSG_LENGTH; 	//our implementation defines a constant maximal length
 	//Initializing the S_i array:
 	s = new expElement[virus_length+1]; 	//create a new exp_element array (virus_length+1) elements
 
@@ -108,11 +108,18 @@ void EncryptionHandler::createPartialEncryption (CT& ct,const string& w, memberE
  * @param partial_ct - A partial encryption that'll be updated to be a full encryption
  * @param virus - the virus string
  */
-void EncryptionHandler::completePartialEncryption (CT& partial_ct, const std::string& virus)
+void EncryptionHandler::completePartialEncryption (CT& partial_ct, const std::string& user_virus)
 {
 	memberElement** new_m_Ci = new memberElement*[2];  //will be used to hold an array of [2][virus.length()]
 
-	int virus_length  = virus.length();
+	int virus_length  = MAX_MSG_LENGTH;
+	//now we have to pad the received virus to the length of MAX_MSG_LENGTH
+	//Since our state machine should remain in an acceptance state if such was reach, the decryption alg. should work.
+	string virus(user_virus);				  //create a copy of the received virus
+	int pad = MAX_MSG_LENGTH - virus.length(); //calc the padding length
+	string padStr(pad,0);                     //create a padding string
+	virus += padStr;                          //pad the virus string
+
 	//creating a new C_i array that'll replace the current, eliminating all irrelevant h_wi
 	new_m_Ci[0] = new memberElement[virus_length];
 	new_m_Ci[1] = new memberElement[virus_length];
@@ -231,6 +238,13 @@ void EncryptionHandler::decrypt(memberElement& decryptedMsgElem, SK& secretKey, 
 	required for a direct access to the m_K_for_q_x	array */
 	int indexAt_K_end = stateMachine.getIndexOfAcceptanceStateInTheAcceptanceStatesVector(
 			stateMachine.getCurrentStateID());
+
+	//illegal virus check:
+	if (indexAt_K_end==-1)
+	{
+		cout << "The given input didn't result in an acceptance state! decryption failed!";
+		return;
+	}
 
 	mMapper->bilinearMap(temp1,cipherText.m_C_end1,secretKey.m_K_for_q_x[0][indexAt_K_end]); //map
 	mMapper->invert(temp1,temp1);															 //invert

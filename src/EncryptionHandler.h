@@ -6,7 +6,9 @@
  */
 #include "BilinearMappingHandler.h"
 #include "StateMachine.h"
+#include "Constants.h"
 #include <string>
+#include <iostream>
 
 #ifndef ENCRYPTIONHANDLER_H_
 #define ENCRYPTIONHANDLER_H_

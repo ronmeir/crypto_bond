@@ -8,6 +8,7 @@
 //                                                |_|   |_|            |___/
 
 #include <pbc.h>
+#include "Constants.h"
 
 #ifndef BilinearMappingHandler_H_
 #define BilinearMappingHandler_H_

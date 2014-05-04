@@ -19,11 +19,12 @@
 #include <string>
 #include <vector>
 #include "Transition3Tuple.h"
+#include "Constants.h"
 
 #ifndef STATE_H_
 #define STATE_H_
 
-#define ALPHABET_SIZE 256
+//#define ALPHABET_SIZE 256
 
 class State {
 

@@ -13,9 +13,11 @@
 #include "BilinearMappingHandler.h"
 #include "StateMachine.h"
 #include "EncryptionHandler.h"
+#include "Constants.h"
 
-#define PARAM_FILE_PATH "./param/a.param" //the relative path of the parameter file
-#define DEBUG 1
+//#define PARAM_FILE_PATH "./param/a.param" //the relative path of the parameter file
+//#define DEBUG 1
+//#define MAX_MSG_LENGTH 20
 
 using namespace std;                      //using the 'string' library
 
@@ -47,7 +49,7 @@ int main()
 
 	//element_printf("%B\n", theMsgElem);
 
-	EncryptionHandler::CT cipherText(msk,virus.length());  //creating a new empty CT
+	EncryptionHandler::CT cipherText(msk,MAX_MSG_LENGTH);  //creating a new empty CT
 	encHand.createPartialEncryption(cipherText,virus,theMsgElem);  //generate a partial CT
 	encHand.completePartialEncryption(cipherText,virus);		//complete the enc.
 	encHand.decrypt(decryptRes,*sk,cipherText,machineOfStates);  //decrypt
