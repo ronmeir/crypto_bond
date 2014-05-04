@@ -39,6 +39,12 @@ int SocketWrapper::getSocketDescriptor()
 
 int SocketWrapper::receiveFromSocket(char* buffer, int numOfBytesToRead)
 {
+	if (m_socketDiscrptr==-1)
+	{
+		cout << "Invalid socket descriptor!";
+		return -1;
+	}
+
 	 int  n = read(m_socketDiscrptr,buffer,numOfBytesToRead);
 		if (n < 0)
 		{
@@ -50,6 +56,19 @@ int SocketWrapper::receiveFromSocket(char* buffer, int numOfBytesToRead)
 
 int SocketWrapper::sendToSocket (char* buffer, int numOfBytesToSend)
 {
+	if (m_socketDiscrptr==-1)
+	{
+		cout << "Invalid socket descriptor!";
+		return -1;
+	}
+
+   int n = write(m_socketDiscrptr,buffer,numOfBytesToSend);
+    if (n < 0)
+    {
+         perror("ERROR writing to socket");
+    }
+
+    return n;
 
 }//end of sendToSocket()
 
@@ -79,10 +98,10 @@ int SocketWrapper::InitSocket (string& dest_ip, int dest_port)
 
   sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
   if (socket < 0)
-        {
-        printf("Tracker socket failed!\n");
-        return -1; //exit
-        }
+	{
+	printf("Tracker socket failed!\n");
+	return -1; //exit
+	}
 
   memset(&channel, 0, sizeof(channel));
 
@@ -94,9 +113,9 @@ int SocketWrapper::InitSocket (string& dest_ip, int dest_port)
 
   connected_socket = connect(sock, (struct sockaddr *) &channel, sizeof(channel));
   if (connected_socket < 0)
-        {
-         return -1; //exit
-        }
+	{
+	 return -1; //exit
+	}
 
   return sock; //return the socket connected to the tracker
 }//end of InitSocket()
