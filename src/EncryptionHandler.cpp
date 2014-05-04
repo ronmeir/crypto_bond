@@ -415,7 +415,7 @@ EncryptionHandler::SK::SK(BilinearMappingHandler* mapper,StateMachine* M, MSK* m
  */
 int EncryptionHandler::SK::getIndexInKeyComponentsByTransition(int x, unsigned char sigma)
 {
-	return x*ALPHABET_SIZE + sigma; //since our
+	return x*ALPHABET_SIZE + sigma; //the index for a direct access to the desired transition
 }//end of getIndexInKeyComponentsByTransition()
 
 EncryptionHandler::SK::~SK()
