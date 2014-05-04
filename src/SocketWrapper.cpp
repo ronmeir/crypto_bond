@@ -74,8 +74,11 @@ int SocketWrapper::sendToSocket (char* buffer, int numOfBytesToSend)
 
 void SocketWrapper::closeSocket()
 {
-	close(m_socketDiscrptr);
-	m_socketDiscrptr = -1;
+	if (m_socketDiscrptr != -1)
+	{
+		close(m_socketDiscrptr);
+		m_socketDiscrptr = -1;
+	}
 }//end of closeSocket()
 
 /*
@@ -122,7 +125,7 @@ int SocketWrapper::InitSocket (string& dest_ip, int dest_port)
 
 SocketWrapper::~SocketWrapper()
 {
-	// TODO Auto-generated destructor stub
+	closeSocket();
 }
 
 

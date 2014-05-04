@@ -15,7 +15,7 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <netdb.h>
-#include <ctype.h>
+#include <iostream>
 
 #ifndef SOCKETWRAPPER_H_
 #define SOCKETWRAPPER_H_
