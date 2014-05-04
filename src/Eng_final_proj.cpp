@@ -37,10 +37,11 @@ int main()
 	const string virus= "virus";
 
 	EncryptionHandler encHand(filePath,&machineOfStates); //init enc. handler
+	printf("EncryptionHandler is ready\n\n");
 
 	const EncryptionHandler::MSK* msk = encHand.setup(); //gen. master key
 	EncryptionHandler::SK* sk = encHand.keyGen();	//gen. secret key
-
+	printf("keyGen is ready\n\n");
 	memberElement theMsgElem;
 	memberElement decryptRes;
 
@@ -152,7 +153,7 @@ void debug_initializeStateMachine(StateMachine* machine)
 	//state 5:
 
 	machine->addState(5,transitions,0,true);
-
+printf("state machine is ready\n\n");
 }//end of debug_initializeStateMachine
 
 

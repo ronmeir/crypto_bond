@@ -55,6 +55,7 @@ EncryptionHandler::SK* EncryptionHandler::keyGen(){return mSecretKey;}//end of K
  */
 void EncryptionHandler::createPartialEncryption (CT& ct,const string& w, memberElement& m)
 {
+	cout << "start creating partial encryption...\n";
 	expElement* s;								//ptr array for  S_i
 	memberElement tempFrom_GT;
 	memberElement tempFromG_1, tempFromG_2;
@@ -100,7 +101,7 @@ void EncryptionHandler::createPartialEncryption (CT& ct,const string& w, memberE
 	}//end of outer for
 
 	delete[] s;
-
+	printf("done with partial encryption\n\n");
 }//end of createPartialEncryption()
 
 /**
@@ -110,6 +111,7 @@ void EncryptionHandler::createPartialEncryption (CT& ct,const string& w, memberE
  */
 void EncryptionHandler::completePartialEncryption (CT& partial_ct, const std::string& user_virus)
 {
+	printf("Completing encryption...\n");
 	memberElement** new_m_Ci = new memberElement*[2];  //will be used to hold an array of [2][virus.length()]
 
 	int virus_length  = MAX_MSG_LENGTH;
@@ -150,6 +152,7 @@ void EncryptionHandler::completePartialEncryption (CT& partial_ct, const std::st
 	partial_ct.mVirus = virus;  //set the virus
 
 	partial_ct.mIsPartialCT=false;       //note that this encryption is no longer partial
+	printf(" encryption is done!\n\n");
 }//end of completePartialEncryption()
 
 /**
@@ -166,6 +169,7 @@ void EncryptionHandler::mapStringToElementFromGT (memberElement& ans, const std:
  */
 void EncryptionHandler::decrypt(memberElement& decryptedMsgElem, SK& secretKey, CT& cipherText, StateMachine stateMachine)
 {
+	printf("start decrypting...\n");
 	int virusLength=0;
 	memberElement B_0, B_i, B_i_minus_1, B_end,temp0, temp1, temp2, temp3;
 
@@ -260,7 +264,7 @@ void EncryptionHandler::decrypt(memberElement& decryptedMsgElem, SK& secretKey, 
 
 	mMapper->invert(temp2,B_end);             //invert
 	mMapper->mul(decryptedMsgElem,temp2,cipherText.m_Cm); //HALELUJA
-
+	printf("decrypting is done!\n\n");
 }//end of decrypt()
 
 /*
@@ -434,19 +438,19 @@ int EncryptionHandler::SK::getIndexInKeyComponentsByTransition(int x, unsigned c
 
 EncryptionHandler::SK::~SK()
 {
-	delete(m_D_ElementSet)	;
-	delete(m_Rt_ExpSet)		;
-	delete(m_R_end_ExpSet)	;
-	delete(m_K_for_q_x)		;
-	delete(m_K_t)			;
+	delete[](m_D_ElementSet)	;
+	delete[](m_Rt_ExpSet)		;
+	delete[](m_R_end_ExpSet)	;
+	delete[](m_K_for_q_x)		;
+	delete[](m_K_t)			;
 
 
 	for(int i=0;i<2;i++){delete(m_K_for_q_x[0]);}
-	delete(m_K_for_q_x);
+	delete[](m_K_for_q_x);
 
 
 	for(int i=0;i<3;i++){delete(m_K_t[i]);}//for
-	delete( m_K_t);
+	delete[]( m_K_t);
 
 }//end of Destructor
 
