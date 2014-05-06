@@ -12,6 +12,7 @@ message Bond {
 }//end of bond
 
 
+//DONE WITH THE BOND!!!!
 
 
 
@@ -19,11 +20,13 @@ message Bond {
 
 
 
+//evreything from here and on is used for the SK!!!!
 
 message Transition{
 //in this method of a single transition implementation, we assume that the current state is known
   required char input=1;	//the input received in thw state machine
   required int nextState =2;	//the next state the machine should move to
+  optional bool  IsAcceptanceState=3;
 }//end of Transition
 
 
@@ -37,10 +40,19 @@ message TransitionsVector{
 
   optional int numOfStates =		1;	// the size of the vector represents
   repeated int amountOfTransPerState =	2;	// this is 'v' from above 	 
-  repeated Transition trans =		3;			
+  repeated Transition trans =		3;
 }//end of TransitionsVector	
 
+//now we can build a full stateMachine building a new S.M with its constractor and adding all the states
+// in order to send a stateMachine all we need to do is to tarnslate it into TransitionsVector 
 
+
+
+message StateMachine {
+	required TransitionsVector transitionsVec =	1; // used to get all the states
+	optional string virus =				2; //can contain the virus word
+	repeated int acceptanceStates=			3; //contains all the acceptance states in the machine
+}
 
 
 
@@ -64,9 +76,9 @@ message SK_relevantParms{
   //therefor we'll use 3 'memberElement vectors ' to represent the memberElement** m_K_t matrix
   // denoted as m_K_t_1 , m_K_t_2, m_K_t_3
   
-    required string m_K_t_1 = 1;
-    required string m_K_t_2 = 2;
-    required string m_K_t_3 = 3;
+	required string m_K_t_1 = 1;
+	required string m_K_t_2 = 2;
+	required string m_K_t_3 = 3;
     
     
     
@@ -74,14 +86,21 @@ message SK_relevantParms{
   //therefor we'll use 2 'memberElement vectors ' to represent the memberElement** m_K_for_q_x matrix
   // denoted as m_K_for_q_x_1,  m_K_for_q_x_2
   
-    required string m_K_for_q_x_1 = 4;
-    required string m_K_for_q_x_1 = 5;
+	required string m_K_for_q_x_1 = 4;
+	required string m_K_for_q_x_1 = 5;
     
 
     
   //memberElement m_K_start1,m_K_start2	 ; //from the article paper
   
-  required string  m_K_start1 = 6;
-  required string  m_K_start1 = 7; 
+	required string  m_K_start1 = 	6;
+	required string  m_K_start1 = 	7; 
+	
+//the stateMachine is un here
+
+	optional StateMachine SM =	8;
+  
+  
+
 }//end of skRelevantParms
 
