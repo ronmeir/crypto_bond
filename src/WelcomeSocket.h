@@ -16,7 +16,7 @@ private:
 	//Members
 	int m_socketDiscrptr;
 
-	int initWelcomeSocket (int WebPort);
+	int initWelcomeSocket (int tcp_port);
 
 public:
 	WelcomeSocket(int);

@@ -18,5 +18,4 @@ ObjectSerializer::~ObjectSerializer() {
 
 
 void ObjectSerializer::getRelevantTrans(StateMachine& SM , std::vector<Transition3Tuple>& trans){
-
 }//end of getRelevantTrans

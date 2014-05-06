@@ -7,9 +7,13 @@
 
 #include "UserMachine.h"
 
-UserMachine::UserMachine()
+using namespace std;
+
+UserMachine::UserMachine(const string userID,const string ServerIP,const string CA_IP)
 {
-	// TODO Auto-generated constructor stub
+	m_ID.assign(userID);
+	m_ServerIP.assign(ServerIP);
+	m_CA_IP.assign(CA_IP);
 
 }
 
