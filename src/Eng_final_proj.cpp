@@ -20,7 +20,7 @@ using namespace std;                      //using the 'string' library
 void debug_initializeStateMachine(StateMachine* machine);
 void debug_mapperTest();
 
-//program parameters: user id, machine type (user/server/ca), server and CA IP (relevant for the user only)
+//program parameters:machine type (user/server/ca), user id, server and CA IP (relevant for the user only)
 
 int main()
 {
