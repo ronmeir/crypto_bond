@@ -41,7 +41,7 @@ void ObjectSerializer::getRelevantTrans(StateMachine& SM , std::vector<Transitio
 
 
 
-
+//TODO compile the stupid "proto" and check ALL the functions!!!!!!
 
 
 
