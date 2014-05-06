@@ -7,9 +7,9 @@
 //
 
 #include "State.h"
+#include "Constants.h"
 #include <string>
 #include <vector>
-#include "Constants.h"
 
 #ifndef STATEMACHINE_H_
 #define STATEMACHINE_H_
