@@ -1,6 +1,6 @@
-package keyAndBond;
+package KeyAndBond;
 
-message bond {
+message Bond {
   required string Cm = 		1;	//encrypted bond
   required string C_start1 = 	2;
   required string C_start2 = 	3;
@@ -20,29 +20,25 @@ message bond {
 
 
 
-message transition{
- 
-//in this method of a single transition implementation we assume the current state is known
- 
+message Transition{
+//in this method of a single transition implementation, we assume that the current state is known
   required char input=1;	//the input received in thw state machine
-  required int 
-
-}//end of transition
-
+  required int nextState =2;	//the next state the machine should move to
+}//end of Transition
 
 
 
+message TransitionsVector{
+//let i be a state in the state machine
+//let v be a vector s.t length(v) = #transitions
+//v[i] represents the amount of NONE-selfLoop transition in the state i (v[i] is bounded with the ALPHABET_SIZE {=256})
+//for example, if (v= {1,2,3})  => state[0] have 1 relevant input, state[1] has 2 and state[2] has 3 relevant input 
+//the num of transition the TransitionsVector is: (v[0]+v[1]+....+v[l])
 
-
-
-
-
-
-
-
-
-
-
+  optional int numOfStates =		1;	// the size of the vector represents
+  repeated int amountOfTransPerState =	2;	// this is 'v' from above 	 
+  repeated Transition trans =		3;			
+}//end of TransitionsVector	
 
 
 
@@ -51,7 +47,18 @@ message transition{
 
 
 
-message skRelevantParms{
+
+
+
+
+
+
+
+
+
+
+
+message SK_relevantParms{
 
   //in the cpp file we have : memberElement** m_K_t ; //size() = [3][#transitions]
   //therefor we'll use 3 'memberElement vectors ' to represent the memberElement** m_K_t matrix
