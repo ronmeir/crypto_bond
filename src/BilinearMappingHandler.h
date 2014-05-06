@@ -126,7 +126,25 @@ void mul(memberElement& result,memberElement& a,memberElement& b);
  */
 int compareElements(element_t& a, element_t& b);
 
+/*
+ * Copies an element
+ */
 void element_cpy(element_t& dst, element_t& src);
+
+/*
+ * Returns the length of the given element, if it were compressed
+ */
+int getElementLengthInByteWhenCompressed(element_t elem);
+
+/*
+ * Compresses an element in an unsigned char array
+ */
+void compressElement(unsigned char* saveHere, element_t elem);
+
+/*
+ * Decompresses an unsigned char array to an element
+ */
+void decompressElement(element_t saveHere, unsigned char* compressedElem);
 
 };//end of class
 

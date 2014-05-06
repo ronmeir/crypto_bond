@@ -50,8 +50,6 @@ void BilinearMappingHandler::initEmptyMemberElementFromG1(memberElement& elem)
 }//end of initEmptyMemberElementFromG1()
 
 
-
-
 /**
  * Calculates the inverse element of a
  *  @param result = a^(-1)
@@ -179,6 +177,30 @@ void BilinearMappingHandler::element_cpy(element_t& dst, element_t& src)
 {
 	element_set(dst,src);
 }//end of element_cpy()
+
+/*
+ * Returns the length of the given element, if it were compressed
+ */
+int BilinearMappingHandler::getElementLengthInByteWhenCompressed(element_t elem)
+{
+	return element_length_in_bytes_compressed(elem);
+}//end of getElementLengthInByteWhenCompressed()
+
+/*
+ * Compresses an element in an unsigned char array
+ */
+void BilinearMappingHandler::compressElement(unsigned char* saveHere, element_t elem)
+{
+	element_to_bytes_compressed(saveHere, elem);
+}//end of compressElement()
+
+/*
+ * Decompresses an unsigned char array to an element
+ */
+void BilinearMappingHandler::decompressElement(element_t saveHere, unsigned char* compressedElem)
+{
+	element_from_bytes_compressed(saveHere, compressedElem);
+}//end of decompressElement()
 
 
 

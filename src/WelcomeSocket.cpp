@@ -24,6 +24,9 @@ int WelcomeSocket::getSocketDescriptor()
 	return m_socketDiscrptr;
 }//end of getSocketDescriptor()
 
+/*
+ * Closes the socket
+ */
 void WelcomeSocket::closeSocket()
 {
 	if (m_socketDiscrptr != -1)

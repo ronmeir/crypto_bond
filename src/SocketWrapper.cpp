@@ -72,6 +72,9 @@ int SocketWrapper::sendToSocket (char* buffer, int numOfBytesToSend)
 
 }//end of sendToSocket()
 
+/*
+ * Closes the socket
+ */
 void SocketWrapper::closeSocket()
 {
 	if (m_socketDiscrptr != -1)
