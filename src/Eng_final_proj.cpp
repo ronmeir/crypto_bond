@@ -15,15 +15,12 @@
 #include "EncryptionHandler.h"
 #include "Constants.h"
 
-//#define PARAM_FILE_PATH "./param/a.param" //the relative path of the parameter file
-//#define DEBUG 1
-//#define MAX_MSG_LENGTH 20
-
 using namespace std;                      //using the 'string' library
 
 void debug_initializeStateMachine(StateMachine* machine);
 void debug_mapperTest();
 
+//program parameters: user id, machine type (user/server/ca), server and CA IP (relevant for the user only)
 
 int main()
 {
@@ -58,6 +55,44 @@ int main()
 	BilinearMappingHandler* mapper = encHand.getBilinearMappingHandler();
 
 	if (!mapper->compareElements(theMsgElem, decryptRes))
+	    cout << "Elements match!\n";
+	else
+	    cout << "No match!\n";
+
+	//TESTING THE COMPRESSION FEATURE FOR G1 ELEMENTS
+//
+//	memberElement toCompress;
+//	mapper->initRandomMemberElementFromG1(toCompress);
+//
+//	int n = mapper->getElementLengthInBytes(toCompress,false);
+//	unsigned char *data = (unsigned char*)malloc(n);
+//	mapper->elementToByteArray(data, toCompress,false);
+//
+//	memberElement decompressed;
+//	mapper->initEmptyMemberElementFromG1(decompressed);
+//
+//	mapper->byteArrayToElement(decompressed,data,false);
+//
+//	if (!mapper->compareElements(toCompress, decompressed))
+//	    cout << "Elements match!\n";
+//	else
+//	    cout << "No match!\n";
+
+	//TESTING THE COMPRESSION FEATURE FOR GT ELEMENTS
+
+	memberElement toCompress;
+	mapper->initRandomMemberElementFromGT(toCompress);
+
+	int n = mapper->getElementLengthInBytes(toCompress,true);
+	unsigned char *data = (unsigned char*)malloc(n);
+	mapper->elementToByteArray(data, toCompress,true);
+
+	memberElement decompressed;
+	mapper->initEmptyMemberElementFromGT(decompressed);
+
+	mapper->byteArrayToElement(decompressed,data,true);
+
+	if (!mapper->compareElements(toCompress, decompressed))
 	    cout << "Elements match!\n";
 	else
 	    cout << "No match!\n";

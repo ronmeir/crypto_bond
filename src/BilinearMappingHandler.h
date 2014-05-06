@@ -132,19 +132,22 @@ int compareElements(element_t& a, element_t& b);
 void element_cpy(element_t& dst, element_t& src);
 
 /*
- * Returns the length of the given element, if it were compressed
+ * Returns the length of the given element in bytes.
+ * We assume that elements from G1 and G2 can compressed, while elements from GT can't.
  */
-int getElementLengthInByteWhenCompressed(element_t elem);
+int getElementLengthInBytes(element_t elem, bool);
 
 /*
- * Compresses an element in an unsigned char array
+ * Convert an element to a byte array.
+ * Elements from G1 or G2 will also be compressed!
  */
-void compressElement(unsigned char* saveHere, element_t elem);
+void elementToByteArray(unsigned char* saveHere, element_t elem, bool);
 
 /*
- * Decompresses an unsigned char array to an element
+ * Convert an unsigned char array to an element
+ * Elements from G1 or G2 will also be decompressed!
  */
-void decompressElement(element_t saveHere, unsigned char* compressedElem);
+void byteArrayToElement(element_t saveHere, unsigned char* compressedElem, bool);
 
 };//end of class
 

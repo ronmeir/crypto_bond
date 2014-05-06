@@ -179,28 +179,40 @@ void BilinearMappingHandler::element_cpy(element_t& dst, element_t& src)
 }//end of element_cpy()
 
 /*
- * Returns the length of the given element, if it were compressed
+ * Returns the length of the given element in bytes.
+ * We assume that elements from G1 and G2 can compressed, while elements from GT can't.
  */
-int BilinearMappingHandler::getElementLengthInByteWhenCompressed(element_t elem)
+int BilinearMappingHandler::getElementLengthInBytes(element_t elem, bool isElementOfGT)
 {
-	return element_length_in_bytes_compressed(elem);
-}//end of getElementLengthInByteWhenCompressed()
+	if (isElementOfGT)
+		return element_length_in_bytes(elem);   //members of GT can't be compressed
+	else
+		return element_length_in_bytes_compressed(elem);  //members of G1/G2 can be compressed
+}//end of getElementLengthInByte()
 
 /*
- * Compresses an element in an unsigned char array
+ * Convert an element to a byte array.
+ * Elements from G1 or G2 will also be compressed!
  */
-void BilinearMappingHandler::compressElement(unsigned char* saveHere, element_t elem)
+void BilinearMappingHandler::elementToByteArray(unsigned char* saveHere, element_t elem, bool isElementOfGT)
 {
-	element_to_bytes_compressed(saveHere, elem);
-}//end of compressElement()
+	if (isElementOfGT)
+		element_to_bytes(saveHere,elem);
+	else
+		element_to_bytes_compressed(saveHere, elem);
+}//end of elementToByteArray()
 
 /*
- * Decompresses an unsigned char array to an element
+ * Convert an unsigned char array to an element
+ * Elements from G1 or G2 will also be decompressed!
  */
-void BilinearMappingHandler::decompressElement(element_t saveHere, unsigned char* compressedElem)
+void BilinearMappingHandler::byteArrayToElement(element_t saveHere, unsigned char* compressedElem, bool isElementOfGT)
 {
-	element_from_bytes_compressed(saveHere, compressedElem);
-}//end of decompressElement()
+	if (isElementOfGT)
+		element_from_bytes(saveHere,compressedElem);
+	else
+		element_from_bytes_compressed(saveHere, compressedElem);
+}//end of byteArrayToElement()
 
 
 
