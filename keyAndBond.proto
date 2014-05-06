@@ -1,0 +1,80 @@
+package keyAndBond;
+
+message bond {
+  required string Cm = 		1;	//encrypted bond
+  required string C_start1 = 	2;
+  required string C_start2 = 	3;
+  required string C_end1 = 	4;
+  required string C_end2 = 	5;
+  optional int l_numOfCs = 	6;	//the number of Cs needed - 'l' in the paper
+  repeated string c_i_1 = 	7;
+  repeated string c_i_2 = 	8;
+}//end of bond
+
+
+
+
+
+
+
+
+
+
+message transition{
+ 
+//in this method of a single transition implementation we assume the current state is known
+ 
+  required char input=1;	//the input received in thw state machine
+  required int 
+
+}//end of transition
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+message skRelevantParms{
+
+  //in the cpp file we have : memberElement** m_K_t ; //size() = [3][#transitions]
+  //therefor we'll use 3 'memberElement vectors ' to represent the memberElement** m_K_t matrix
+  // denoted as m_K_t_1 , m_K_t_2, m_K_t_3
+  
+    required string m_K_t_1 = 1;
+    required string m_K_t_2 = 2;
+    required string m_K_t_3 = 3;
+    
+    
+    
+  //in the cpp file memberElement** m_K_for_q_x	; //size() = [2][#acceptance-states]
+  //therefor we'll use 2 'memberElement vectors ' to represent the memberElement** m_K_for_q_x matrix
+  // denoted as m_K_for_q_x_1,  m_K_for_q_x_2
+  
+    required string m_K_for_q_x_1 = 4;
+    required string m_K_for_q_x_1 = 5;
+    
+
+    
+  //memberElement m_K_start1,m_K_start2	 ; //from the article paper
+  
+  required string  m_K_start1 = 6;
+  required string  m_K_start1 = 7; 
+}//end of skRelevantParms
+
