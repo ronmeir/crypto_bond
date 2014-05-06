@@ -1,0 +1,27 @@
+package keyAndBond;
+
+message bond {
+  required string Cm = 		1;	//encrypted bond
+  required string C_start1 = 	2;
+  required string C_start2 = 	3;
+  required string C_end1 = 	4;
+  required string C_end2 = 	5;
+  required int l_numOfCs = 	6;	//the number of Cs needed - 'l' in the paper
+  repeated string c_i_1 = 	7;
+  repeated string c_i_2 = 	8;
+}
+
+
+message skRelevantParms{
+
+ //in the cpp file we have : memberElement** m_K_t ; //size() = [3][#transitions]
+ //therefor we'll use 3 'memberElement vectors ' to represent the memberElement** m_K_t matrix
+ // denoted as m_K_t1 , m_K_t2, m_K_t3
+  required string m_K_t1 = 9;
+  required string m_K_t2 = 10;
+  required string m_K_t3 = 11;
+  
+  
+ 
+ 
+}
