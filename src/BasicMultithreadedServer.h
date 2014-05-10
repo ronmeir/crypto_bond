@@ -24,6 +24,7 @@ public:
 	BasicMultithreadedServer(int);
 	virtual ~BasicMultithreadedServer();
 	virtual void run(void * (*f)(void *));
+	WelcomeSocket* getWelcomeSocketDescrptr();
 };
 
 #endif /* BASICMULTITHREADEDSERVER_H_ */

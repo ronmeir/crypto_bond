@@ -15,16 +15,20 @@
 
 enum UserState {NEED_STATE_MACHINE, NEED_CA_APPROVAL, GOT_CA_APPROVAL, BUSTED };
 
-class UserMachine : public BasicMultithreadedServer
+class ClientMachine : public BasicMultithreadedServer
 {
 private:
+	//members:
 	std::string m_ID, m_ServerIP, m_CA_IP;
-	WelcomeSocket* m_WebSrvrWelcomeSocket;
 	EncryptionHandler* m_EncHandler;
 
+
+	//methods:
+	void setStateMachine (StateMachine* SM);
+
 public:
-	UserMachine(const std::string,const std::string,const std::string);
-	virtual ~UserMachine();
+	ClientMachine(const std::string,const std::string,const std::string);
+	virtual ~ClientMachine();
 	void run();
 };
 

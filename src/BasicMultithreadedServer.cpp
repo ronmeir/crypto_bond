@@ -19,12 +19,12 @@ BasicMultithreadedServer::BasicMultithreadedServer(int tcp_port)
  */
 void BasicMultithreadedServer::run(void* (*f)(void *))
 {
-	WelcomeSocket temp(m_TCP_PortNum);  //create a new welcome socket and start listening in the given port
+	WelcomeSocket temp(m_TCP_PortNum);  //create a new welcome socket and start listening to the given port
 	m_welcomeSock = &temp;
-	SocketWrapper sa(0);
+	SocketWrapper sa(-1);
 	pthread_t threadId;
 
-	  /* Socket is now set up and bound. Wait for connection and process it. */
+	  /* Welcome socket is now set up and bound. Wait for connection and process it. */
 	while (1)
 	{
 		sa = m_welcomeSock->acceptNewConnection(); /* block for connection request */
@@ -45,6 +45,11 @@ void BasicMultithreadedServer::run(void* (*f)(void *))
 	} //while (1)
 
 }//end of run()
+
+WelcomeSocket* BasicMultithreadedServer::getWelcomeSocketDescrptr()
+{
+	return m_welcomeSock;
+}
 
 BasicMultithreadedServer::~BasicMultithreadedServer()
 {
