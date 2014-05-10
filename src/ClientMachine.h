@@ -7,21 +7,23 @@
 #include "StateMachine.h"
 #include "WelcomeSocket.h"
 #include "SocketWrapper.h"
-#include "BasicMultithreadedServer.h"
+#include "ClientWebServer.h"
 #include <string>
+#include <cstring>
 
 #ifndef USERMACHINE_H_
 #define USERMACHINE_H_
 
 enum UserState {NEED_STATE_MACHINE, NEED_CA_APPROVAL, GOT_CA_APPROVAL, BUSTED };
 
-class ClientMachine : public BasicMultithreadedServer
+class ClientMachine
 {
+
 private:
 	//members:
 	std::string m_ID, m_ServerIP, m_CA_IP;
 	EncryptionHandler* m_EncHandler;
-
+	UserState m_program_state;
 
 	//methods:
 	void setStateMachine (StateMachine* SM);

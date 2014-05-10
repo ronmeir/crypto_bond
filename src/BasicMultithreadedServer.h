@@ -14,17 +14,30 @@
 #include <string>
 #include <pthread.h>
 
+//used to pass multiple arguments to pthread_create
+typedef struct arg_struct
+{
+	void* obj;
+	int sockDescrptr;
+}arg_struct;
+
 class BasicMultithreadedServer
 {
-private:
+protected:
+	//members:
 	WelcomeSocket* m_welcomeSock;
 	int m_TCP_PortNum;
+
+private:
+	//methods:
+	static void* IntermediateWorkerThreadLauncher(void *);
 
 public:
 	BasicMultithreadedServer(int);
 	virtual ~BasicMultithreadedServer();
-	virtual void run(void * (*f)(void *));
+	virtual int execOnWorkerThread(SocketWrapper)=0;
 	WelcomeSocket* getWelcomeSocketDescrptr();
+	void runWelcomeSocket();
 };
 
 #endif /* BASICMULTITHREADEDSERVER_H_ */

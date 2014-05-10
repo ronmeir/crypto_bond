@@ -36,7 +36,10 @@ int SocketWrapper::getSocketDescriptor()
 	return m_socketDiscrptr;
 }//end of getSocketDescriptor()
 
-
+/*
+ * Tries to read the specified number of bytes from the socket.
+ * Returns the actual amount of bytes that was read
+ */
 int SocketWrapper::receiveFromSocket(char* buffer, int numOfBytesToRead)
 {
 	if (m_socketDiscrptr==-1)
