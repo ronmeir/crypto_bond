@@ -29,6 +29,10 @@ int main()
 	ClientWebServer webSrvr(CLIENT_WEB_SERVER_TCP_PORT_NUM);
 	webSrvr.run();
 
+	while (1)   //keep the main thread eunning infinitely
+	{
+		sleep(1000); //done because sched_yield() simply won't work.
+	}
 	return 0;
 }//end of main()
 

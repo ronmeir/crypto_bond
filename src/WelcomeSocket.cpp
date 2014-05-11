@@ -96,6 +96,5 @@ int WelcomeSocket::initWelcomeSocket (int port)
 
 WelcomeSocket::~WelcomeSocket()
 {
-	closeSocket();
 }
 

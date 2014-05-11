@@ -34,6 +34,11 @@ void BasicMultithreadedServer::runWelcomeSocket()
 			continue;
 		}
 
+		//debug:
+
+//		execOnWorkerThread(sa);
+		//end of debug
+
 		arg_struct argz;
 		argz.obj=static_cast<void*>(this);
 		argz.sockDescrptr=sa.getSocketDescriptor();
@@ -63,8 +68,7 @@ void* BasicMultithreadedServer::IntermediateWorkerThreadLauncher(void* argz)
 	  BasicMultithreadedServer *thisObj = static_cast<BasicMultithreadedServer*>(args->obj);
 	  thisObj->execOnWorkerThread(SocketWrapper(args->sockDescrptr));   //exec the abstract func
 
-	  pthread_exit(NULL);
-}
+}//end of IntermediateWorkerThreadLauncher()
 
 WelcomeSocket* BasicMultithreadedServer::getWelcomeSocketDescrptr()
 {

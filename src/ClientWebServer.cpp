@@ -49,16 +49,18 @@ int ClientWebServer::execOnWorkerThread (SocketWrapper sock)
 
     readBytes = sock.receiveFromSocket(buff,BUF_SIZE);
     if (readBytes<1) //failed to receive data
+    {
+        sock.closeSocket();
         pthread_exit(NULL);
+    }
 
 
     buff[readBytes]='\0';   //gonna be working with cstring
 
+    printf("%s",buff);
+
     //TODO complete the actual handling
 
-
-    sock.closeSocket();
-    pthread_exit(NULL);
 }//end of webServerWorkerThread()
 
 int ClientWebServer::getPort ()

@@ -131,7 +131,6 @@ int SocketWrapper::InitSocket (string& dest_ip, int dest_port)
 
 SocketWrapper::~SocketWrapper()
 {
-	closeSocket();
 }
 
 
