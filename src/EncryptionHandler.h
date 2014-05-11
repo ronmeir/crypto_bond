@@ -1,8 +1,6 @@
 /*
  * EncryptionHandler.h
- *
- *  Created on: Mar 28, 2014
- *      Author: slava
+ * Implements all cryptography related methods: Key generations, encryption and decryption.
  */
 #include "BilinearMappingHandler.h"
 #include "StateMachine.h"

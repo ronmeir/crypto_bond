@@ -1,8 +1,6 @@
 /*
  * SocketWrapper.h
- *
- *  Created on: May 4, 2014
- *      Author: slava
+ * A wrapper that provides convenient socket creation the usage.
  */
 #include <string>
 #include <stdio.h>

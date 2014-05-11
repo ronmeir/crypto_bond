@@ -1,8 +1,8 @@
 /*
  * BasicMultithreadedServer.h
- *
- *  Created on: May 6, 2014
- *      Author: slava
+ * An abstract class that defines a basic multi-threaded server.
+ * The server listens on a WelcomeSocket and dispatches worker threads to handle established connections.
+ * The worker-thread functionality should override execOnWorkerThread().
  */
 
 #ifndef BASICMULTITHREADEDSERVER_H_

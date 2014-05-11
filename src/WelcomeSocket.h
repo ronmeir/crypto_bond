@@ -1,8 +1,6 @@
 /*
  * WelcomeSocket.h
- *
- *  Created on: May 4, 2014
- *      Author: slava
+ * Defines a convenient wrapper for a welcome-socket (i.e. a web server's socket that listens on port #80)
  */
 #include "Constants.h"
 #include "SocketWrapper.h"

@@ -1,9 +1,9 @@
 //============================================================================
-// Name        : Eng_final_proj.cpp
-// Author      : 
+// Name        : Digital Bond - Circuit Approach
+// Author      : Ron Meiry and Slava Ustinov
 // Version     :
-// Copyright   : Your copyright notice
-// Description : Hello World in C++, Ansi-style
+// Copyright   :
+// Description :
 //============================================================================
 
 #include <iostream>

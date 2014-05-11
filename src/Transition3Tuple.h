@@ -9,6 +9,7 @@
 
 /*
  * Transition3Tuple.h
+ * Defines a triple that represents a single transition <Current state, Next state, Input>
  */
 #include <string>
 #include "Constants.h"

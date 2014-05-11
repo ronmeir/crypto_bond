@@ -1,9 +1,11 @@
+/* Constants.h
+ * Contains all the constant values used in the project.
+ */
 
 #ifndef CONSTANTS_H_
 #define CONSTANTS_H_
 
 #define DEBUG 1
-#define NULL 0
 #define BUF_SIZE 8192
 #define PARAM_FILE_PATH "./param/a.param" //the relative path of the parameter file
 #define MAX_MSG_LENGTH 7

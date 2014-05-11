@@ -1,8 +1,7 @@
 /*
  * ClientWebServer.h
- *
- *  Created on: May 10, 2014
- *      Author: slava
+ * Defines a web server that is run by the client.
+ * Provides the web-based UI for the project.
  */
 
 #ifndef CLIENTWEBSERVER_H_

@@ -1,6 +1,6 @@
 /*
- * UserMachine.h
- * Defines the entire client machine.
+ * ClientMachine.h
+ * Defines the entire client machine: Web server + crypto_bond client
  */
 #include "Constants.h"
 #include "EncryptionHandler.h"

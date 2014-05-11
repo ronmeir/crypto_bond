@@ -6,6 +6,11 @@
 // |_____/ \__\__,_|\__\___|_|  |_|\__,_|\___|_| |_|_|_| |_|\___|
 //
 
+/*
+ * StateMachine.h
+ * Defines a finite state machine.
+ */
+
 #include "State.h"
 #include "Constants.h"
 #include <string>
