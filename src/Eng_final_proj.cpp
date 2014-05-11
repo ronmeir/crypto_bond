@@ -14,121 +14,129 @@
 #include "StateMachine.h"
 #include "EncryptionHandler.h"
 #include "Constants.h"
+#include "ClientWebServer.h"
 
 using namespace std;                      //using the 'string' library
 
 void debug_initializeStateMachine(StateMachine* machine);
 void debug_mapperTest();
+void debug_EncryptionTest();
 
-//program parameters:machine type (user/server/ca), user id, server and CA IP (relevant for the user only)
+//program parameters: machine type (user/server/ca), user id, server and CA IP (relevant for the user only)
 
 int main()
 {
-//	debug_mapperTest();
-
-	char* filePath = PARAM_FILE_PATH;
-
-	//TODO MAKE SURE ALL OF THE FOLLOWIN 3 PARAMETERS MATCH:
-	StateMachine machineOfStates(6,0); //a new machine with 6 states. initial state is '0'
-	debug_initializeStateMachine(&machineOfStates); //init the machine
-	const string virus= "virus";
-
-	EncryptionHandler encHand(filePath,&machineOfStates); //init enc. handler
-	printf("EncryptionHandler is ready\n\n");
-
-	const EncryptionHandler::MSK* msk = encHand.setup(); //gen. master key
-	EncryptionHandler::SK* sk = encHand.keyGen();	//gen. secret key
-	printf("keyGen is ready\n\n");
-	memberElement theMsgElem;
-	memberElement decryptRes;
-
-	//map the bond to some random element in G1
-	encHand.mapStringToElementFromGT(theMsgElem,"BOND STRING");
-
-	//element_printf("%B\n", theMsgElem);
-
-	EncryptionHandler::CT cipherText(msk,MAX_MSG_LENGTH);  //creating a new empty CT
-	encHand.createPartialEncryption(cipherText,virus,theMsgElem);  //generate a partial CT
-	encHand.completePartialEncryption(cipherText,virus);		//complete the enc.
-	encHand.decrypt(decryptRes,*sk,cipherText,machineOfStates);  //decrypt
-
-	BilinearMappingHandler* mapper = encHand.getBilinearMappingHandler();
-
-	if (!mapper->compareElements(theMsgElem, decryptRes))
-	    cout << "Elements match!\n";
-	else
-	    cout << "No match!\n";
-
-	//TESTING THE COMPRESSION FEATURE FOR G1 ELEMENTS
-//
-//	memberElement toCompress;
-//	mapper->initRandomMemberElementFromG1(toCompress);
-//
-//	int n = mapper->getElementLengthInBytes(toCompress,false);
-//	unsigned char *data = (unsigned char*)malloc(n);
-//	mapper->elementToByteArray(data, toCompress,false);
-//
-//	memberElement decompressed;
-//	mapper->initEmptyMemberElementFromG1(decompressed);
-//
-//	mapper->byteArrayToElement(decompressed,data,false);
-//
-//	if (!mapper->compareElements(toCompress, decompressed))
-//	    cout << "Elements match!\n";
-//	else
-//	    cout << "No match!\n";
-
-	//TESTING THE COMPRESSION FEATURE FOR GT ELEMENTS
-
-	memberElement toCompress;
-	mapper->initRandomMemberElementFromGT(toCompress);
-
-	int n = mapper->getElementLengthInBytes(toCompress,true);
-	unsigned char *data = (unsigned char*)malloc(n);
-	mapper->elementToByteArray(data, toCompress,true);
-
-	memberElement decompressed;
-	mapper->initEmptyMemberElementFromGT(decompressed);
-
-	mapper->byteArrayToElement(decompressed,data,true);
-
-	if (!mapper->compareElements(toCompress, decompressed))
-	    cout << "Elements match!\n";
-	else
-	    cout << "No match!\n";
-
-
-
-//	machineOfStates.moveToNextState('a');
-//	cout << machineOfStates.toString() << "\n";
-//
-//	machineOfStates.moveToNextState('b');
-//	cout << machineOfStates.toString() << "\n";
-//
-//	machineOfStates.moveToNextState('v');
-//	cout << machineOfStates.toString() << "\n";
-//
-//	machineOfStates.moveToNextState('i');
-//	cout << machineOfStates.toString() << "\n";
-//
-//	machineOfStates.moveToNextState('r');
-//	cout << machineOfStates.toString() << "\n";
-//
-//	machineOfStates.moveToNextState('u');
-//	cout << machineOfStates.toString() << "\n";
-//
-//	machineOfStates.moveToNextState('v');
-//	cout << machineOfStates.toString() << "\n";
-//
-//	machineOfStates.moveToNextState('s');
-//	cout << machineOfStates.toString() << "\n";
-//
-//	const std::vector<Transition3Tuple>* vect = machineOfStates.translateStateMachineToTriples();
-//	for (unsigned int i=0; i < vect->size() ;i++)
-//		cout << (*vect)[i].toString() << endl;
+	ClientWebServer webSrvr(CLIENT_WEB_SERVER_TCP_PORT_NUM);
+	webSrvr.run();
 
 	return 0;
 }//end of main()
+
+void debug_EncryptionTest()
+{
+	//	debug_mapperTest();
+
+		char* filePath = PARAM_FILE_PATH;
+
+		//TODO MAKE SURE ALL OF THE FOLLOWIN 3 PARAMETERS MATCH:
+		StateMachine machineOfStates(6,0); //a new machine with 6 states. initial state is '0'
+		debug_initializeStateMachine(&machineOfStates); //init the machine
+		const string virus= "virus";
+
+		EncryptionHandler encHand(filePath,&machineOfStates); //init enc. handler
+		printf("EncryptionHandler is ready\n\n");
+
+		const EncryptionHandler::MSK* msk = encHand.setup(); //gen. master key
+		EncryptionHandler::SK* sk = encHand.keyGen();	//gen. secret key
+		printf("keyGen is ready\n\n");
+		memberElement theMsgElem;
+		memberElement decryptRes;
+
+		//map the bond to some random element in G1
+		encHand.mapStringToElementFromGT(theMsgElem,"BOND STRING");
+
+		//element_printf("%B\n", theMsgElem);
+
+		EncryptionHandler::CT cipherText(msk,MAX_MSG_LENGTH);  //creating a new empty CT
+		encHand.createPartialEncryption(cipherText,virus,theMsgElem);  //generate a partial CT
+		encHand.completePartialEncryption(cipherText,virus);		//complete the enc.
+		encHand.decrypt(decryptRes,*sk,cipherText,machineOfStates);  //decrypt
+
+		BilinearMappingHandler* mapper = encHand.getBilinearMappingHandler();
+
+		if (!mapper->compareElements(theMsgElem, decryptRes))
+		    cout << "Elements match!\n";
+		else
+		    cout << "No match!\n";
+
+		//TESTING THE COMPRESSION FEATURE FOR G1 ELEMENTS
+	//
+	//	memberElement toCompress;
+	//	mapper->initRandomMemberElementFromG1(toCompress);
+	//
+	//	int n = mapper->getElementLengthInBytes(toCompress,false);
+	//	unsigned char *data = (unsigned char*)malloc(n);
+	//	mapper->elementToByteArray(data, toCompress,false);
+	//
+	//	memberElement decompressed;
+	//	mapper->initEmptyMemberElementFromG1(decompressed);
+	//
+	//	mapper->byteArrayToElement(decompressed,data,false);
+	//
+	//	if (!mapper->compareElements(toCompress, decompressed))
+	//	    cout << "Elements match!\n";
+	//	else
+	//	    cout << "No match!\n";
+
+		//TESTING THE COMPRESSION FEATURE FOR GT ELEMENTS
+
+		memberElement toCompress;
+		mapper->initRandomMemberElementFromGT(toCompress);
+
+		int n = mapper->getElementLengthInBytes(toCompress,true);
+		unsigned char *data = (unsigned char*)malloc(n);
+		mapper->elementToByteArray(data, toCompress,true);
+
+		memberElement decompressed;
+		mapper->initEmptyMemberElementFromGT(decompressed);
+
+		mapper->byteArrayToElement(decompressed,data,true);
+
+		if (!mapper->compareElements(toCompress, decompressed))
+		    cout << "Elements match!\n";
+		else
+		    cout << "No match!\n";
+
+
+
+	//	machineOfStates.moveToNextState('a');
+	//	cout << machineOfStates.toString() << "\n";
+	//
+	//	machineOfStates.moveToNextState('b');
+	//	cout << machineOfStates.toString() << "\n";
+	//
+	//	machineOfStates.moveToNextState('v');
+	//	cout << machineOfStates.toString() << "\n";
+	//
+	//	machineOfStates.moveToNextState('i');
+	//	cout << machineOfStates.toString() << "\n";
+	//
+	//	machineOfStates.moveToNextState('r');
+	//	cout << machineOfStates.toString() << "\n";
+	//
+	//	machineOfStates.moveToNextState('u');
+	//	cout << machineOfStates.toString() << "\n";
+	//
+	//	machineOfStates.moveToNextState('v');
+	//	cout << machineOfStates.toString() << "\n";
+	//
+	//	machineOfStates.moveToNextState('s');
+	//	cout << machineOfStates.toString() << "\n";
+	//
+	//	const std::vector<Transition3Tuple>* vect = machineOfStates.translateStateMachineToTriples();
+	//	for (unsigned int i=0; i < vect->size() ;i++)
+	//		cout << (*vect)[i].toString() << endl;
+}
 
 void debug_initializeStateMachine(StateMachine* machine)
 {

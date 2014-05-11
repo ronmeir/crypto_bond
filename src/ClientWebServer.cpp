@@ -39,6 +39,7 @@ void* ClientWebServer::IntermediateWelcomeSocketThreadLauncher(void *obj)
 }
 
 /*
+ * @override
  * This method will be executed on the worker thread.
  */
 int ClientWebServer::execOnWorkerThread (SocketWrapper sock)

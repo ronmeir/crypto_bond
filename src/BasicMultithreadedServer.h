@@ -23,21 +23,24 @@ typedef struct arg_struct
 
 class BasicMultithreadedServer
 {
+private:
+	//methods:
+	static void* IntermediateWorkerThreadLauncher(void *);
+
 protected:
 	//members:
 	WelcomeSocket* m_welcomeSock;
 	int m_TCP_PortNum;
 
-private:
 	//methods:
-	static void* IntermediateWorkerThreadLauncher(void *);
+	virtual int execOnWorkerThread(SocketWrapper)=0;
+	void runWelcomeSocket();
 
 public:
 	BasicMultithreadedServer(int);
 	virtual ~BasicMultithreadedServer();
-	virtual int execOnWorkerThread(SocketWrapper)=0;
 	WelcomeSocket* getWelcomeSocketDescrptr();
-	void runWelcomeSocket();
+
 };
 
 #endif /* BASICMULTITHREADEDSERVER_H_ */
