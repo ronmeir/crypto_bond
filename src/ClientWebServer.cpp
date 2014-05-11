@@ -61,6 +61,8 @@ int ClientWebServer::execOnWorkerThread (SocketWrapper sock)
 
     //TODO complete the actual handling
 
+    sock.closeSocket();
+    return 1;
 }//end of webServerWorkerThread()
 
 int ClientWebServer::getPort ()

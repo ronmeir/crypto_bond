@@ -118,7 +118,7 @@ public:
 	void mapStringToElementFromGT (memberElement& ans, const std::string& str);
 	void decrypt(memberElement& decryptedMSG,SK& secretKey, CT& cipherText, StateMachine stateMachine);
 	BilinearMappingHandler* getBilinearMappingHandler();
-	EncryptionHandler(char* ParamFilePath,  StateMachine* stateMachine);
+	EncryptionHandler(char* ParamFilePath,StateMachine* stateMachine);
 	virtual ~EncryptionHandler();
 
 private	:

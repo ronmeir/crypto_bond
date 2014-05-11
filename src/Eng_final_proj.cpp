@@ -14,7 +14,7 @@
 #include "StateMachine.h"
 #include "EncryptionHandler.h"
 #include "Constants.h"
-#include "ClientWebServer.h"
+#include "ClientMachine.h"
 
 using namespace std;                      //using the 'string' library
 
@@ -26,8 +26,8 @@ void debug_EncryptionTest();
 
 int main()
 {
-	ClientWebServer webSrvr(CLIENT_WEB_SERVER_TCP_PORT_NUM);
-	webSrvr.run();
+	ClientMachine client("user","ip1","ip2");
+	client.run();
 
 	while (1)   //keep the main thread eunning infinitely
 	{

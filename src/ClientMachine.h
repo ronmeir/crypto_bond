@@ -23,6 +23,7 @@ private:
 	//members:
 	std::string m_ID, m_ServerIP, m_CA_IP;
 	EncryptionHandler* m_EncHandler;
+	ClientWebServer* m_WebServer;
 	UserState m_program_state;
 
 	//methods:
