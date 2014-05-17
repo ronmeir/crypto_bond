@@ -6,12 +6,16 @@
  */
 
 #include "ObjectSerializer.h"
-ObjectSerializer::ObjectSerializer() {
-	// TODO Auto-generated constructor stub
-
+ObjectSerializer::ObjectSerializer()
+{
+	//init:
+	m_Machine = NULL;
+	m_SK = NULL;
+	m_Bond = NULL;
 }
 
-ObjectSerializer::~ObjectSerializer() {
+ObjectSerializer::~ObjectSerializer()
+{
 	// TODO Auto-generated destructor stub
 }
 

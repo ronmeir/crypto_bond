@@ -29,7 +29,7 @@ int main()
 	ClientMachine client("user","ip1","ip2");
 	client.run();
 
-	while (1)   //keep the main thread eunning infinitely
+	while (1)   //keep the main thread running infinitely
 	{
 		sleep(1000); //done because sched_yield() simply won't work.
 	}
