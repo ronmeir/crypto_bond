@@ -8,10 +8,7 @@
 #include "ObjectSerializer.h"
 ObjectSerializer::ObjectSerializer()
 {
-	//init:
-	m_Machine = NULL;
-	m_SK = NULL;
-	m_Bond = NULL;
+	//no need for initialization. the member objects are already initialized.
 }
 
 ObjectSerializer::~ObjectSerializer()
