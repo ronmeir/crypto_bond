@@ -57,7 +57,7 @@ public:
 	virtual ~State();
 	int getStateID();
 	int getNextStateID (unsigned char input);
-	bool getisAcceptanceState();
+	bool getIsAcceptanceState();
 	void translateStateTo3Tuples(std::vector<Transition3Tuple>* ans);
 	virtual std::string toString() const;
 };//end of class

@@ -70,19 +70,18 @@ int Transition3Tuple::set_Y(int y)
 }//end of set_Y()
 
 
-int Transition3Tuple::set_Sigma(unsigned char sigma)
+const int Transition3Tuple::set_Sigma(unsigned char sigma)
 {
 
 	m_sigma=sigma;
 	return 0;
 }//end of set_Sigma()
 
-int Transition3Tuple::get_X()
+ int Transition3Tuple::get_X()
 {
 	return m_x;
 }//end of get_X
-
-int Transition3Tuple::get_Y()
+ int Transition3Tuple::get_Y()
 {
 	return m_y;
 }

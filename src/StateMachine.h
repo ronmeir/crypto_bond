@@ -37,7 +37,7 @@ public:
 	int addState (int stateID, int transitionTable[][2], int numOfRows, bool IsAcceptanceState);
 	int moveToNextState (unsigned char input);
     const int getCurrentStateID();
-	const bool getisAcceptanceState();
+	const bool getIsAcceptanceState();
 	virtual std::string toString() const;
 	const std::vector<Transition3Tuple>* translateStateMachineToTriples();
 	const int getTotalNumOfStates();

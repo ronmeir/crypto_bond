@@ -10,6 +10,7 @@
 #include <cstdio>
 #include <pbc.h>
 #include <string>
+#include "StateMachineAndKey.pb.h"
 #include "BilinearMappingHandler.h"
 #include "StateMachine.h"
 #include "EncryptionHandler.h"
@@ -33,6 +34,9 @@ int main()
 	{
 		sleep(1000); //done because sched_yield() simply won't work.
 	}
+
+	google::protobuf::ShutdownProtobufLibrary();
+
 	return 0;
 }//end of main()
 

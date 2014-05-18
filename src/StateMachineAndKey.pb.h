@@ -36,7 +36,7 @@ void protobuf_ShutdownFile_StateMachineAndKey_2eproto();
 class Bond;
 class StateMachine;
 class StateMachine_Transition;
-class StateMachine_TransitionsVector;
+class StateMachine_State;
 class SecretKey;
 
 // ===================================================================
@@ -95,77 +95,10 @@ class Bond : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
-  // required string Cm = 1;
-  inline bool has_cm() const;
-  inline void clear_cm();
-  static const int kCmFieldNumber = 1;
-  inline const ::std::string& cm() const;
-  inline void set_cm(const ::std::string& value);
-  inline void set_cm(const char* value);
-  inline void set_cm(const char* value, size_t size);
-  inline ::std::string* mutable_cm();
-  inline ::std::string* release_cm();
-  inline void set_allocated_cm(::std::string* cm);
-
-  // required string C_start1 = 2;
-  inline bool has_c_start1() const;
-  inline void clear_c_start1();
-  static const int kCStart1FieldNumber = 2;
-  inline const ::std::string& c_start1() const;
-  inline void set_c_start1(const ::std::string& value);
-  inline void set_c_start1(const char* value);
-  inline void set_c_start1(const char* value, size_t size);
-  inline ::std::string* mutable_c_start1();
-  inline ::std::string* release_c_start1();
-  inline void set_allocated_c_start1(::std::string* c_start1);
-
-  // required string C_start2 = 3;
-  inline bool has_c_start2() const;
-  inline void clear_c_start2();
-  static const int kCStart2FieldNumber = 3;
-  inline const ::std::string& c_start2() const;
-  inline void set_c_start2(const ::std::string& value);
-  inline void set_c_start2(const char* value);
-  inline void set_c_start2(const char* value, size_t size);
-  inline ::std::string* mutable_c_start2();
-  inline ::std::string* release_c_start2();
-  inline void set_allocated_c_start2(::std::string* c_start2);
-
-  // required string C_end1 = 4;
-  inline bool has_c_end1() const;
-  inline void clear_c_end1();
-  static const int kCEnd1FieldNumber = 4;
-  inline const ::std::string& c_end1() const;
-  inline void set_c_end1(const ::std::string& value);
-  inline void set_c_end1(const char* value);
-  inline void set_c_end1(const char* value, size_t size);
-  inline ::std::string* mutable_c_end1();
-  inline ::std::string* release_c_end1();
-  inline void set_allocated_c_end1(::std::string* c_end1);
-
-  // required string C_end2 = 5;
-  inline bool has_c_end2() const;
-  inline void clear_c_end2();
-  static const int kCEnd2FieldNumber = 5;
-  inline const ::std::string& c_end2() const;
-  inline void set_c_end2(const ::std::string& value);
-  inline void set_c_end2(const char* value);
-  inline void set_c_end2(const char* value, size_t size);
-  inline ::std::string* mutable_c_end2();
-  inline ::std::string* release_c_end2();
-  inline void set_allocated_c_end2(::std::string* c_end2);
-
-  // optional int32 l_numOfCs = 6;
-  inline bool has_l_numofcs() const;
-  inline void clear_l_numofcs();
-  static const int kLNumOfCsFieldNumber = 6;
-  inline ::google::protobuf::int32 l_numofcs() const;
-  inline void set_l_numofcs(::google::protobuf::int32 value);
-
-  // repeated string c_i_1 = 7;
+  // repeated string c_i_1 = 1;
   inline int c_i_1_size() const;
   inline void clear_c_i_1();
-  static const int kCI1FieldNumber = 7;
+  static const int kCI1FieldNumber = 1;
   inline const ::std::string& c_i_1(int index) const;
   inline ::std::string* mutable_c_i_1(int index);
   inline void set_c_i_1(int index, const ::std::string& value);
@@ -178,10 +111,10 @@ class Bond : public ::google::protobuf::Message {
   inline const ::google::protobuf::RepeatedPtrField< ::std::string>& c_i_1() const;
   inline ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_c_i_1();
 
-  // repeated string c_i_2 = 8;
+  // repeated string c_i_2 = 2;
   inline int c_i_2_size() const;
   inline void clear_c_i_2();
-  static const int kCI2FieldNumber = 8;
+  static const int kCI2FieldNumber = 2;
   inline const ::std::string& c_i_2(int index) const;
   inline ::std::string* mutable_c_i_2(int index);
   inline void set_c_i_2(int index, const ::std::string& value);
@@ -193,6 +126,73 @@ class Bond : public ::google::protobuf::Message {
   inline void add_c_i_2(const char* value, size_t size);
   inline const ::google::protobuf::RepeatedPtrField< ::std::string>& c_i_2() const;
   inline ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_c_i_2();
+
+  // required string Cm = 3;
+  inline bool has_cm() const;
+  inline void clear_cm();
+  static const int kCmFieldNumber = 3;
+  inline const ::std::string& cm() const;
+  inline void set_cm(const ::std::string& value);
+  inline void set_cm(const char* value);
+  inline void set_cm(const char* value, size_t size);
+  inline ::std::string* mutable_cm();
+  inline ::std::string* release_cm();
+  inline void set_allocated_cm(::std::string* cm);
+
+  // required string C_start1 = 4;
+  inline bool has_c_start1() const;
+  inline void clear_c_start1();
+  static const int kCStart1FieldNumber = 4;
+  inline const ::std::string& c_start1() const;
+  inline void set_c_start1(const ::std::string& value);
+  inline void set_c_start1(const char* value);
+  inline void set_c_start1(const char* value, size_t size);
+  inline ::std::string* mutable_c_start1();
+  inline ::std::string* release_c_start1();
+  inline void set_allocated_c_start1(::std::string* c_start1);
+
+  // required string C_start2 = 5;
+  inline bool has_c_start2() const;
+  inline void clear_c_start2();
+  static const int kCStart2FieldNumber = 5;
+  inline const ::std::string& c_start2() const;
+  inline void set_c_start2(const ::std::string& value);
+  inline void set_c_start2(const char* value);
+  inline void set_c_start2(const char* value, size_t size);
+  inline ::std::string* mutable_c_start2();
+  inline ::std::string* release_c_start2();
+  inline void set_allocated_c_start2(::std::string* c_start2);
+
+  // required string C_end1 = 6;
+  inline bool has_c_end1() const;
+  inline void clear_c_end1();
+  static const int kCEnd1FieldNumber = 6;
+  inline const ::std::string& c_end1() const;
+  inline void set_c_end1(const ::std::string& value);
+  inline void set_c_end1(const char* value);
+  inline void set_c_end1(const char* value, size_t size);
+  inline ::std::string* mutable_c_end1();
+  inline ::std::string* release_c_end1();
+  inline void set_allocated_c_end1(::std::string* c_end1);
+
+  // required string C_end2 = 7;
+  inline bool has_c_end2() const;
+  inline void clear_c_end2();
+  static const int kCEnd2FieldNumber = 7;
+  inline const ::std::string& c_end2() const;
+  inline void set_c_end2(const ::std::string& value);
+  inline void set_c_end2(const char* value);
+  inline void set_c_end2(const char* value, size_t size);
+  inline ::std::string* mutable_c_end2();
+  inline ::std::string* release_c_end2();
+  inline void set_allocated_c_end2(::std::string* c_end2);
+
+  // optional int32 l_numOfCs = 8;
+  inline bool has_l_numofcs() const;
+  inline void clear_l_numofcs();
+  static const int kLNumOfCsFieldNumber = 8;
+  inline ::google::protobuf::int32 l_numofcs() const;
+  inline void set_l_numofcs(::google::protobuf::int32 value);
 
   // @@protoc_insertion_point(class_scope:StateMachineAndKey.Bond)
  private:
@@ -211,13 +211,13 @@ class Bond : public ::google::protobuf::Message {
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
+  ::google::protobuf::RepeatedPtrField< ::std::string> c_i_1_;
+  ::google::protobuf::RepeatedPtrField< ::std::string> c_i_2_;
   ::std::string* cm_;
   ::std::string* c_start1_;
   ::std::string* c_start2_;
   ::std::string* c_end1_;
   ::std::string* c_end2_;
-  ::google::protobuf::RepeatedPtrField< ::std::string> c_i_1_;
-  ::google::protobuf::RepeatedPtrField< ::std::string> c_i_2_;
   ::google::protobuf::int32 l_numofcs_;
 
   mutable int _cached_size_;
@@ -305,30 +305,20 @@ class StateMachine_Transition : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 nextstate() const;
   inline void set_nextstate(::google::protobuf::int32 value);
 
-  // required bool IsAcceptanceState = 3;
-  inline bool has_isacceptancestate() const;
-  inline void clear_isacceptancestate();
-  static const int kIsAcceptanceStateFieldNumber = 3;
-  inline bool isacceptancestate() const;
-  inline void set_isacceptancestate(bool value);
-
   // @@protoc_insertion_point(class_scope:StateMachineAndKey.StateMachine.Transition)
  private:
   inline void set_has_input();
   inline void clear_has_input();
   inline void set_has_nextstate();
   inline void clear_has_nextstate();
-  inline void set_has_isacceptancestate();
-  inline void clear_has_isacceptancestate();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::std::string* input_;
   ::google::protobuf::int32 nextstate_;
-  bool isacceptancestate_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
 
   friend void  protobuf_AddDesc_StateMachineAndKey_2eproto();
   friend void protobuf_AssignDesc_StateMachineAndKey_2eproto();
@@ -339,14 +329,14 @@ class StateMachine_Transition : public ::google::protobuf::Message {
 };
 // -------------------------------------------------------------------
 
-class StateMachine_TransitionsVector : public ::google::protobuf::Message {
+class StateMachine_State : public ::google::protobuf::Message {
  public:
-  StateMachine_TransitionsVector();
-  virtual ~StateMachine_TransitionsVector();
+  StateMachine_State();
+  virtual ~StateMachine_State();
 
-  StateMachine_TransitionsVector(const StateMachine_TransitionsVector& from);
+  StateMachine_State(const StateMachine_State& from);
 
-  inline StateMachine_TransitionsVector& operator=(const StateMachine_TransitionsVector& from) {
+  inline StateMachine_State& operator=(const StateMachine_State& from) {
     CopyFrom(from);
     return *this;
   }
@@ -360,17 +350,17 @@ class StateMachine_TransitionsVector : public ::google::protobuf::Message {
   }
 
   static const ::google::protobuf::Descriptor* descriptor();
-  static const StateMachine_TransitionsVector& default_instance();
+  static const StateMachine_State& default_instance();
 
-  void Swap(StateMachine_TransitionsVector* other);
+  void Swap(StateMachine_State* other);
 
   // implements Message ----------------------------------------------
 
-  StateMachine_TransitionsVector* New() const;
+  StateMachine_State* New() const;
   void CopyFrom(const ::google::protobuf::Message& from);
   void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const StateMachine_TransitionsVector& from);
-  void MergeFrom(const StateMachine_TransitionsVector& from);
+  void CopyFrom(const StateMachine_State& from);
+  void MergeFrom(const StateMachine_State& from);
   void Clear();
   bool IsInitialized() const;
 
@@ -393,47 +383,44 @@ class StateMachine_TransitionsVector : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
-  // required int32 numOfStates = 1;
-  inline bool has_numofstates() const;
-  inline void clear_numofstates();
-  static const int kNumOfStatesFieldNumber = 1;
-  inline ::google::protobuf::int32 numofstates() const;
-  inline void set_numofstates(::google::protobuf::int32 value);
-
-  // repeated int32 amountOfTransPerState = 2;
-  inline int amountoftransperstate_size() const;
-  inline void clear_amountoftransperstate();
-  static const int kAmountOfTransPerStateFieldNumber = 2;
-  inline ::google::protobuf::int32 amountoftransperstate(int index) const;
-  inline void set_amountoftransperstate(int index, ::google::protobuf::int32 value);
-  inline void add_amountoftransperstate(::google::protobuf::int32 value);
-  inline const ::google::protobuf::RepeatedField< ::google::protobuf::int32 >&
-      amountoftransperstate() const;
-  inline ::google::protobuf::RepeatedField< ::google::protobuf::int32 >*
-      mutable_amountoftransperstate();
-
-  // repeated .StateMachineAndKey.StateMachine.Transition trans = 3;
-  inline int trans_size() const;
-  inline void clear_trans();
-  static const int kTransFieldNumber = 3;
-  inline const ::StateMachineAndKey::StateMachine_Transition& trans(int index) const;
-  inline ::StateMachineAndKey::StateMachine_Transition* mutable_trans(int index);
-  inline ::StateMachineAndKey::StateMachine_Transition* add_trans();
+  // repeated .StateMachineAndKey.StateMachine.Transition transitionVec = 1;
+  inline int transitionvec_size() const;
+  inline void clear_transitionvec();
+  static const int kTransitionVecFieldNumber = 1;
+  inline const ::StateMachineAndKey::StateMachine_Transition& transitionvec(int index) const;
+  inline ::StateMachineAndKey::StateMachine_Transition* mutable_transitionvec(int index);
+  inline ::StateMachineAndKey::StateMachine_Transition* add_transitionvec();
   inline const ::google::protobuf::RepeatedPtrField< ::StateMachineAndKey::StateMachine_Transition >&
-      trans() const;
+      transitionvec() const;
   inline ::google::protobuf::RepeatedPtrField< ::StateMachineAndKey::StateMachine_Transition >*
-      mutable_trans();
+      mutable_transitionvec();
 
-  // @@protoc_insertion_point(class_scope:StateMachineAndKey.StateMachine.TransitionsVector)
+  // required bool isAcceptanceState = 2;
+  inline bool has_isacceptancestate() const;
+  inline void clear_isacceptancestate();
+  static const int kIsAcceptanceStateFieldNumber = 2;
+  inline bool isacceptancestate() const;
+  inline void set_isacceptancestate(bool value);
+
+  // required int32 stateID = 3;
+  inline bool has_stateid() const;
+  inline void clear_stateid();
+  static const int kStateIDFieldNumber = 3;
+  inline ::google::protobuf::int32 stateid() const;
+  inline void set_stateid(::google::protobuf::int32 value);
+
+  // @@protoc_insertion_point(class_scope:StateMachineAndKey.StateMachine.State)
  private:
-  inline void set_has_numofstates();
-  inline void clear_has_numofstates();
+  inline void set_has_isacceptancestate();
+  inline void clear_has_isacceptancestate();
+  inline void set_has_stateid();
+  inline void clear_has_stateid();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
-  ::google::protobuf::RepeatedField< ::google::protobuf::int32 > amountoftransperstate_;
-  ::google::protobuf::RepeatedPtrField< ::StateMachineAndKey::StateMachine_Transition > trans_;
-  ::google::protobuf::int32 numofstates_;
+  ::google::protobuf::RepeatedPtrField< ::StateMachineAndKey::StateMachine_Transition > transitionvec_;
+  bool isacceptancestate_;
+  ::google::protobuf::int32 stateid_;
 
   mutable int _cached_size_;
   ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
@@ -443,7 +430,7 @@ class StateMachine_TransitionsVector : public ::google::protobuf::Message {
   friend void protobuf_ShutdownFile_StateMachineAndKey_2eproto();
 
   void InitAsDefaultInstance();
-  static StateMachine_TransitionsVector* default_instance_;
+  static StateMachine_State* default_instance_;
 };
 // -------------------------------------------------------------------
 
@@ -500,18 +487,21 @@ class StateMachine : public ::google::protobuf::Message {
   // nested types ----------------------------------------------------
 
   typedef StateMachine_Transition Transition;
-  typedef StateMachine_TransitionsVector TransitionsVector;
+  typedef StateMachine_State State;
 
   // accessors -------------------------------------------------------
 
-  // required .StateMachineAndKey.StateMachine.TransitionsVector transitionsVec = 1;
-  inline bool has_transitionsvec() const;
-  inline void clear_transitionsvec();
-  static const int kTransitionsVecFieldNumber = 1;
-  inline const ::StateMachineAndKey::StateMachine_TransitionsVector& transitionsvec() const;
-  inline ::StateMachineAndKey::StateMachine_TransitionsVector* mutable_transitionsvec();
-  inline ::StateMachineAndKey::StateMachine_TransitionsVector* release_transitionsvec();
-  inline void set_allocated_transitionsvec(::StateMachineAndKey::StateMachine_TransitionsVector* transitionsvec);
+  // repeated .StateMachineAndKey.StateMachine.State StateVec = 1;
+  inline int statevec_size() const;
+  inline void clear_statevec();
+  static const int kStateVecFieldNumber = 1;
+  inline const ::StateMachineAndKey::StateMachine_State& statevec(int index) const;
+  inline ::StateMachineAndKey::StateMachine_State* mutable_statevec(int index);
+  inline ::StateMachineAndKey::StateMachine_State* add_statevec();
+  inline const ::google::protobuf::RepeatedPtrField< ::StateMachineAndKey::StateMachine_State >&
+      statevec() const;
+  inline ::google::protobuf::RepeatedPtrField< ::StateMachineAndKey::StateMachine_State >*
+      mutable_statevec();
 
   // optional string virus = 2;
   inline bool has_virus() const;
@@ -527,14 +517,12 @@ class StateMachine : public ::google::protobuf::Message {
 
   // @@protoc_insertion_point(class_scope:StateMachineAndKey.StateMachine)
  private:
-  inline void set_has_transitionsvec();
-  inline void clear_has_transitionsvec();
   inline void set_has_virus();
   inline void clear_has_virus();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
-  ::StateMachineAndKey::StateMachine_TransitionsVector* transitionsvec_;
+  ::google::protobuf::RepeatedPtrField< ::StateMachineAndKey::StateMachine_State > statevec_;
   ::std::string* virus_;
 
   mutable int _cached_size_;
@@ -603,126 +591,126 @@ class SecretKey : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
-  // repeated string m_K_t_1 = 1;
-  inline int m_k_t_1_size() const;
-  inline void clear_m_k_t_1();
-  static const int kMKT1FieldNumber = 1;
-  inline const ::std::string& m_k_t_1(int index) const;
-  inline ::std::string* mutable_m_k_t_1(int index);
-  inline void set_m_k_t_1(int index, const ::std::string& value);
-  inline void set_m_k_t_1(int index, const char* value);
-  inline void set_m_k_t_1(int index, const char* value, size_t size);
-  inline ::std::string* add_m_k_t_1();
-  inline void add_m_k_t_1(const ::std::string& value);
-  inline void add_m_k_t_1(const char* value);
-  inline void add_m_k_t_1(const char* value, size_t size);
-  inline const ::google::protobuf::RepeatedPtrField< ::std::string>& m_k_t_1() const;
-  inline ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_m_k_t_1();
+  // repeated string K_t_1 = 1;
+  inline int k_t_1_size() const;
+  inline void clear_k_t_1();
+  static const int kKT1FieldNumber = 1;
+  inline const ::std::string& k_t_1(int index) const;
+  inline ::std::string* mutable_k_t_1(int index);
+  inline void set_k_t_1(int index, const ::std::string& value);
+  inline void set_k_t_1(int index, const char* value);
+  inline void set_k_t_1(int index, const char* value, size_t size);
+  inline ::std::string* add_k_t_1();
+  inline void add_k_t_1(const ::std::string& value);
+  inline void add_k_t_1(const char* value);
+  inline void add_k_t_1(const char* value, size_t size);
+  inline const ::google::protobuf::RepeatedPtrField< ::std::string>& k_t_1() const;
+  inline ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_k_t_1();
 
-  // repeated string m_K_t_2 = 2;
-  inline int m_k_t_2_size() const;
-  inline void clear_m_k_t_2();
-  static const int kMKT2FieldNumber = 2;
-  inline const ::std::string& m_k_t_2(int index) const;
-  inline ::std::string* mutable_m_k_t_2(int index);
-  inline void set_m_k_t_2(int index, const ::std::string& value);
-  inline void set_m_k_t_2(int index, const char* value);
-  inline void set_m_k_t_2(int index, const char* value, size_t size);
-  inline ::std::string* add_m_k_t_2();
-  inline void add_m_k_t_2(const ::std::string& value);
-  inline void add_m_k_t_2(const char* value);
-  inline void add_m_k_t_2(const char* value, size_t size);
-  inline const ::google::protobuf::RepeatedPtrField< ::std::string>& m_k_t_2() const;
-  inline ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_m_k_t_2();
+  // repeated string K_t_2 = 2;
+  inline int k_t_2_size() const;
+  inline void clear_k_t_2();
+  static const int kKT2FieldNumber = 2;
+  inline const ::std::string& k_t_2(int index) const;
+  inline ::std::string* mutable_k_t_2(int index);
+  inline void set_k_t_2(int index, const ::std::string& value);
+  inline void set_k_t_2(int index, const char* value);
+  inline void set_k_t_2(int index, const char* value, size_t size);
+  inline ::std::string* add_k_t_2();
+  inline void add_k_t_2(const ::std::string& value);
+  inline void add_k_t_2(const char* value);
+  inline void add_k_t_2(const char* value, size_t size);
+  inline const ::google::protobuf::RepeatedPtrField< ::std::string>& k_t_2() const;
+  inline ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_k_t_2();
 
-  // repeated string m_K_t_3 = 3;
-  inline int m_k_t_3_size() const;
-  inline void clear_m_k_t_3();
-  static const int kMKT3FieldNumber = 3;
-  inline const ::std::string& m_k_t_3(int index) const;
-  inline ::std::string* mutable_m_k_t_3(int index);
-  inline void set_m_k_t_3(int index, const ::std::string& value);
-  inline void set_m_k_t_3(int index, const char* value);
-  inline void set_m_k_t_3(int index, const char* value, size_t size);
-  inline ::std::string* add_m_k_t_3();
-  inline void add_m_k_t_3(const ::std::string& value);
-  inline void add_m_k_t_3(const char* value);
-  inline void add_m_k_t_3(const char* value, size_t size);
-  inline const ::google::protobuf::RepeatedPtrField< ::std::string>& m_k_t_3() const;
-  inline ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_m_k_t_3();
+  // repeated string K_t_3 = 3;
+  inline int k_t_3_size() const;
+  inline void clear_k_t_3();
+  static const int kKT3FieldNumber = 3;
+  inline const ::std::string& k_t_3(int index) const;
+  inline ::std::string* mutable_k_t_3(int index);
+  inline void set_k_t_3(int index, const ::std::string& value);
+  inline void set_k_t_3(int index, const char* value);
+  inline void set_k_t_3(int index, const char* value, size_t size);
+  inline ::std::string* add_k_t_3();
+  inline void add_k_t_3(const ::std::string& value);
+  inline void add_k_t_3(const char* value);
+  inline void add_k_t_3(const char* value, size_t size);
+  inline const ::google::protobuf::RepeatedPtrField< ::std::string>& k_t_3() const;
+  inline ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_k_t_3();
 
-  // repeated string m_K_for_q_x_1 = 4;
-  inline int m_k_for_q_x_1_size() const;
-  inline void clear_m_k_for_q_x_1();
-  static const int kMKForQX1FieldNumber = 4;
-  inline const ::std::string& m_k_for_q_x_1(int index) const;
-  inline ::std::string* mutable_m_k_for_q_x_1(int index);
-  inline void set_m_k_for_q_x_1(int index, const ::std::string& value);
-  inline void set_m_k_for_q_x_1(int index, const char* value);
-  inline void set_m_k_for_q_x_1(int index, const char* value, size_t size);
-  inline ::std::string* add_m_k_for_q_x_1();
-  inline void add_m_k_for_q_x_1(const ::std::string& value);
-  inline void add_m_k_for_q_x_1(const char* value);
-  inline void add_m_k_for_q_x_1(const char* value, size_t size);
-  inline const ::google::protobuf::RepeatedPtrField< ::std::string>& m_k_for_q_x_1() const;
-  inline ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_m_k_for_q_x_1();
+  // repeated string K_for_q_x_1 = 4;
+  inline int k_for_q_x_1_size() const;
+  inline void clear_k_for_q_x_1();
+  static const int kKForQX1FieldNumber = 4;
+  inline const ::std::string& k_for_q_x_1(int index) const;
+  inline ::std::string* mutable_k_for_q_x_1(int index);
+  inline void set_k_for_q_x_1(int index, const ::std::string& value);
+  inline void set_k_for_q_x_1(int index, const char* value);
+  inline void set_k_for_q_x_1(int index, const char* value, size_t size);
+  inline ::std::string* add_k_for_q_x_1();
+  inline void add_k_for_q_x_1(const ::std::string& value);
+  inline void add_k_for_q_x_1(const char* value);
+  inline void add_k_for_q_x_1(const char* value, size_t size);
+  inline const ::google::protobuf::RepeatedPtrField< ::std::string>& k_for_q_x_1() const;
+  inline ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_k_for_q_x_1();
 
-  // repeated string m_K_for_q_x_2 = 5;
-  inline int m_k_for_q_x_2_size() const;
-  inline void clear_m_k_for_q_x_2();
-  static const int kMKForQX2FieldNumber = 5;
-  inline const ::std::string& m_k_for_q_x_2(int index) const;
-  inline ::std::string* mutable_m_k_for_q_x_2(int index);
-  inline void set_m_k_for_q_x_2(int index, const ::std::string& value);
-  inline void set_m_k_for_q_x_2(int index, const char* value);
-  inline void set_m_k_for_q_x_2(int index, const char* value, size_t size);
-  inline ::std::string* add_m_k_for_q_x_2();
-  inline void add_m_k_for_q_x_2(const ::std::string& value);
-  inline void add_m_k_for_q_x_2(const char* value);
-  inline void add_m_k_for_q_x_2(const char* value, size_t size);
-  inline const ::google::protobuf::RepeatedPtrField< ::std::string>& m_k_for_q_x_2() const;
-  inline ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_m_k_for_q_x_2();
+  // repeated string K_for_q_x_2 = 5;
+  inline int k_for_q_x_2_size() const;
+  inline void clear_k_for_q_x_2();
+  static const int kKForQX2FieldNumber = 5;
+  inline const ::std::string& k_for_q_x_2(int index) const;
+  inline ::std::string* mutable_k_for_q_x_2(int index);
+  inline void set_k_for_q_x_2(int index, const ::std::string& value);
+  inline void set_k_for_q_x_2(int index, const char* value);
+  inline void set_k_for_q_x_2(int index, const char* value, size_t size);
+  inline ::std::string* add_k_for_q_x_2();
+  inline void add_k_for_q_x_2(const ::std::string& value);
+  inline void add_k_for_q_x_2(const char* value);
+  inline void add_k_for_q_x_2(const char* value, size_t size);
+  inline const ::google::protobuf::RepeatedPtrField< ::std::string>& k_for_q_x_2() const;
+  inline ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_k_for_q_x_2();
 
-  // required string m_K_start1 = 6;
-  inline bool has_m_k_start1() const;
-  inline void clear_m_k_start1();
-  static const int kMKStart1FieldNumber = 6;
-  inline const ::std::string& m_k_start1() const;
-  inline void set_m_k_start1(const ::std::string& value);
-  inline void set_m_k_start1(const char* value);
-  inline void set_m_k_start1(const char* value, size_t size);
-  inline ::std::string* mutable_m_k_start1();
-  inline ::std::string* release_m_k_start1();
-  inline void set_allocated_m_k_start1(::std::string* m_k_start1);
+  // required string K_start1 = 6;
+  inline bool has_k_start1() const;
+  inline void clear_k_start1();
+  static const int kKStart1FieldNumber = 6;
+  inline const ::std::string& k_start1() const;
+  inline void set_k_start1(const ::std::string& value);
+  inline void set_k_start1(const char* value);
+  inline void set_k_start1(const char* value, size_t size);
+  inline ::std::string* mutable_k_start1();
+  inline ::std::string* release_k_start1();
+  inline void set_allocated_k_start1(::std::string* k_start1);
 
-  // required string m_K_start2 = 7;
-  inline bool has_m_k_start2() const;
-  inline void clear_m_k_start2();
-  static const int kMKStart2FieldNumber = 7;
-  inline const ::std::string& m_k_start2() const;
-  inline void set_m_k_start2(const ::std::string& value);
-  inline void set_m_k_start2(const char* value);
-  inline void set_m_k_start2(const char* value, size_t size);
-  inline ::std::string* mutable_m_k_start2();
-  inline ::std::string* release_m_k_start2();
-  inline void set_allocated_m_k_start2(::std::string* m_k_start2);
+  // required string K_start2 = 7;
+  inline bool has_k_start2() const;
+  inline void clear_k_start2();
+  static const int kKStart2FieldNumber = 7;
+  inline const ::std::string& k_start2() const;
+  inline void set_k_start2(const ::std::string& value);
+  inline void set_k_start2(const char* value);
+  inline void set_k_start2(const char* value, size_t size);
+  inline ::std::string* mutable_k_start2();
+  inline ::std::string* release_k_start2();
+  inline void set_allocated_k_start2(::std::string* k_start2);
 
   // @@protoc_insertion_point(class_scope:StateMachineAndKey.SecretKey)
  private:
-  inline void set_has_m_k_start1();
-  inline void clear_has_m_k_start1();
-  inline void set_has_m_k_start2();
-  inline void clear_has_m_k_start2();
+  inline void set_has_k_start1();
+  inline void clear_has_k_start1();
+  inline void set_has_k_start2();
+  inline void clear_has_k_start2();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
-  ::google::protobuf::RepeatedPtrField< ::std::string> m_k_t_1_;
-  ::google::protobuf::RepeatedPtrField< ::std::string> m_k_t_2_;
-  ::google::protobuf::RepeatedPtrField< ::std::string> m_k_t_3_;
-  ::google::protobuf::RepeatedPtrField< ::std::string> m_k_for_q_x_1_;
-  ::google::protobuf::RepeatedPtrField< ::std::string> m_k_for_q_x_2_;
-  ::std::string* m_k_start1_;
-  ::std::string* m_k_start2_;
+  ::google::protobuf::RepeatedPtrField< ::std::string> k_t_1_;
+  ::google::protobuf::RepeatedPtrField< ::std::string> k_t_2_;
+  ::google::protobuf::RepeatedPtrField< ::std::string> k_t_3_;
+  ::google::protobuf::RepeatedPtrField< ::std::string> k_for_q_x_1_;
+  ::google::protobuf::RepeatedPtrField< ::std::string> k_for_q_x_2_;
+  ::std::string* k_start1_;
+  ::std::string* k_start2_;
 
   mutable int _cached_size_;
   ::google::protobuf::uint32 _has_bits_[(7 + 31) / 32];
@@ -741,15 +729,103 @@ class SecretKey : public ::google::protobuf::Message {
 
 // Bond
 
-// required string Cm = 1;
+// repeated string c_i_1 = 1;
+inline int Bond::c_i_1_size() const {
+  return c_i_1_.size();
+}
+inline void Bond::clear_c_i_1() {
+  c_i_1_.Clear();
+}
+inline const ::std::string& Bond::c_i_1(int index) const {
+  return c_i_1_.Get(index);
+}
+inline ::std::string* Bond::mutable_c_i_1(int index) {
+  return c_i_1_.Mutable(index);
+}
+inline void Bond::set_c_i_1(int index, const ::std::string& value) {
+  c_i_1_.Mutable(index)->assign(value);
+}
+inline void Bond::set_c_i_1(int index, const char* value) {
+  c_i_1_.Mutable(index)->assign(value);
+}
+inline void Bond::set_c_i_1(int index, const char* value, size_t size) {
+  c_i_1_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* Bond::add_c_i_1() {
+  return c_i_1_.Add();
+}
+inline void Bond::add_c_i_1(const ::std::string& value) {
+  c_i_1_.Add()->assign(value);
+}
+inline void Bond::add_c_i_1(const char* value) {
+  c_i_1_.Add()->assign(value);
+}
+inline void Bond::add_c_i_1(const char* value, size_t size) {
+  c_i_1_.Add()->assign(reinterpret_cast<const char*>(value), size);
+}
+inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
+Bond::c_i_1() const {
+  return c_i_1_;
+}
+inline ::google::protobuf::RepeatedPtrField< ::std::string>*
+Bond::mutable_c_i_1() {
+  return &c_i_1_;
+}
+
+// repeated string c_i_2 = 2;
+inline int Bond::c_i_2_size() const {
+  return c_i_2_.size();
+}
+inline void Bond::clear_c_i_2() {
+  c_i_2_.Clear();
+}
+inline const ::std::string& Bond::c_i_2(int index) const {
+  return c_i_2_.Get(index);
+}
+inline ::std::string* Bond::mutable_c_i_2(int index) {
+  return c_i_2_.Mutable(index);
+}
+inline void Bond::set_c_i_2(int index, const ::std::string& value) {
+  c_i_2_.Mutable(index)->assign(value);
+}
+inline void Bond::set_c_i_2(int index, const char* value) {
+  c_i_2_.Mutable(index)->assign(value);
+}
+inline void Bond::set_c_i_2(int index, const char* value, size_t size) {
+  c_i_2_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* Bond::add_c_i_2() {
+  return c_i_2_.Add();
+}
+inline void Bond::add_c_i_2(const ::std::string& value) {
+  c_i_2_.Add()->assign(value);
+}
+inline void Bond::add_c_i_2(const char* value) {
+  c_i_2_.Add()->assign(value);
+}
+inline void Bond::add_c_i_2(const char* value, size_t size) {
+  c_i_2_.Add()->assign(reinterpret_cast<const char*>(value), size);
+}
+inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
+Bond::c_i_2() const {
+  return c_i_2_;
+}
+inline ::google::protobuf::RepeatedPtrField< ::std::string>*
+Bond::mutable_c_i_2() {
+  return &c_i_2_;
+}
+
+// required string Cm = 3;
 inline bool Bond::has_cm() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
+  return (_has_bits_[0] & 0x00000004u) != 0;
 }
 inline void Bond::set_has_cm() {
-  _has_bits_[0] |= 0x00000001u;
+  _has_bits_[0] |= 0x00000004u;
 }
 inline void Bond::clear_has_cm() {
-  _has_bits_[0] &= ~0x00000001u;
+  _has_bits_[0] &= ~0x00000004u;
 }
 inline void Bond::clear_cm() {
   if (cm_ != &::google::protobuf::internal::kEmptyString) {
@@ -811,15 +887,15 @@ inline void Bond::set_allocated_cm(::std::string* cm) {
   }
 }
 
-// required string C_start1 = 2;
+// required string C_start1 = 4;
 inline bool Bond::has_c_start1() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
+  return (_has_bits_[0] & 0x00000008u) != 0;
 }
 inline void Bond::set_has_c_start1() {
-  _has_bits_[0] |= 0x00000002u;
+  _has_bits_[0] |= 0x00000008u;
 }
 inline void Bond::clear_has_c_start1() {
-  _has_bits_[0] &= ~0x00000002u;
+  _has_bits_[0] &= ~0x00000008u;
 }
 inline void Bond::clear_c_start1() {
   if (c_start1_ != &::google::protobuf::internal::kEmptyString) {
@@ -881,15 +957,15 @@ inline void Bond::set_allocated_c_start1(::std::string* c_start1) {
   }
 }
 
-// required string C_start2 = 3;
+// required string C_start2 = 5;
 inline bool Bond::has_c_start2() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
+  return (_has_bits_[0] & 0x00000010u) != 0;
 }
 inline void Bond::set_has_c_start2() {
-  _has_bits_[0] |= 0x00000004u;
+  _has_bits_[0] |= 0x00000010u;
 }
 inline void Bond::clear_has_c_start2() {
-  _has_bits_[0] &= ~0x00000004u;
+  _has_bits_[0] &= ~0x00000010u;
 }
 inline void Bond::clear_c_start2() {
   if (c_start2_ != &::google::protobuf::internal::kEmptyString) {
@@ -951,15 +1027,15 @@ inline void Bond::set_allocated_c_start2(::std::string* c_start2) {
   }
 }
 
-// required string C_end1 = 4;
+// required string C_end1 = 6;
 inline bool Bond::has_c_end1() const {
-  return (_has_bits_[0] & 0x00000008u) != 0;
+  return (_has_bits_[0] & 0x00000020u) != 0;
 }
 inline void Bond::set_has_c_end1() {
-  _has_bits_[0] |= 0x00000008u;
+  _has_bits_[0] |= 0x00000020u;
 }
 inline void Bond::clear_has_c_end1() {
-  _has_bits_[0] &= ~0x00000008u;
+  _has_bits_[0] &= ~0x00000020u;
 }
 inline void Bond::clear_c_end1() {
   if (c_end1_ != &::google::protobuf::internal::kEmptyString) {
@@ -1021,15 +1097,15 @@ inline void Bond::set_allocated_c_end1(::std::string* c_end1) {
   }
 }
 
-// required string C_end2 = 5;
+// required string C_end2 = 7;
 inline bool Bond::has_c_end2() const {
-  return (_has_bits_[0] & 0x00000010u) != 0;
+  return (_has_bits_[0] & 0x00000040u) != 0;
 }
 inline void Bond::set_has_c_end2() {
-  _has_bits_[0] |= 0x00000010u;
+  _has_bits_[0] |= 0x00000040u;
 }
 inline void Bond::clear_has_c_end2() {
-  _has_bits_[0] &= ~0x00000010u;
+  _has_bits_[0] &= ~0x00000040u;
 }
 inline void Bond::clear_c_end2() {
   if (c_end2_ != &::google::protobuf::internal::kEmptyString) {
@@ -1091,15 +1167,15 @@ inline void Bond::set_allocated_c_end2(::std::string* c_end2) {
   }
 }
 
-// optional int32 l_numOfCs = 6;
+// optional int32 l_numOfCs = 8;
 inline bool Bond::has_l_numofcs() const {
-  return (_has_bits_[0] & 0x00000020u) != 0;
+  return (_has_bits_[0] & 0x00000080u) != 0;
 }
 inline void Bond::set_has_l_numofcs() {
-  _has_bits_[0] |= 0x00000020u;
+  _has_bits_[0] |= 0x00000080u;
 }
 inline void Bond::clear_has_l_numofcs() {
-  _has_bits_[0] &= ~0x00000020u;
+  _has_bits_[0] &= ~0x00000080u;
 }
 inline void Bond::clear_l_numofcs() {
   l_numofcs_ = 0;
@@ -1111,94 +1187,6 @@ inline ::google::protobuf::int32 Bond::l_numofcs() const {
 inline void Bond::set_l_numofcs(::google::protobuf::int32 value) {
   set_has_l_numofcs();
   l_numofcs_ = value;
-}
-
-// repeated string c_i_1 = 7;
-inline int Bond::c_i_1_size() const {
-  return c_i_1_.size();
-}
-inline void Bond::clear_c_i_1() {
-  c_i_1_.Clear();
-}
-inline const ::std::string& Bond::c_i_1(int index) const {
-  return c_i_1_.Get(index);
-}
-inline ::std::string* Bond::mutable_c_i_1(int index) {
-  return c_i_1_.Mutable(index);
-}
-inline void Bond::set_c_i_1(int index, const ::std::string& value) {
-  c_i_1_.Mutable(index)->assign(value);
-}
-inline void Bond::set_c_i_1(int index, const char* value) {
-  c_i_1_.Mutable(index)->assign(value);
-}
-inline void Bond::set_c_i_1(int index, const char* value, size_t size) {
-  c_i_1_.Mutable(index)->assign(
-    reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* Bond::add_c_i_1() {
-  return c_i_1_.Add();
-}
-inline void Bond::add_c_i_1(const ::std::string& value) {
-  c_i_1_.Add()->assign(value);
-}
-inline void Bond::add_c_i_1(const char* value) {
-  c_i_1_.Add()->assign(value);
-}
-inline void Bond::add_c_i_1(const char* value, size_t size) {
-  c_i_1_.Add()->assign(reinterpret_cast<const char*>(value), size);
-}
-inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
-Bond::c_i_1() const {
-  return c_i_1_;
-}
-inline ::google::protobuf::RepeatedPtrField< ::std::string>*
-Bond::mutable_c_i_1() {
-  return &c_i_1_;
-}
-
-// repeated string c_i_2 = 8;
-inline int Bond::c_i_2_size() const {
-  return c_i_2_.size();
-}
-inline void Bond::clear_c_i_2() {
-  c_i_2_.Clear();
-}
-inline const ::std::string& Bond::c_i_2(int index) const {
-  return c_i_2_.Get(index);
-}
-inline ::std::string* Bond::mutable_c_i_2(int index) {
-  return c_i_2_.Mutable(index);
-}
-inline void Bond::set_c_i_2(int index, const ::std::string& value) {
-  c_i_2_.Mutable(index)->assign(value);
-}
-inline void Bond::set_c_i_2(int index, const char* value) {
-  c_i_2_.Mutable(index)->assign(value);
-}
-inline void Bond::set_c_i_2(int index, const char* value, size_t size) {
-  c_i_2_.Mutable(index)->assign(
-    reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* Bond::add_c_i_2() {
-  return c_i_2_.Add();
-}
-inline void Bond::add_c_i_2(const ::std::string& value) {
-  c_i_2_.Add()->assign(value);
-}
-inline void Bond::add_c_i_2(const char* value) {
-  c_i_2_.Add()->assign(value);
-}
-inline void Bond::add_c_i_2(const char* value, size_t size) {
-  c_i_2_.Add()->assign(reinterpret_cast<const char*>(value), size);
-}
-inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
-Bond::c_i_2() const {
-  return c_i_2_;
-}
-inline ::google::protobuf::RepeatedPtrField< ::std::string>*
-Bond::mutable_c_i_2() {
-  return &c_i_2_;
 }
 
 // -------------------------------------------------------------------
@@ -1297,144 +1285,106 @@ inline void StateMachine_Transition::set_nextstate(::google::protobuf::int32 val
   nextstate_ = value;
 }
 
-// required bool IsAcceptanceState = 3;
-inline bool StateMachine_Transition::has_isacceptancestate() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
+// -------------------------------------------------------------------
+
+// StateMachine_State
+
+// repeated .StateMachineAndKey.StateMachine.Transition transitionVec = 1;
+inline int StateMachine_State::transitionvec_size() const {
+  return transitionvec_.size();
 }
-inline void StateMachine_Transition::set_has_isacceptancestate() {
-  _has_bits_[0] |= 0x00000004u;
+inline void StateMachine_State::clear_transitionvec() {
+  transitionvec_.Clear();
 }
-inline void StateMachine_Transition::clear_has_isacceptancestate() {
-  _has_bits_[0] &= ~0x00000004u;
+inline const ::StateMachineAndKey::StateMachine_Transition& StateMachine_State::transitionvec(int index) const {
+  return transitionvec_.Get(index);
 }
-inline void StateMachine_Transition::clear_isacceptancestate() {
+inline ::StateMachineAndKey::StateMachine_Transition* StateMachine_State::mutable_transitionvec(int index) {
+  return transitionvec_.Mutable(index);
+}
+inline ::StateMachineAndKey::StateMachine_Transition* StateMachine_State::add_transitionvec() {
+  return transitionvec_.Add();
+}
+inline const ::google::protobuf::RepeatedPtrField< ::StateMachineAndKey::StateMachine_Transition >&
+StateMachine_State::transitionvec() const {
+  return transitionvec_;
+}
+inline ::google::protobuf::RepeatedPtrField< ::StateMachineAndKey::StateMachine_Transition >*
+StateMachine_State::mutable_transitionvec() {
+  return &transitionvec_;
+}
+
+// required bool isAcceptanceState = 2;
+inline bool StateMachine_State::has_isacceptancestate() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void StateMachine_State::set_has_isacceptancestate() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void StateMachine_State::clear_has_isacceptancestate() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void StateMachine_State::clear_isacceptancestate() {
   isacceptancestate_ = false;
   clear_has_isacceptancestate();
 }
-inline bool StateMachine_Transition::isacceptancestate() const {
+inline bool StateMachine_State::isacceptancestate() const {
   return isacceptancestate_;
 }
-inline void StateMachine_Transition::set_isacceptancestate(bool value) {
+inline void StateMachine_State::set_isacceptancestate(bool value) {
   set_has_isacceptancestate();
   isacceptancestate_ = value;
 }
 
-// -------------------------------------------------------------------
-
-// StateMachine_TransitionsVector
-
-// required int32 numOfStates = 1;
-inline bool StateMachine_TransitionsVector::has_numofstates() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
+// required int32 stateID = 3;
+inline bool StateMachine_State::has_stateid() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
 }
-inline void StateMachine_TransitionsVector::set_has_numofstates() {
-  _has_bits_[0] |= 0x00000001u;
+inline void StateMachine_State::set_has_stateid() {
+  _has_bits_[0] |= 0x00000004u;
 }
-inline void StateMachine_TransitionsVector::clear_has_numofstates() {
-  _has_bits_[0] &= ~0x00000001u;
+inline void StateMachine_State::clear_has_stateid() {
+  _has_bits_[0] &= ~0x00000004u;
 }
-inline void StateMachine_TransitionsVector::clear_numofstates() {
-  numofstates_ = 0;
-  clear_has_numofstates();
+inline void StateMachine_State::clear_stateid() {
+  stateid_ = 0;
+  clear_has_stateid();
 }
-inline ::google::protobuf::int32 StateMachine_TransitionsVector::numofstates() const {
-  return numofstates_;
+inline ::google::protobuf::int32 StateMachine_State::stateid() const {
+  return stateid_;
 }
-inline void StateMachine_TransitionsVector::set_numofstates(::google::protobuf::int32 value) {
-  set_has_numofstates();
-  numofstates_ = value;
-}
-
-// repeated int32 amountOfTransPerState = 2;
-inline int StateMachine_TransitionsVector::amountoftransperstate_size() const {
-  return amountoftransperstate_.size();
-}
-inline void StateMachine_TransitionsVector::clear_amountoftransperstate() {
-  amountoftransperstate_.Clear();
-}
-inline ::google::protobuf::int32 StateMachine_TransitionsVector::amountoftransperstate(int index) const {
-  return amountoftransperstate_.Get(index);
-}
-inline void StateMachine_TransitionsVector::set_amountoftransperstate(int index, ::google::protobuf::int32 value) {
-  amountoftransperstate_.Set(index, value);
-}
-inline void StateMachine_TransitionsVector::add_amountoftransperstate(::google::protobuf::int32 value) {
-  amountoftransperstate_.Add(value);
-}
-inline const ::google::protobuf::RepeatedField< ::google::protobuf::int32 >&
-StateMachine_TransitionsVector::amountoftransperstate() const {
-  return amountoftransperstate_;
-}
-inline ::google::protobuf::RepeatedField< ::google::protobuf::int32 >*
-StateMachine_TransitionsVector::mutable_amountoftransperstate() {
-  return &amountoftransperstate_;
-}
-
-// repeated .StateMachineAndKey.StateMachine.Transition trans = 3;
-inline int StateMachine_TransitionsVector::trans_size() const {
-  return trans_.size();
-}
-inline void StateMachine_TransitionsVector::clear_trans() {
-  trans_.Clear();
-}
-inline const ::StateMachineAndKey::StateMachine_Transition& StateMachine_TransitionsVector::trans(int index) const {
-  return trans_.Get(index);
-}
-inline ::StateMachineAndKey::StateMachine_Transition* StateMachine_TransitionsVector::mutable_trans(int index) {
-  return trans_.Mutable(index);
-}
-inline ::StateMachineAndKey::StateMachine_Transition* StateMachine_TransitionsVector::add_trans() {
-  return trans_.Add();
-}
-inline const ::google::protobuf::RepeatedPtrField< ::StateMachineAndKey::StateMachine_Transition >&
-StateMachine_TransitionsVector::trans() const {
-  return trans_;
-}
-inline ::google::protobuf::RepeatedPtrField< ::StateMachineAndKey::StateMachine_Transition >*
-StateMachine_TransitionsVector::mutable_trans() {
-  return &trans_;
+inline void StateMachine_State::set_stateid(::google::protobuf::int32 value) {
+  set_has_stateid();
+  stateid_ = value;
 }
 
 // -------------------------------------------------------------------
 
 // StateMachine
 
-// required .StateMachineAndKey.StateMachine.TransitionsVector transitionsVec = 1;
-inline bool StateMachine::has_transitionsvec() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
+// repeated .StateMachineAndKey.StateMachine.State StateVec = 1;
+inline int StateMachine::statevec_size() const {
+  return statevec_.size();
 }
-inline void StateMachine::set_has_transitionsvec() {
-  _has_bits_[0] |= 0x00000001u;
+inline void StateMachine::clear_statevec() {
+  statevec_.Clear();
 }
-inline void StateMachine::clear_has_transitionsvec() {
-  _has_bits_[0] &= ~0x00000001u;
+inline const ::StateMachineAndKey::StateMachine_State& StateMachine::statevec(int index) const {
+  return statevec_.Get(index);
 }
-inline void StateMachine::clear_transitionsvec() {
-  if (transitionsvec_ != NULL) transitionsvec_->::StateMachineAndKey::StateMachine_TransitionsVector::Clear();
-  clear_has_transitionsvec();
+inline ::StateMachineAndKey::StateMachine_State* StateMachine::mutable_statevec(int index) {
+  return statevec_.Mutable(index);
 }
-inline const ::StateMachineAndKey::StateMachine_TransitionsVector& StateMachine::transitionsvec() const {
-  return transitionsvec_ != NULL ? *transitionsvec_ : *default_instance_->transitionsvec_;
+inline ::StateMachineAndKey::StateMachine_State* StateMachine::add_statevec() {
+  return statevec_.Add();
 }
-inline ::StateMachineAndKey::StateMachine_TransitionsVector* StateMachine::mutable_transitionsvec() {
-  set_has_transitionsvec();
-  if (transitionsvec_ == NULL) transitionsvec_ = new ::StateMachineAndKey::StateMachine_TransitionsVector;
-  return transitionsvec_;
+inline const ::google::protobuf::RepeatedPtrField< ::StateMachineAndKey::StateMachine_State >&
+StateMachine::statevec() const {
+  return statevec_;
 }
-inline ::StateMachineAndKey::StateMachine_TransitionsVector* StateMachine::release_transitionsvec() {
-  clear_has_transitionsvec();
-  ::StateMachineAndKey::StateMachine_TransitionsVector* temp = transitionsvec_;
-  transitionsvec_ = NULL;
-  return temp;
-}
-inline void StateMachine::set_allocated_transitionsvec(::StateMachineAndKey::StateMachine_TransitionsVector* transitionsvec) {
-  delete transitionsvec_;
-  transitionsvec_ = transitionsvec;
-  if (transitionsvec) {
-    set_has_transitionsvec();
-  } else {
-    clear_has_transitionsvec();
-  }
+inline ::google::protobuf::RepeatedPtrField< ::StateMachineAndKey::StateMachine_State >*
+StateMachine::mutable_statevec() {
+  return &statevec_;
 }
 
 // optional string virus = 2;
@@ -1511,363 +1461,363 @@ inline void StateMachine::set_allocated_virus(::std::string* virus) {
 
 // SecretKey
 
-// repeated string m_K_t_1 = 1;
-inline int SecretKey::m_k_t_1_size() const {
-  return m_k_t_1_.size();
+// repeated string K_t_1 = 1;
+inline int SecretKey::k_t_1_size() const {
+  return k_t_1_.size();
 }
-inline void SecretKey::clear_m_k_t_1() {
-  m_k_t_1_.Clear();
+inline void SecretKey::clear_k_t_1() {
+  k_t_1_.Clear();
 }
-inline const ::std::string& SecretKey::m_k_t_1(int index) const {
-  return m_k_t_1_.Get(index);
+inline const ::std::string& SecretKey::k_t_1(int index) const {
+  return k_t_1_.Get(index);
 }
-inline ::std::string* SecretKey::mutable_m_k_t_1(int index) {
-  return m_k_t_1_.Mutable(index);
+inline ::std::string* SecretKey::mutable_k_t_1(int index) {
+  return k_t_1_.Mutable(index);
 }
-inline void SecretKey::set_m_k_t_1(int index, const ::std::string& value) {
-  m_k_t_1_.Mutable(index)->assign(value);
+inline void SecretKey::set_k_t_1(int index, const ::std::string& value) {
+  k_t_1_.Mutable(index)->assign(value);
 }
-inline void SecretKey::set_m_k_t_1(int index, const char* value) {
-  m_k_t_1_.Mutable(index)->assign(value);
+inline void SecretKey::set_k_t_1(int index, const char* value) {
+  k_t_1_.Mutable(index)->assign(value);
 }
-inline void SecretKey::set_m_k_t_1(int index, const char* value, size_t size) {
-  m_k_t_1_.Mutable(index)->assign(
+inline void SecretKey::set_k_t_1(int index, const char* value, size_t size) {
+  k_t_1_.Mutable(index)->assign(
     reinterpret_cast<const char*>(value), size);
 }
-inline ::std::string* SecretKey::add_m_k_t_1() {
-  return m_k_t_1_.Add();
+inline ::std::string* SecretKey::add_k_t_1() {
+  return k_t_1_.Add();
 }
-inline void SecretKey::add_m_k_t_1(const ::std::string& value) {
-  m_k_t_1_.Add()->assign(value);
+inline void SecretKey::add_k_t_1(const ::std::string& value) {
+  k_t_1_.Add()->assign(value);
 }
-inline void SecretKey::add_m_k_t_1(const char* value) {
-  m_k_t_1_.Add()->assign(value);
+inline void SecretKey::add_k_t_1(const char* value) {
+  k_t_1_.Add()->assign(value);
 }
-inline void SecretKey::add_m_k_t_1(const char* value, size_t size) {
-  m_k_t_1_.Add()->assign(reinterpret_cast<const char*>(value), size);
+inline void SecretKey::add_k_t_1(const char* value, size_t size) {
+  k_t_1_.Add()->assign(reinterpret_cast<const char*>(value), size);
 }
 inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
-SecretKey::m_k_t_1() const {
-  return m_k_t_1_;
+SecretKey::k_t_1() const {
+  return k_t_1_;
 }
 inline ::google::protobuf::RepeatedPtrField< ::std::string>*
-SecretKey::mutable_m_k_t_1() {
-  return &m_k_t_1_;
+SecretKey::mutable_k_t_1() {
+  return &k_t_1_;
 }
 
-// repeated string m_K_t_2 = 2;
-inline int SecretKey::m_k_t_2_size() const {
-  return m_k_t_2_.size();
+// repeated string K_t_2 = 2;
+inline int SecretKey::k_t_2_size() const {
+  return k_t_2_.size();
 }
-inline void SecretKey::clear_m_k_t_2() {
-  m_k_t_2_.Clear();
+inline void SecretKey::clear_k_t_2() {
+  k_t_2_.Clear();
 }
-inline const ::std::string& SecretKey::m_k_t_2(int index) const {
-  return m_k_t_2_.Get(index);
+inline const ::std::string& SecretKey::k_t_2(int index) const {
+  return k_t_2_.Get(index);
 }
-inline ::std::string* SecretKey::mutable_m_k_t_2(int index) {
-  return m_k_t_2_.Mutable(index);
+inline ::std::string* SecretKey::mutable_k_t_2(int index) {
+  return k_t_2_.Mutable(index);
 }
-inline void SecretKey::set_m_k_t_2(int index, const ::std::string& value) {
-  m_k_t_2_.Mutable(index)->assign(value);
+inline void SecretKey::set_k_t_2(int index, const ::std::string& value) {
+  k_t_2_.Mutable(index)->assign(value);
 }
-inline void SecretKey::set_m_k_t_2(int index, const char* value) {
-  m_k_t_2_.Mutable(index)->assign(value);
+inline void SecretKey::set_k_t_2(int index, const char* value) {
+  k_t_2_.Mutable(index)->assign(value);
 }
-inline void SecretKey::set_m_k_t_2(int index, const char* value, size_t size) {
-  m_k_t_2_.Mutable(index)->assign(
+inline void SecretKey::set_k_t_2(int index, const char* value, size_t size) {
+  k_t_2_.Mutable(index)->assign(
     reinterpret_cast<const char*>(value), size);
 }
-inline ::std::string* SecretKey::add_m_k_t_2() {
-  return m_k_t_2_.Add();
+inline ::std::string* SecretKey::add_k_t_2() {
+  return k_t_2_.Add();
 }
-inline void SecretKey::add_m_k_t_2(const ::std::string& value) {
-  m_k_t_2_.Add()->assign(value);
+inline void SecretKey::add_k_t_2(const ::std::string& value) {
+  k_t_2_.Add()->assign(value);
 }
-inline void SecretKey::add_m_k_t_2(const char* value) {
-  m_k_t_2_.Add()->assign(value);
+inline void SecretKey::add_k_t_2(const char* value) {
+  k_t_2_.Add()->assign(value);
 }
-inline void SecretKey::add_m_k_t_2(const char* value, size_t size) {
-  m_k_t_2_.Add()->assign(reinterpret_cast<const char*>(value), size);
+inline void SecretKey::add_k_t_2(const char* value, size_t size) {
+  k_t_2_.Add()->assign(reinterpret_cast<const char*>(value), size);
 }
 inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
-SecretKey::m_k_t_2() const {
-  return m_k_t_2_;
+SecretKey::k_t_2() const {
+  return k_t_2_;
 }
 inline ::google::protobuf::RepeatedPtrField< ::std::string>*
-SecretKey::mutable_m_k_t_2() {
-  return &m_k_t_2_;
+SecretKey::mutable_k_t_2() {
+  return &k_t_2_;
 }
 
-// repeated string m_K_t_3 = 3;
-inline int SecretKey::m_k_t_3_size() const {
-  return m_k_t_3_.size();
+// repeated string K_t_3 = 3;
+inline int SecretKey::k_t_3_size() const {
+  return k_t_3_.size();
 }
-inline void SecretKey::clear_m_k_t_3() {
-  m_k_t_3_.Clear();
+inline void SecretKey::clear_k_t_3() {
+  k_t_3_.Clear();
 }
-inline const ::std::string& SecretKey::m_k_t_3(int index) const {
-  return m_k_t_3_.Get(index);
+inline const ::std::string& SecretKey::k_t_3(int index) const {
+  return k_t_3_.Get(index);
 }
-inline ::std::string* SecretKey::mutable_m_k_t_3(int index) {
-  return m_k_t_3_.Mutable(index);
+inline ::std::string* SecretKey::mutable_k_t_3(int index) {
+  return k_t_3_.Mutable(index);
 }
-inline void SecretKey::set_m_k_t_3(int index, const ::std::string& value) {
-  m_k_t_3_.Mutable(index)->assign(value);
+inline void SecretKey::set_k_t_3(int index, const ::std::string& value) {
+  k_t_3_.Mutable(index)->assign(value);
 }
-inline void SecretKey::set_m_k_t_3(int index, const char* value) {
-  m_k_t_3_.Mutable(index)->assign(value);
+inline void SecretKey::set_k_t_3(int index, const char* value) {
+  k_t_3_.Mutable(index)->assign(value);
 }
-inline void SecretKey::set_m_k_t_3(int index, const char* value, size_t size) {
-  m_k_t_3_.Mutable(index)->assign(
+inline void SecretKey::set_k_t_3(int index, const char* value, size_t size) {
+  k_t_3_.Mutable(index)->assign(
     reinterpret_cast<const char*>(value), size);
 }
-inline ::std::string* SecretKey::add_m_k_t_3() {
-  return m_k_t_3_.Add();
+inline ::std::string* SecretKey::add_k_t_3() {
+  return k_t_3_.Add();
 }
-inline void SecretKey::add_m_k_t_3(const ::std::string& value) {
-  m_k_t_3_.Add()->assign(value);
+inline void SecretKey::add_k_t_3(const ::std::string& value) {
+  k_t_3_.Add()->assign(value);
 }
-inline void SecretKey::add_m_k_t_3(const char* value) {
-  m_k_t_3_.Add()->assign(value);
+inline void SecretKey::add_k_t_3(const char* value) {
+  k_t_3_.Add()->assign(value);
 }
-inline void SecretKey::add_m_k_t_3(const char* value, size_t size) {
-  m_k_t_3_.Add()->assign(reinterpret_cast<const char*>(value), size);
+inline void SecretKey::add_k_t_3(const char* value, size_t size) {
+  k_t_3_.Add()->assign(reinterpret_cast<const char*>(value), size);
 }
 inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
-SecretKey::m_k_t_3() const {
-  return m_k_t_3_;
+SecretKey::k_t_3() const {
+  return k_t_3_;
 }
 inline ::google::protobuf::RepeatedPtrField< ::std::string>*
-SecretKey::mutable_m_k_t_3() {
-  return &m_k_t_3_;
+SecretKey::mutable_k_t_3() {
+  return &k_t_3_;
 }
 
-// repeated string m_K_for_q_x_1 = 4;
-inline int SecretKey::m_k_for_q_x_1_size() const {
-  return m_k_for_q_x_1_.size();
+// repeated string K_for_q_x_1 = 4;
+inline int SecretKey::k_for_q_x_1_size() const {
+  return k_for_q_x_1_.size();
 }
-inline void SecretKey::clear_m_k_for_q_x_1() {
-  m_k_for_q_x_1_.Clear();
+inline void SecretKey::clear_k_for_q_x_1() {
+  k_for_q_x_1_.Clear();
 }
-inline const ::std::string& SecretKey::m_k_for_q_x_1(int index) const {
-  return m_k_for_q_x_1_.Get(index);
+inline const ::std::string& SecretKey::k_for_q_x_1(int index) const {
+  return k_for_q_x_1_.Get(index);
 }
-inline ::std::string* SecretKey::mutable_m_k_for_q_x_1(int index) {
-  return m_k_for_q_x_1_.Mutable(index);
+inline ::std::string* SecretKey::mutable_k_for_q_x_1(int index) {
+  return k_for_q_x_1_.Mutable(index);
 }
-inline void SecretKey::set_m_k_for_q_x_1(int index, const ::std::string& value) {
-  m_k_for_q_x_1_.Mutable(index)->assign(value);
+inline void SecretKey::set_k_for_q_x_1(int index, const ::std::string& value) {
+  k_for_q_x_1_.Mutable(index)->assign(value);
 }
-inline void SecretKey::set_m_k_for_q_x_1(int index, const char* value) {
-  m_k_for_q_x_1_.Mutable(index)->assign(value);
+inline void SecretKey::set_k_for_q_x_1(int index, const char* value) {
+  k_for_q_x_1_.Mutable(index)->assign(value);
 }
-inline void SecretKey::set_m_k_for_q_x_1(int index, const char* value, size_t size) {
-  m_k_for_q_x_1_.Mutable(index)->assign(
+inline void SecretKey::set_k_for_q_x_1(int index, const char* value, size_t size) {
+  k_for_q_x_1_.Mutable(index)->assign(
     reinterpret_cast<const char*>(value), size);
 }
-inline ::std::string* SecretKey::add_m_k_for_q_x_1() {
-  return m_k_for_q_x_1_.Add();
+inline ::std::string* SecretKey::add_k_for_q_x_1() {
+  return k_for_q_x_1_.Add();
 }
-inline void SecretKey::add_m_k_for_q_x_1(const ::std::string& value) {
-  m_k_for_q_x_1_.Add()->assign(value);
+inline void SecretKey::add_k_for_q_x_1(const ::std::string& value) {
+  k_for_q_x_1_.Add()->assign(value);
 }
-inline void SecretKey::add_m_k_for_q_x_1(const char* value) {
-  m_k_for_q_x_1_.Add()->assign(value);
+inline void SecretKey::add_k_for_q_x_1(const char* value) {
+  k_for_q_x_1_.Add()->assign(value);
 }
-inline void SecretKey::add_m_k_for_q_x_1(const char* value, size_t size) {
-  m_k_for_q_x_1_.Add()->assign(reinterpret_cast<const char*>(value), size);
+inline void SecretKey::add_k_for_q_x_1(const char* value, size_t size) {
+  k_for_q_x_1_.Add()->assign(reinterpret_cast<const char*>(value), size);
 }
 inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
-SecretKey::m_k_for_q_x_1() const {
-  return m_k_for_q_x_1_;
+SecretKey::k_for_q_x_1() const {
+  return k_for_q_x_1_;
 }
 inline ::google::protobuf::RepeatedPtrField< ::std::string>*
-SecretKey::mutable_m_k_for_q_x_1() {
-  return &m_k_for_q_x_1_;
+SecretKey::mutable_k_for_q_x_1() {
+  return &k_for_q_x_1_;
 }
 
-// repeated string m_K_for_q_x_2 = 5;
-inline int SecretKey::m_k_for_q_x_2_size() const {
-  return m_k_for_q_x_2_.size();
+// repeated string K_for_q_x_2 = 5;
+inline int SecretKey::k_for_q_x_2_size() const {
+  return k_for_q_x_2_.size();
 }
-inline void SecretKey::clear_m_k_for_q_x_2() {
-  m_k_for_q_x_2_.Clear();
+inline void SecretKey::clear_k_for_q_x_2() {
+  k_for_q_x_2_.Clear();
 }
-inline const ::std::string& SecretKey::m_k_for_q_x_2(int index) const {
-  return m_k_for_q_x_2_.Get(index);
+inline const ::std::string& SecretKey::k_for_q_x_2(int index) const {
+  return k_for_q_x_2_.Get(index);
 }
-inline ::std::string* SecretKey::mutable_m_k_for_q_x_2(int index) {
-  return m_k_for_q_x_2_.Mutable(index);
+inline ::std::string* SecretKey::mutable_k_for_q_x_2(int index) {
+  return k_for_q_x_2_.Mutable(index);
 }
-inline void SecretKey::set_m_k_for_q_x_2(int index, const ::std::string& value) {
-  m_k_for_q_x_2_.Mutable(index)->assign(value);
+inline void SecretKey::set_k_for_q_x_2(int index, const ::std::string& value) {
+  k_for_q_x_2_.Mutable(index)->assign(value);
 }
-inline void SecretKey::set_m_k_for_q_x_2(int index, const char* value) {
-  m_k_for_q_x_2_.Mutable(index)->assign(value);
+inline void SecretKey::set_k_for_q_x_2(int index, const char* value) {
+  k_for_q_x_2_.Mutable(index)->assign(value);
 }
-inline void SecretKey::set_m_k_for_q_x_2(int index, const char* value, size_t size) {
-  m_k_for_q_x_2_.Mutable(index)->assign(
+inline void SecretKey::set_k_for_q_x_2(int index, const char* value, size_t size) {
+  k_for_q_x_2_.Mutable(index)->assign(
     reinterpret_cast<const char*>(value), size);
 }
-inline ::std::string* SecretKey::add_m_k_for_q_x_2() {
-  return m_k_for_q_x_2_.Add();
+inline ::std::string* SecretKey::add_k_for_q_x_2() {
+  return k_for_q_x_2_.Add();
 }
-inline void SecretKey::add_m_k_for_q_x_2(const ::std::string& value) {
-  m_k_for_q_x_2_.Add()->assign(value);
+inline void SecretKey::add_k_for_q_x_2(const ::std::string& value) {
+  k_for_q_x_2_.Add()->assign(value);
 }
-inline void SecretKey::add_m_k_for_q_x_2(const char* value) {
-  m_k_for_q_x_2_.Add()->assign(value);
+inline void SecretKey::add_k_for_q_x_2(const char* value) {
+  k_for_q_x_2_.Add()->assign(value);
 }
-inline void SecretKey::add_m_k_for_q_x_2(const char* value, size_t size) {
-  m_k_for_q_x_2_.Add()->assign(reinterpret_cast<const char*>(value), size);
+inline void SecretKey::add_k_for_q_x_2(const char* value, size_t size) {
+  k_for_q_x_2_.Add()->assign(reinterpret_cast<const char*>(value), size);
 }
 inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
-SecretKey::m_k_for_q_x_2() const {
-  return m_k_for_q_x_2_;
+SecretKey::k_for_q_x_2() const {
+  return k_for_q_x_2_;
 }
 inline ::google::protobuf::RepeatedPtrField< ::std::string>*
-SecretKey::mutable_m_k_for_q_x_2() {
-  return &m_k_for_q_x_2_;
+SecretKey::mutable_k_for_q_x_2() {
+  return &k_for_q_x_2_;
 }
 
-// required string m_K_start1 = 6;
-inline bool SecretKey::has_m_k_start1() const {
+// required string K_start1 = 6;
+inline bool SecretKey::has_k_start1() const {
   return (_has_bits_[0] & 0x00000020u) != 0;
 }
-inline void SecretKey::set_has_m_k_start1() {
+inline void SecretKey::set_has_k_start1() {
   _has_bits_[0] |= 0x00000020u;
 }
-inline void SecretKey::clear_has_m_k_start1() {
+inline void SecretKey::clear_has_k_start1() {
   _has_bits_[0] &= ~0x00000020u;
 }
-inline void SecretKey::clear_m_k_start1() {
-  if (m_k_start1_ != &::google::protobuf::internal::kEmptyString) {
-    m_k_start1_->clear();
+inline void SecretKey::clear_k_start1() {
+  if (k_start1_ != &::google::protobuf::internal::kEmptyString) {
+    k_start1_->clear();
   }
-  clear_has_m_k_start1();
+  clear_has_k_start1();
 }
-inline const ::std::string& SecretKey::m_k_start1() const {
-  return *m_k_start1_;
+inline const ::std::string& SecretKey::k_start1() const {
+  return *k_start1_;
 }
-inline void SecretKey::set_m_k_start1(const ::std::string& value) {
-  set_has_m_k_start1();
-  if (m_k_start1_ == &::google::protobuf::internal::kEmptyString) {
-    m_k_start1_ = new ::std::string;
+inline void SecretKey::set_k_start1(const ::std::string& value) {
+  set_has_k_start1();
+  if (k_start1_ == &::google::protobuf::internal::kEmptyString) {
+    k_start1_ = new ::std::string;
   }
-  m_k_start1_->assign(value);
+  k_start1_->assign(value);
 }
-inline void SecretKey::set_m_k_start1(const char* value) {
-  set_has_m_k_start1();
-  if (m_k_start1_ == &::google::protobuf::internal::kEmptyString) {
-    m_k_start1_ = new ::std::string;
+inline void SecretKey::set_k_start1(const char* value) {
+  set_has_k_start1();
+  if (k_start1_ == &::google::protobuf::internal::kEmptyString) {
+    k_start1_ = new ::std::string;
   }
-  m_k_start1_->assign(value);
+  k_start1_->assign(value);
 }
-inline void SecretKey::set_m_k_start1(const char* value, size_t size) {
-  set_has_m_k_start1();
-  if (m_k_start1_ == &::google::protobuf::internal::kEmptyString) {
-    m_k_start1_ = new ::std::string;
+inline void SecretKey::set_k_start1(const char* value, size_t size) {
+  set_has_k_start1();
+  if (k_start1_ == &::google::protobuf::internal::kEmptyString) {
+    k_start1_ = new ::std::string;
   }
-  m_k_start1_->assign(reinterpret_cast<const char*>(value), size);
+  k_start1_->assign(reinterpret_cast<const char*>(value), size);
 }
-inline ::std::string* SecretKey::mutable_m_k_start1() {
-  set_has_m_k_start1();
-  if (m_k_start1_ == &::google::protobuf::internal::kEmptyString) {
-    m_k_start1_ = new ::std::string;
+inline ::std::string* SecretKey::mutable_k_start1() {
+  set_has_k_start1();
+  if (k_start1_ == &::google::protobuf::internal::kEmptyString) {
+    k_start1_ = new ::std::string;
   }
-  return m_k_start1_;
+  return k_start1_;
 }
-inline ::std::string* SecretKey::release_m_k_start1() {
-  clear_has_m_k_start1();
-  if (m_k_start1_ == &::google::protobuf::internal::kEmptyString) {
+inline ::std::string* SecretKey::release_k_start1() {
+  clear_has_k_start1();
+  if (k_start1_ == &::google::protobuf::internal::kEmptyString) {
     return NULL;
   } else {
-    ::std::string* temp = m_k_start1_;
-    m_k_start1_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    ::std::string* temp = k_start1_;
+    k_start1_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
     return temp;
   }
 }
-inline void SecretKey::set_allocated_m_k_start1(::std::string* m_k_start1) {
-  if (m_k_start1_ != &::google::protobuf::internal::kEmptyString) {
-    delete m_k_start1_;
+inline void SecretKey::set_allocated_k_start1(::std::string* k_start1) {
+  if (k_start1_ != &::google::protobuf::internal::kEmptyString) {
+    delete k_start1_;
   }
-  if (m_k_start1) {
-    set_has_m_k_start1();
-    m_k_start1_ = m_k_start1;
+  if (k_start1) {
+    set_has_k_start1();
+    k_start1_ = k_start1;
   } else {
-    clear_has_m_k_start1();
-    m_k_start1_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    clear_has_k_start1();
+    k_start1_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   }
 }
 
-// required string m_K_start2 = 7;
-inline bool SecretKey::has_m_k_start2() const {
+// required string K_start2 = 7;
+inline bool SecretKey::has_k_start2() const {
   return (_has_bits_[0] & 0x00000040u) != 0;
 }
-inline void SecretKey::set_has_m_k_start2() {
+inline void SecretKey::set_has_k_start2() {
   _has_bits_[0] |= 0x00000040u;
 }
-inline void SecretKey::clear_has_m_k_start2() {
+inline void SecretKey::clear_has_k_start2() {
   _has_bits_[0] &= ~0x00000040u;
 }
-inline void SecretKey::clear_m_k_start2() {
-  if (m_k_start2_ != &::google::protobuf::internal::kEmptyString) {
-    m_k_start2_->clear();
+inline void SecretKey::clear_k_start2() {
+  if (k_start2_ != &::google::protobuf::internal::kEmptyString) {
+    k_start2_->clear();
   }
-  clear_has_m_k_start2();
+  clear_has_k_start2();
 }
-inline const ::std::string& SecretKey::m_k_start2() const {
-  return *m_k_start2_;
+inline const ::std::string& SecretKey::k_start2() const {
+  return *k_start2_;
 }
-inline void SecretKey::set_m_k_start2(const ::std::string& value) {
-  set_has_m_k_start2();
-  if (m_k_start2_ == &::google::protobuf::internal::kEmptyString) {
-    m_k_start2_ = new ::std::string;
+inline void SecretKey::set_k_start2(const ::std::string& value) {
+  set_has_k_start2();
+  if (k_start2_ == &::google::protobuf::internal::kEmptyString) {
+    k_start2_ = new ::std::string;
   }
-  m_k_start2_->assign(value);
+  k_start2_->assign(value);
 }
-inline void SecretKey::set_m_k_start2(const char* value) {
-  set_has_m_k_start2();
-  if (m_k_start2_ == &::google::protobuf::internal::kEmptyString) {
-    m_k_start2_ = new ::std::string;
+inline void SecretKey::set_k_start2(const char* value) {
+  set_has_k_start2();
+  if (k_start2_ == &::google::protobuf::internal::kEmptyString) {
+    k_start2_ = new ::std::string;
   }
-  m_k_start2_->assign(value);
+  k_start2_->assign(value);
 }
-inline void SecretKey::set_m_k_start2(const char* value, size_t size) {
-  set_has_m_k_start2();
-  if (m_k_start2_ == &::google::protobuf::internal::kEmptyString) {
-    m_k_start2_ = new ::std::string;
+inline void SecretKey::set_k_start2(const char* value, size_t size) {
+  set_has_k_start2();
+  if (k_start2_ == &::google::protobuf::internal::kEmptyString) {
+    k_start2_ = new ::std::string;
   }
-  m_k_start2_->assign(reinterpret_cast<const char*>(value), size);
+  k_start2_->assign(reinterpret_cast<const char*>(value), size);
 }
-inline ::std::string* SecretKey::mutable_m_k_start2() {
-  set_has_m_k_start2();
-  if (m_k_start2_ == &::google::protobuf::internal::kEmptyString) {
-    m_k_start2_ = new ::std::string;
+inline ::std::string* SecretKey::mutable_k_start2() {
+  set_has_k_start2();
+  if (k_start2_ == &::google::protobuf::internal::kEmptyString) {
+    k_start2_ = new ::std::string;
   }
-  return m_k_start2_;
+  return k_start2_;
 }
-inline ::std::string* SecretKey::release_m_k_start2() {
-  clear_has_m_k_start2();
-  if (m_k_start2_ == &::google::protobuf::internal::kEmptyString) {
+inline ::std::string* SecretKey::release_k_start2() {
+  clear_has_k_start2();
+  if (k_start2_ == &::google::protobuf::internal::kEmptyString) {
     return NULL;
   } else {
-    ::std::string* temp = m_k_start2_;
-    m_k_start2_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    ::std::string* temp = k_start2_;
+    k_start2_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
     return temp;
   }
 }
-inline void SecretKey::set_allocated_m_k_start2(::std::string* m_k_start2) {
-  if (m_k_start2_ != &::google::protobuf::internal::kEmptyString) {
-    delete m_k_start2_;
+inline void SecretKey::set_allocated_k_start2(::std::string* k_start2) {
+  if (k_start2_ != &::google::protobuf::internal::kEmptyString) {
+    delete k_start2_;
   }
-  if (m_k_start2) {
-    set_has_m_k_start2();
-    m_k_start2_ = m_k_start2;
+  if (k_start2) {
+    set_has_k_start2();
+    k_start2_ = k_start2;
   } else {
-    clear_has_m_k_start2();
-    m_k_start2_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    clear_has_k_start2();
+    k_start2_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   }
 }
 

@@ -101,9 +101,9 @@ const int StateMachine::getCurrentStateID()
 /*
  * Returns whether the machine has reached an acceptance state.
  */
-const bool StateMachine::getisAcceptanceState()
+const bool StateMachine::getIsAcceptanceState()
 {
-	return mStates[mCurrentStateID]->getisAcceptanceState();
+	return mStates[mCurrentStateID]->getIsAcceptanceState();
 }//end of getisAcceptanceState()
 
 /*
@@ -116,13 +116,12 @@ const bool StateMachine::getisAcceptanceState()
  */
  const std::vector<Transition3Tuple>* StateMachine::translateStateMachineToTriples()
 {
-
-	 for (int i=0; i < mTotalNumOfStates ;i++)
-	 {
-		//updating the state 3-tuple vector:
-		 if (mStates[i]!=NULL)
-			 mStates[i]->translateStateTo3Tuples(&mTransitionTuples);
-	 }
+		for (int i = 0; i < mTotalNumOfStates; i++)
+		{
+			//updating the state 3-tuple vector:
+			if (mStates[i] != NULL)
+				mStates[i]->translateStateTo3Tuples(&mTransitionTuples);
+		}
 	return &mTransitionTuples;
 }//end of translateStateMachineToTriples()
 

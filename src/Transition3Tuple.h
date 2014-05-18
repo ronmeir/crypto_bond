@@ -30,8 +30,8 @@ public:
 	virtual ~Transition3Tuple();
 	int set_X(int x);
 	int set_Y(int y);
-	int set_Sigma(unsigned char sigma);
-	int get_X();
+	const int set_Sigma(unsigned char sigma);
+    int get_X();
 	int get_Y();
 	unsigned char get_Sigma();
 	std::string toString() const;

@@ -113,7 +113,7 @@ int State::getNextStateID(unsigned char input)
 /*
  * Returns whether this state is an acceptance state or not.
  */
-bool State::getisAcceptanceState()
+bool State::getIsAcceptanceState()
 {
 	return mIsAcceptanceState;
 }//end of getisAcceptanceState()
