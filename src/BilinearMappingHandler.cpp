@@ -180,7 +180,7 @@ void BilinearMappingHandler::element_cpy(element_t& dst, element_t& src)
 
 /*
  * Returns the length of the given element in bytes.
- * We assume that elements from G1 and G2 can compressed, while elements from GT can't.
+ * We assume that elements from G1 and G2 can be compressed, while elements from GT can't.
  */
 int BilinearMappingHandler::getElementLengthInBytes(element_t elem, bool isElementOfGT)
 {

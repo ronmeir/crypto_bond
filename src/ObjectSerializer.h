@@ -21,13 +21,14 @@ private:
 	StateMachineAndKey::Bond m_Bond;
 	StateMachineAndKey::StateMachine m_Machine;
 	StateMachineAndKey::SecretKey m_SK;
+	EncryptionHandler* m_encHandler;
 
 	//methods:
 	void setSingleState(StateMachineAndKey::StateMachine_State* state,
 								StateMachine& SM, const std::vector<Transition3Tuple>*,int);
 
 public:
-	ObjectSerializer();
+	ObjectSerializer(EncryptionHandler&);
 	virtual ~ObjectSerializer();
 	void setStateMachine (StateMachine& SM, std::string);
 	void setSecretKey (EncryptionHandler::SK& SK);
