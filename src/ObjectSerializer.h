@@ -22,6 +22,7 @@ private:
 	StateMachineAndKey::StateMachine m_Machine;
 	StateMachineAndKey::SecretKey m_SK;
 	EncryptionHandler* m_encHandler;
+	bool m_isStateMachineSet, m_isSecretKeySet, m_isBondSet;
 
 	//methods:
 	void setSingleState(StateMachineAndKey::StateMachine_State* state,
@@ -31,11 +32,11 @@ public:
 	ObjectSerializer(EncryptionHandler&);
 	virtual ~ObjectSerializer();
 	void setStateMachine (StateMachine& SM, std::string);
-	void setSecretKey (EncryptionHandler::SK& SK);
+	void setSecretKey (EncryptionHandler::SK& SK, StateMachine& );
 	void setBond (EncryptionHandler::CT& CT);
-	std::string getSerializedStateMachineString();
-	std::string getSerializedSecretKeyString();
-	std::string getSerializedBondString();
+	void getSerializedStateMachineString(std::string);
+	void getSerializedSecretKeyString(std::string);
+	void getSerializedBondString(std::string);
 	int getNumOfStatesInStateMachineFromSerialized (std::string SM_string);
 	void deserializeStateMachine (StateMachine& saveHere, std::string SM_string);
 	void deserializeSecretKey (EncryptionHandler::SK& saveHere,std::string SK_string);

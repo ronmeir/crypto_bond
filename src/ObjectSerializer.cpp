@@ -11,11 +11,94 @@ using namespace std;
 ObjectSerializer::ObjectSerializer(EncryptionHandler& encHandler)
 {
 	m_encHandler = &encHandler;   //set a ptr to an encryption handler.
-
+	m_isBondSet = false;
+	m_isSecretKeySet = false;
+	m_isStateMachineSet = false;
   // Verify that the version of the library that we linked against is
   // compatible with the version of the headers we compiled against.
   GOOGLE_PROTOBUF_VERIFY_VERSION;
-}
+}//end of constructor
+
+
+/*
+ * Takes a valid SK and converts it to the protocol-buffer's SK format (that format will be later
+ * used for serialization).
+ * @param SK - the secret key
+ * @param SM - reference to the stateMachine
+ */
+void ObjectSerializer::setSecretKey (EncryptionHandler::SK& SK, StateMachine& SM)
+{
+	BilinearMappingHandler* mapper = m_encHandler->getBilinearMappingHandler();  //get a ptr to a bilinear mapper
+	int n;
+	unsigned char data[512];
+	string *K_t_i, *K_end_i;
+
+
+	//Kstart1:
+	n = mapper->getElementLengthInBytes(SK.m_K_start1,false);  //get the num of bytes needed to represent Kstart1
+	mapper->elementToByteArray(data,SK.m_K_start1,false);     //convert
+	data[n]='\0';            //modify data to be a valid cstring
+
+	m_SK.set_k_start1((char*)data);				//set Kstart1
+
+	//Kstart2:
+	n = mapper->getElementLengthInBytes(SK.m_K_start2,false);  //get the num of bytes needed to represent Kstart2
+	mapper->elementToByteArray(data,SK.m_K_start2,false);     //convert
+	data[n]='\0';            //modify data to be a valid cstring
+
+	m_SK.set_k_start2((char*)data);				//set Kstart2
+
+	//K_t_i  (3 elements for every transition)
+	for (int t=0; t<SM.getTotalNumOfTransitions() ;t++)
+	{
+		//Kt,1:
+		n = mapper->getElementLengthInBytes(SK.m_K_t[0][t],false);  //get the num of bytes needed to represent Kt,1
+		mapper->elementToByteArray(data,SK.m_K_t[0][t],false);     //convert
+		data[n]='\0';            //modify data to be a valid cstring
+
+		K_t_i = m_SK.add_k_t_1();   //get a new, empty string for Kt,1
+		K_t_i->assign((char*)data);				//set Kt,1
+
+		//Kt,2:
+		n = mapper->getElementLengthInBytes(SK.m_K_t[1][t],false);  //get the num of bytes needed to represent Kt,2
+		mapper->elementToByteArray(data,SK.m_K_t[1][t],false);     //convert
+		data[n]='\0';            //modify data to be a valid cstring
+
+		K_t_i = m_SK.add_k_t_2();   //get a new, empty string for Kt,2
+		K_t_i->assign((char*)data);				//set Kt,2
+
+		//Kt,3:
+		n = mapper->getElementLengthInBytes(SK.m_K_t[2][t],false);  //get the num of bytes needed to represent Kt,3
+		mapper->elementToByteArray(data,SK.m_K_t[2][t],false);     //convert
+		data[n]='\0';            //modify data to be a valid cstring
+
+		K_t_i = m_SK.add_k_t_3();   //get a new, empty string for Kt,3
+		K_t_i->assign((char*)data);				//set Kt,3
+	}//finished with K_t_i
+
+	//Kend,i (2 elements for every acceptance state)
+	for (int x=0; x<SM.getTotalNumOfAcceptenceStates() ;x++)
+	{
+		//Kendx,1:
+		n = mapper->getElementLengthInBytes(SK.m_K_for_q_x[0][x],false);  //get the num of bytes needed to represent Kendx,1
+		mapper->elementToByteArray(data,SK.m_K_for_q_x[0][x],false);     //convert
+		data[n]='\0';            //modify data to be a valid cstring
+
+		K_end_i = m_SK.add_k_for_q_x_1();   //get a new, empty string for Kendx,1
+		K_end_i->assign((char*)data);				//set Kendx,1
+
+		//Kendx,2:
+		n = mapper->getElementLengthInBytes(SK.m_K_for_q_x[1][x],false);  //get the num of bytes needed to represent Kendx,2
+		mapper->elementToByteArray(data,SK.m_K_for_q_x[1][x],false);     //convert
+		data[n]='\0';            //modify data to be a valid cstring
+
+		K_end_i = m_SK.add_k_for_q_x_2();   //get a new, empty string for Kendx,2
+		K_end_i->assign((char*)data);				//set Kendx,2
+
+	}//finished with Kend,i
+
+	m_isSecretKeySet=true;
+}//end of setSecretKey()
 
 /*
  * Takes a valid CT and converts it to the protocol-buffer's CT format (that format will be later
@@ -90,8 +173,8 @@ void ObjectSerializer::setBond (EncryptionHandler::CT& CT)
 
 		}//inner for
 	}//outer for
-
-}
+	m_isBondSet = true;
+}//end of setBond()
 /*
  * Takes a valid SM and converts it to the protocol-buffer's SM format (that format will be later
  * used for serialization).
@@ -112,6 +195,8 @@ void ObjectSerializer::setStateMachine (StateMachine& SM, string optionalVirusSt
 	{
 		setSingleState(m_Machine.add_statevec(),SM,allTransitions,i);
 	}
+
+	m_isStateMachineSet = true;
 }//end of setStateMachine()
 
 /*
@@ -149,6 +234,37 @@ void ObjectSerializer::setSingleState(StateMachineAndKey::StateMachine_State* sa
 		currentIndexInTransVector++; //advance
 	}//for
 }//end of setSingleState()
+
+/*
+ * Returns a string that represents the StateMachine
+ */
+void ObjectSerializer::getSerializedStateMachineString(std::string saveHere)
+{
+	if (m_isStateMachineSet)
+		m_Machine.SerializeToString(&saveHere);
+	else
+		saveHere.assign("");
+}//end of getSerializedStateMachineString()
+
+/*
+ * Returns a string that represents the SecretKey
+ */
+void ObjectSerializer::getSerializedSecretKeyString(std::string saveHere)
+{
+	if (m_isSecretKeySet)
+		m_SK.SerializeToString(&saveHere);
+	else
+		saveHere.assign("");
+}//end of getSerializedSecretKeyString()
+
+void ObjectSerializer::getSerializedBondString(std::string saveHere)
+{
+	if (m_isBondSet)
+		m_Bond.SerializeToString(&saveHere);
+	else
+		saveHere.assign("");
+
+}//end of getSerializedBondString()
 
 ObjectSerializer::~ObjectSerializer()
 {
