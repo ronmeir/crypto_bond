@@ -19,6 +19,136 @@ ObjectSerializer::ObjectSerializer(EncryptionHandler& encHandler)
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 }//end of constructor
 
+/*
+ * Deserializes the SK string
+ * @param saveHere - This SK should only contain allocated space that can be filled.
+ * @param SK_string - the serialized SK
+ */
+void ObjectSerializer::deserializeSecretKey (EncryptionHandler::SK& saveHere,std::string SK_string)
+{
+	//TODO MAKE SURE THIS IS RUN ONLY WITH AN SK-SHELL
+
+	BilinearMappingHandler* mapper = m_encHandler->getBilinearMappingHandler(); //get the mapper
+	m_SK.ParseFromString(SK_string);  //deserialize the SK
+
+	//getting Kstart1:
+	 mapper->byteArrayToElement(saveHere.m_K_start1,(unsigned char*)m_SK.k_start1().c_str(),false);
+
+	//getting Kstart2:
+	 mapper->byteArrayToElement(saveHere.m_K_start2,(unsigned char*)m_SK.k_start2().c_str(),false);
+
+	 //getting Kt,i:
+	 int numOfTrans = m_SK.k_t_1_size();  //get the number of Kt,i
+	 for (int t=0; t<numOfTrans; t++)
+	 {
+		//getting Kt,1:
+		 mapper->byteArrayToElement(saveHere.m_K_t[0][t],(unsigned char*)m_SK.k_t_1(t).c_str(),false);
+
+		//getting Kt,2:
+		 mapper->byteArrayToElement(saveHere.m_K_t[1][t],(unsigned char*)m_SK.k_t_2(t).c_str(),false);
+
+		//getting Kt,3:
+		 mapper->byteArrayToElement(saveHere.m_K_t[2][t],(unsigned char*)m_SK.k_t_3(t).c_str(),false);
+	 }//for
+
+	 //getting Kendx,i
+	 int numOfAcceptanceStates = m_SK.k_for_q_x_1_size();
+	 for (int x=0; x<numOfAcceptanceStates; x++)
+	 {
+		 //getting Kend,1:
+		 mapper->byteArrayToElement(saveHere.m_K_for_q_x[0][x],(unsigned char*)m_SK.k_for_q_x_1(x).c_str(),false);
+
+		 //getting Kend,2:
+		 mapper->byteArrayToElement(saveHere.m_K_for_q_x[1][x],(unsigned char*)m_SK.k_for_q_x_2(x).c_str(),false);
+	 }
+
+}//end of deserializeSecretKey()
+
+void ObjectSerializer::deserializeBond (EncryptionHandler::CT& saveHere, std::string bond_string)
+{
+	BilinearMappingHandler* mapper = m_encHandler->getBilinearMappingHandler(); //get the mapper
+	m_Bond.ParseFromString(bond_string);  //deserialize the Bond
+
+	//getting Cm:
+	 mapper->byteArrayToElement(saveHere.m_Cm,(unsigned char*)m_Bond.cm().c_str(),true);
+
+	//getting Cstart1:
+	 mapper->byteArrayToElement(saveHere.m_C_start1,(unsigned char*)m_Bond.c_start1().c_str(),false);
+
+	//getting Cstart2:
+	 mapper->byteArrayToElement(saveHere.m_C_start2,(unsigned char*)m_Bond.c_start2().c_str(),false);
+
+	//getting Cend1:
+	 mapper->byteArrayToElement(saveHere.m_C_end1,(unsigned char*)m_Bond.c_end1().c_str(),false);
+
+	//getting Cend2:
+	 mapper->byteArrayToElement(saveHere.m_C_end2,(unsigned char*)m_Bond.c_end2().c_str(),false);
+
+	 int numOfCi = m_Bond.c_i_1_size();   //get the number of Ci
+	 for (int i=0; i<numOfCi ;i++)
+	 {
+		//getting Ci,1:
+		 mapper->byteArrayToElement(saveHere.m_Ci[0][i],(unsigned char*)m_Bond.c_i_1(i).c_str(),false);
+
+		 //for all the Ci,2 possibilities:
+		 for (int j=1; j<ALPHABET_SIZE+1 ;j++)
+		 {
+			//getting Ci,2:
+			 mapper->byteArrayToElement(saveHere.m_Ci[j][i],(unsigned char*)m_Bond.c_i_2(j-1).c_str(),false);
+		 }
+	 }//outer for
+}//end of deserializeBond()
+
+/*
+ * Deserializes the SM string and returns the number of states.
+ * IMPORTANT: SINCE THE RETRIEVING OF THE NUMBER OF STATES REQUIRES TO DE-SERIALIZE THE ENTIRE STRING,
+ * WE SAVE THE DE-SERIALIZED RESULT FOR FURTHER USAGE.
+ * @param SM_string - the serialized SM
+ * @return - the number of states in the SM
+ */
+int ObjectSerializer::getNumOfStatesInStateMachineFromSerialized (std::string SM_string)
+{
+	m_Machine.ParseFromString(SM_string);  //deserialize the SM
+	return m_Machine.statevec_size();  //returns the number of states
+}//end of getNumOfStatesInStateMachineFromSerialized()
+
+/*
+ * Desrializes a stateMachine
+ * @param saveHere - an empty stateMachine that can support the required number of states
+ * @param SM_string - the stateMachine's serialized string
+ */
+void ObjectSerializer::deserializeStateMachine (StateMachine& saveHere, std::string SM_string)
+{
+	int transitionTable[ALPHABET_SIZE][2];
+	int currentNumOfTrans;
+	int numOfStates = m_Machine.statevec_size();
+
+	if (numOfStates<1) //if the machine wasn't de-serialized by now
+	{
+		m_Machine.ParseFromString(SM_string);  //deserialize the SM
+		numOfStates = m_Machine.statevec_size();
+	}
+
+	StateMachineAndKey::StateMachine_State serializerState;
+	StateMachineAndKey::StateMachine_Transition serialzerTrans;
+
+	//for every state:
+	for (int i=0; i<numOfStates ;i++)
+	{
+		serializerState = m_Machine.statevec(i);  //get the current state
+		currentNumOfTrans = serializerState.transitionvec_size();
+		//for every non-trivial transition:
+		for (int j=0; j<currentNumOfTrans ;j++)
+		{
+			serialzerTrans = serializerState.transitionvec(j);  //get a transition
+			transitionTable[j][0] = serialzerTrans.input().at(0); //get Sigma
+			transitionTable[j][1] = serialzerTrans.nextstate(); //get the next state
+		}//for every transition
+
+		//add the constructed state to the SM:
+		saveHere.addState(i,transitionTable,currentNumOfTrans,serializerState.isacceptancestate());
+	}//for every state
+}//end of deserializeStateMachine()
 
 /*
  * Takes a valid SK and converts it to the protocol-buffer's SK format (that format will be later

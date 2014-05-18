@@ -282,6 +282,8 @@ BilinearMappingHandler* EncryptionHandler::getBilinearMappingHandler() {return m
 //											   __/ |
 //											  |___/
 
+//TODO create a constructor for an SK shell that contains only allocated space of the right size.
+
 /**
  * the SK Constructor
  */

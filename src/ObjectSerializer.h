@@ -41,11 +41,6 @@ public:
 	void deserializeStateMachine (StateMachine& saveHere, std::string SM_string);
 	void deserializeSecretKey (EncryptionHandler::SK& saveHere,std::string SK_string);
 	void deserializeBond (EncryptionHandler::CT& saveHere, std::string bond_string);
-
-
-
-
-
 };
 
 #endif /* OBJECTSERIALIZER_H_ */

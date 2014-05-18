@@ -37,7 +37,7 @@ StateMachine::StateMachine(int numOfStates, int initialStateID)
 /*
  * Adds a single state to the state machine.
  * @param stateID - The unique ID that will define this state. THIS VALUE MUST BE IN THE RANGE [0...NUM_OF_STATES-1]
- * @param transitionTable - An Int table of size NUM_OF_STATES x 2, when the 1 column in each row
+ * @param transitionTable - An Int table of size NUM_OF_STATES x 2, when the 1st column in each row
  * contains the input value and the 2nd column contains the next state ID for that input
  * @param numOfRows - the number of transitions given in the table
  * @param isAcceptanceState - defines whether this state is an acceptance state or not
