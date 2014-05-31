@@ -66,22 +66,32 @@ public:
 		{
 			public:
 				//fields:
-				BilinearMappingHandler* mMapper;
-				EncryptionHandler::MSK* mMasterKey;
-				memberElement* m_D_ElementSet 		 ; // D= {d_0,.....,d_(|Q|-1) from G},D_i is associate to state  q_i
-				expElement* m_Rt_ExpSet		   		 ; //Rt={r_0,..r_|T|} r_i is associate to transition t_i from T
-				expElement* m_R_end_ExpSet	  		 ; //Rend s.t Rend_x  is associate to q_x ,an acceptance state from Q
-				expElement  m_Rstart		  		 ; //a random element from Zp
+
+			//relevante for both client and server!!
+
+				StateMachine *mM					 ;
 				memberElement m_K_start1,m_K_start2	 ; //from the article paper
 				memberElement** m_K_t				 ; //size() = [3][#transitions]
-				memberElement** m_K_for_q_x			 ; //size() = [2][#acceptance-states]
-				StateMachine *mM					 ;
+
+
+
+
+			//relevante client only!!
+
+				BilinearMappingHandler* mMapper	;
+				EncryptionHandler::MSK* mMasterKey;
+				memberElement* m_D_ElementSet 	; // D= {d_0,.....,d_(|Q|-1) from G},D_i is associate to state  q_i
+				expElement* m_Rt_ExpSet		  	; //Rt={r_0,..r_|T|} r_i is associate to transition t_i from T
+				expElement* m_R_end_ExpSet	  	; //Rend s.t Rend_x  is associate to q_x ,an acceptance state from Q
+				expElement  m_Rstart		  	; //a random element from Zp
+				memberElement** m_K_for_q_x	  	; //size() = [2][#acceptance-states]
 
 				//methods:
 				int getIndexInKeyComponentsByTransition(int x, unsigned char sigma);
-				SK( BilinearMappingHandler* mapper, StateMachine* M, MSK* msk);
+				SK( BilinearMappingHandler* mapper, StateMachine* M, MSK* msk, bool isClient);
 				virtual ~SK();
-
+			private:
+				bool mIsClient;
 			};//end of class SK
 
 		//	   _____ _       _            _______        _
@@ -118,7 +128,7 @@ public:
 	void mapStringToElementFromGT (memberElement& ans, const std::string& str);
 	void decrypt(memberElement& decryptedMSG,SK& secretKey, CT& cipherText, StateMachine stateMachine);
 	BilinearMappingHandler* getBilinearMappingHandler();
-	EncryptionHandler(char* ParamFilePath,StateMachine* stateMachine);
+	EncryptionHandler(char* ParamFilePath,StateMachine* stateMachine,bool isClient);
 	virtual ~EncryptionHandler();
 
 private	:

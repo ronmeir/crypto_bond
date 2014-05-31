@@ -140,9 +140,9 @@ void ObjectSerializer::deserializeStateMachine (StateMachine& saveHere, std::str
 		//for every non-trivial transition:
 		for (int j=0; j<currentNumOfTrans ;j++)
 		{
-			serialzerTrans = serializerState.transitionvec(j);  //get a transition
-			transitionTable[j][0] = serialzerTrans.input().at(0); //get Sigma
-			transitionTable[j][1] = serialzerTrans.nextstate(); //get the next state
+			serialzerTrans = serializerState.transitionvec(j);  	//get a transition
+			transitionTable[j][0] = serialzerTrans.input().at(0); 	//get Sigma
+			transitionTable[j][1] = serialzerTrans.nextstate(); 	//get the next state
 		}//for every transition
 
 		//add the constructed state to the SM:

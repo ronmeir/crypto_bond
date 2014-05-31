@@ -24,12 +24,12 @@ ClientMachine::ClientMachine(const string userID,const string ServerIP,const str
 /*
  * Creates an enc. handler based on the given state-machine
  */
-void ClientMachine::setStateMachine (StateMachine* SM)
+void ClientMachine::setStateMachine (StateMachine* SM,bool isClient)
 {
 	if (m_EncHandler!=NULL)
 		delete(m_EncHandler);
 
-	m_EncHandler = new EncryptionHandler(PARAM_FILE_PATH,SM);
+	m_EncHandler = new EncryptionHandler(PARAM_FILE_PATH,SM,isClient);
 	m_program_state = NEED_CA_APPROVAL;  //update the state
 }//end of setStateMachine()
 

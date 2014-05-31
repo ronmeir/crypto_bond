@@ -27,6 +27,7 @@ void debug_EncryptionTest();
 
 int main()
 {
+	printf("running....");
 	ClientMachine client("user","ip1","ip2");
 	client.run();
 
@@ -40,7 +41,7 @@ int main()
 	return 0;
 }//end of main()
 
-void debug_EncryptionTest()
+void debug_EncryptionTest(bool isClient)
 {
 	//	debug_mapperTest();
 
@@ -51,7 +52,7 @@ void debug_EncryptionTest()
 		debug_initializeStateMachine(&machineOfStates); //init the machine
 		const string virus= "virus";
 
-		EncryptionHandler encHand(filePath,&machineOfStates); //init enc. handler
+		EncryptionHandler encHand(filePath,&machineOfStates,isClient); //init enc. handler
 		printf("EncryptionHandler is ready\n\n");
 
 		const EncryptionHandler::MSK* msk = encHand.setup(); //gen. master key

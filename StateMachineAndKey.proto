@@ -1,83 +1,83 @@
-/* Compilation cmd: protoc -I=$SRC_DIR --cpp_out=$DST_DIR $SRC_DIR/addressbook.proto 
- * In our private case: protoc -I=. --cpp_out=./src/ ./StateMachineAndKey.proto
-*/
-
-
-package StateMachineAndKey;
-
-message Bond    //A CipherText, containing the encrypted bond
-{
-  repeated string c_i_1 = 	1;
-  repeated string c_i_2 = 	2;
-  required string Cm = 		3;	//encrypted bond
-  required string C_start1 = 	4;
-  required string C_start2 = 	5;
-  required string C_end1 = 	6;
-  required string C_end2 = 	7;
-  optional int32 l_numOfCs = 	8;	//the number of Cs needed - 'l' in the paper
-}//end of Bond
-
-
-//DONE WITH THE BOND!!!!
-
-
-//Dealing with the StateMachine
-
-//now we can build a full stateMachine. Building a new S.M with its constructor and adding all the states.
-//In order to send a stateMachine, all we need to do is to translate it into TransitionsVector 
-
-message StateMachine 
-{
-	//inner classes:
+	/* Compilation cmd: protoc -I=$SRC_DIR --cpp_out=$DST_DIR $SRC_DIR/addressbook.proto 
+	 * In our private case: protoc -I=. --cpp_out=./src/ ./StateMachineAndKey.proto
+	*/
 	
-		message Transition
-		{
-		//in this method of a single transition implementation, we assume that the current state is known
-		  required string input = 1;	//the input received in the state machine
-		  required int32 nextState = 2;	//the next state the machine should move to
-
-		}//end of Transition
-
-		message State
-		{
-		 repeated Transition transitionVec = 1;
-		 required bool isAcceptanceState = 2;
-		 required int32 stateID = 3;
-		}//end of State
-
-	repeated State StateVec =			1; 	// used to get all the states
-	optional string virus =				2; //can contain the virus word
-}//end of StateMachine
-
-//Everything from here and on is used for the SK!!!!
-
-message SecretKey
-{
-
-  //in the cpp file we have : memberElement** m_K_t ; //size() = [3][#transitions]
-  //therefore we'll use 3 'memberElement vectors ' to represent the memberElement** m_K_t matrix
-  // denoted as m_K_t_1 , m_K_t_2, m_K_t_3
-  
-	repeated string K_t_1 = 1;
-	repeated string K_t_2 = 2;
-	repeated string K_t_3 = 3;
-    
-    
-    
-  //in the cpp file memberElement** m_K_for_q_x	; //size() = [2][#acceptance-states]
-  //therefore we'll use 2 'memberElement vectors ' to represent the memberElement** m_K_for_q_x matrix
-  // denoted as m_K_for_q_x_1,  m_K_for_q_x_2
-  
-	repeated string K_for_q_x_1 = 4;
-	repeated string K_for_q_x_2 = 5;
-    
-    
-  //memberElement K_start1,m_K_start2    from the article paper
-  
-	required string  K_start1 = 	6;
-	required string  K_start2 = 	7; 
 	
-}//end of SecretKey
-
-
-
+	package StateMachineAndKey;
+	
+	message Bond    //A CipherText, containing the encrypted bond
+	{
+	  repeated string c_i_1 = 		1;
+	  repeated string c_i_2 = 		2;
+	  required string Cm = 			3;	//encrypted bond
+	  required string C_start1 = 	4;
+	  required string C_start2 = 	5;
+	  required string C_end1 = 		6;
+	  required string C_end2 = 		7;
+	  optional int32 l_numOfCs = 	8;	//the number of Cs needed - 'l' in the paper
+	}//end of Bond
+	
+	
+	//DONE WITH THE BOND!!!!
+	
+	
+	//Dealing with the StateMachine
+	
+	//now we can build a full stateMachine. Building a new S.M with its constructor and adding all the states.
+	//In order to send a stateMachine, all we need to do is to translate it into TransitionsVector 
+	
+	message StateMachine 
+	{
+		//inner classes:
+		
+			message Transition
+			{
+			//in this method of a single transition implementation, we assume that the current state is known
+			  required string input =	 1;	//the input received in the state machine
+			  required int32 nextState = 2;	//the next state the machine should move to
+	
+			}//end of Transition
+	
+			message State
+			{
+			 repeated Transition transitionVec =	1;
+			 required bool isAcceptanceState = 		2;
+			 required int32 stateID = 				3;
+			}//end of State
+	
+		repeated State StateVec =			1; 	// used to get all the states
+		optional string virus =				2; //can contain the virus word
+	}//end of StateMachine
+	
+	//Everything from here and on is used for the SK!!!!
+	
+	message SecretKey
+	{
+	
+	  //in the cpp file we have : memberElement** m_K_t ; //size() = [3][#transitions]
+	  //therefore we'll use 3 'memberElement vectors ' to represent the memberElement** m_K_t matrix
+	  // denoted as m_K_t_1 , m_K_t_2, m_K_t_3
+	  
+		repeated string K_t_1 = 1;
+		repeated string K_t_2 = 2;
+		repeated string K_t_3 = 3;
+	    
+	    
+	    
+	  //in the cpp file memberElement** m_K_for_q_x	; //size() = [2][#acceptance-states]
+	  //therefore we'll use 2 'memberElement vectors ' to represent the memberElement** m_K_for_q_x matrix
+	  // denoted as m_K_for_q_x_1,  m_K_for_q_x_2
+	  
+		repeated string K_for_q_x_1 = 4;
+		repeated string K_for_q_x_2 = 5;
+	    
+	    
+	  //memberElement K_start1,m_K_start2    from the article paper
+	  
+		required string  K_start1 = 	6;
+		required string  K_start2 = 	7; 
+		
+	}//end of SecretKey
+	
+	
+	

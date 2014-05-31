@@ -27,7 +27,7 @@ private:
 	UserState m_program_state;
 
 	//methods:
-	void setStateMachine (StateMachine* SM);
+	void setStateMachine (StateMachine* SM,bool isClient);
 
 public:
 	ClientMachine(const std::string,const std::string,const std::string);

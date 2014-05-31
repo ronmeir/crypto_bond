@@ -23,12 +23,12 @@ using namespace std;
  * in order to get a MasterKey, use the function setup()
  * in order to get a SecretKeym use the function keyGen()
  */
-EncryptionHandler::EncryptionHandler(char* paramFilePath,  StateMachine* stateMachine)
+EncryptionHandler::EncryptionHandler(char* paramFilePath,  StateMachine* stateMachine,bool isClient)
 {
 	mMapper 		= new BilinearMappingHandler(paramFilePath);
 	mMasterKey 		= new MSK(mMapper);
 	mStateMachine	= stateMachine;
-	mSecretKey		= new SK(mMapper,mStateMachine,mMasterKey);
+	mSecretKey		= new SK(mMapper,mStateMachine,mMasterKey,isClient);
 }//end of Constructor
 
 EncryptionHandler::~EncryptionHandler()
@@ -287,35 +287,44 @@ BilinearMappingHandler* EncryptionHandler::getBilinearMappingHandler() {return m
 /**
  * the SK Constructor
  */
-EncryptionHandler::SK::SK(BilinearMappingHandler* mapper,StateMachine* M, MSK* msk)
+EncryptionHandler::SK::SK(BilinearMappingHandler* mapper,StateMachine* M, MSK* msk, bool isClient)
 {
 
+	mIsClient=isClient;
 	mM=M																 ;//mM holds the state machine
-	mMapper=mapper														 ;
+	mMapper=mapper  									 				 ;//needed only by the client
 	mMasterKey=msk														 ;
-	m_D_ElementSet  = new memberElement[M->getTotalNumOfStates()]		 ; //init. size
-	m_Rt_ExpSet		= new expElement[M->getTotalNumOfTransitions()]	 	 ; //init. size
-	m_R_end_ExpSet	= new expElement[M->getTotalNumOfAcceptenceStates()] ; //init. size
+
+//this part is relevante for the client only!!!!!!
+
+	if(isClient){
+		m_D_ElementSet  = new memberElement[M->getTotalNumOfStates()]		 ; //init. size - needed only be the client
+		m_Rt_ExpSet		= new expElement[M->getTotalNumOfTransitions()]	 	 ; //init. size
+		m_R_end_ExpSet	= new expElement[M->getTotalNumOfAcceptenceStates()] ; //init. size
+		mMapper->initRandomExpElement(m_Rstart)								 ; //init m_Rstart
+
+		//init. all the random elements in  D_ElementSet
+		for(int i =0; i<M->getTotalNumOfStates();i++)
+		{
+			mMapper->initRandomMemberElementFromG1(m_D_ElementSet[i])	;//init. a random member element @d_i
+		}//for
 
 
-	mMapper->initRandomExpElement(m_Rstart)								 ; //init m_Rstart
+		//init. all the random elements in m_Rt_ExpSet
+		for(int i =0; i<M->getTotalNumOfTransitions();i++)
+		{
+			mMapper->initRandomExpElement(m_Rt_ExpSet[i])				;//init. a random member element @Zp
+		}//for
 
-	//init. all the random elements in  D_ElementSet
-	for(int i =0; i<M->getTotalNumOfStates();i++)
-	{
-		mMapper->initRandomMemberElementFromG1(m_D_ElementSet[i])	;//init. a random member element @d_i
-	}//for
+		//init. all the random elements in m_R_end_ExpSet
+		for(int i =0; i<M->getTotalNumOfAcceptenceStates();i++){
+			mMapper->initRandomExpElement(m_R_end_ExpSet[i])				;//init. a random exp element @Zp
+		}//for
 
-	//init. all the random elements in m_Rt_ExpSet
-	for(int i =0; i<M->getTotalNumOfTransitions();i++)
-	{
-		mMapper->initRandomExpElement(m_Rt_ExpSet[i])				;//init. a random member element @Zp
-	}//for
+	}// if isClient
 
-	//init. all the random elements in m_R_end_ExpSet
-	for(int i =0; i<M->getTotalNumOfAcceptenceStates();i++){
-		mMapper->initRandomExpElement(m_R_end_ExpSet[i])				;//init. a random exp element @Zp
-	}//for
+//this part is relevante for both the client and server!!!!!!
+
 
 	//K_start1= d_0*(h_start)^r_start
 	mMapper->initEmptyMemberElementFromG1(m_K_start1)				;//init. k_start1
@@ -397,7 +406,7 @@ EncryptionHandler::SK::SK(BilinearMappingHandler* mapper,StateMachine* M, MSK* m
 	m_K_for_q_x[1]=new memberElement[F->size()];
 
 	//for each q_x from F (F are the accept states)
-	for (int i=0; i<F->size() ;i++){
+	for (unsigned int i=0; i<F->size() ;i++){
 		//init. m_K_for_q_x[0][i],m_K_for_q_x[1][i]
 			mMapper->initEmptyMemberElementFromG1(m_K_for_q_x[0][i]);			//init. K_endx1
 			mMapper->initEmptyMemberElementFromG1(m_K_for_q_x[1][i]);			//init. K_endx2
@@ -439,22 +448,26 @@ int EncryptionHandler::SK::getIndexInKeyComponentsByTransition(int x, unsigned c
 }//end of getIndexInKeyComponentsByTransition()
 
 EncryptionHandler::SK::~SK()
-{
-	delete[](m_D_ElementSet)	;
-	delete[](m_Rt_ExpSet)		;
-	delete[](m_R_end_ExpSet)	;
-	delete[](m_K_for_q_x)		;
-	delete[](m_K_t)			;
+	{
+		//TODO different destructor
+
+		if(mIsClient==true){
+			delete[](m_D_ElementSet)	;
+			delete[](m_Rt_ExpSet)		;
+			delete[](m_R_end_ExpSet)	;
+		}//if
+
+		delete[](m_K_for_q_x)		;
+		delete[](m_K_t)				;
 
 
-	for(int i=0;i<2;i++){delete(m_K_for_q_x[0]);}
-	delete[](m_K_for_q_x);
+		for(int i=0;i<2;i++){delete(m_K_for_q_x[0]);}
+		delete[](m_K_for_q_x);
 
+		for(int i=0;i<3;i++){delete(m_K_t[i]);}//for
+		delete[]( m_K_t);
 
-	for(int i=0;i<3;i++){delete(m_K_t[i]);}//for
-	delete[]( m_K_t);
-
-}//end of Destructor
+	}//end of Destructor
 
 // __  __           _              _  __
 //|  \/  |         | |            | |/ /
