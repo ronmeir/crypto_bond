@@ -24,6 +24,7 @@ using namespace std;                      //using the 'string' library
 void debug_initializeStateMachine(StateMachine* machine);
 void debug_mapperTest();
 void debug_EncryptionTest(bool);
+void compareCTs(EncryptionHandler::CT& ct1, EncryptionHandler::CT& ct2, BilinearMappingHandler* mapper);
 
 //program parameters: machine type (user/server/ca), user id, server and CA IP (relevant for the user only)
 
@@ -52,61 +53,76 @@ void debug_EncryptionTest(bool isClient)
 {
 	//	debug_mapperTest();
 
-		char* filePath = PARAM_FILE_PATH;
-		string SK_str, SM_str, CT_str;
+	char* filePath = PARAM_FILE_PATH;
+	string SK_str, SM_str, CT_str;
 
-		//TODO MAKE SURE ALL OF THE FOLLOWIN 3 PARAMETERS MATCH:
-		StateMachine machineOfStates(6,0); //a new machine with 6 states. initial state is '0'
-		debug_initializeStateMachine(&machineOfStates); //init the machine
-		const string virus= "virus";
+	//TODO MAKE SURE ALL OF THE FOLLOWIN 3 PARAMETERS MATCH:
 
-		EncryptionHandler encHand(filePath,&machineOfStates,isClient); //init enc. handler
-		printf("EncryptionHandler is ready\n\n");
+//Server:
+	StateMachine serverSM(6, 0); //a new machine with 6 states. initial state is '0'
+	debug_initializeStateMachine(&serverSM); //init the machine
+	const string virus = "virus";
 
-		EncryptionHandler::MSK* msk = encHand.setup(); //gen. master key
-		EncryptionHandler::SK* sk = encHand.keyGen();	//gen. secret key
-		printf("keyGen is ready\n\n");
-		memberElement theMsgElem;
-		memberElement decryptRes;
+	EncryptionHandler srvrEncHand(filePath, &serverSM, false); //init enc. handler
+	printf("EncryptionHandler is ready\n\n");
+	ObjectSerializer serializer2(*srvrEncHand.getBilinearMappingHandler());  //new serializer (server)
+	serializer2.setStateMachine(serverSM,virus);  //give the SM to the serializer
+	serializer2.getSerializedStateMachineString(SM_str);  //serialize the SM
 
-		//Serialization test:
-		ObjectSerializer serializer1(encHand);  //new serializer
-		ObjectSerializer serializer2(encHand);  //new serializer
+//Client:
 
-		serializer1.setSecretKey(*sk,machineOfStates); //set the SK
-		serializer1.setStateMachine(machineOfStates,virus); //set the SM
+	BilinearMappingHandler clientMapper(PARAM_FILE_PATH);
+	ObjectSerializer serializer1(clientMapper);  //new serializer (client)
+	int num_of_states = serializer1.getNumOfStatesInStateMachineFromSerialized(SM_str); //get the num of states @ SM
 
-		//construct a holder for the desirialized SK:
-		EncryptionHandler::SK desirializedSK(encHand.getBilinearMappingHandler(),&machineOfStates, msk, false);
+	StateMachine clientSM(num_of_states, 0); //create a new SM
+	serializer1.deserializeStateMachine(clientSM,SM_str);//deserialize the received SM
 
-		serializer1.getSerializedSecretKeyString(SK_str); //serialize
-		serializer1.getSerializedStateMachineString(SM_str); //serialize
+	EncryptionHandler clientEncHand(filePath, &clientSM, true); //init enc. handler
 
-		serializer2.deserializeSecretKey(desirializedSK,SK_str);  //deserialize the SK
-		int num_of_states = serializer2.getNumOfStatesInStateMachineFromSerialized(SM_str);
-		StateMachine deserializedmachineOfStates(num_of_states,0);  //create a new SM
-		serializer2.deserializeStateMachine(deserializedmachineOfStates,SM_str);//deserialize the SM
-		//done with the SK serialization test
+	EncryptionHandler::MSK* msk = clientEncHand.setup(); //gen. master key
+	EncryptionHandler::SK* sk = clientEncHand.keyGen();	//gen. secret key
+	printf("keyGen is ready\n\n");
 
-//		if (!encHand.getBilinearMappingHandler()->compareElements(sk->m_K_start1,desirializedSK.m_K_start1))
-//		    cout << "Elements match!\n";
-//		else
-//		    cout << "No match!\n";
+	memberElement theMsgElem;
+	memberElement decryptRes;
 
-		//map the bond to some random element in G1
-		encHand.mapStringToElementFromGT(theMsgElem,"BOND STRING");
+	//map the bond to some random element in G1
+	clientEncHand.mapStringToElementFromGT(theMsgElem, "BOND STRING");
 
-		EncryptionHandler::CT cipherText(msk,MAX_MSG_LENGTH);  //creating a new empty CT
-		encHand.createPartialEncryption(cipherText,virus,theMsgElem);  //generate a partial CT
-		encHand.completePartialEncryption(cipherText,virus);		//complete the enc.
-		encHand.decrypt(decryptRes,desirializedSK,cipherText,deserializedmachineOfStates);  //decrypt
+	EncryptionHandler::CT bondToSend(clientEncHand.getBilinearMappingHandler(),
+			MAX_MSG_LENGTH, true);  //creating a new empty CT
+	clientEncHand.createPartialEncryption(bondToSend, virus, theMsgElem); //generate a partial CT
 
-		BilinearMappingHandler* mapper = encHand.getBilinearMappingHandler();
+	serializer1.setSecretKey(*sk, serverSM); //set the SK
+	serializer1.setBond(bondToSend);         //set the bond
+	serializer1.getSerializedSecretKeyString(SK_str); //serialize
+	serializer1.getSerializedBondString(CT_str);   //serialize
 
-		if (!mapper->compareElements(theMsgElem, decryptRes))
-		    cout << "Elements match!\n";
-		else
-		    cout << "No match!\n";
+
+//Server:
+	//construct a holder for the desirialized SK:
+	EncryptionHandler::SK desirializedSK(
+			srvrEncHand.getBilinearMappingHandler(), &serverSM, msk, false);
+	serializer2.deserializeSecretKey(desirializedSK, SK_str); //deserialize the SK
+
+
+	EncryptionHandler::CT deserializedBond(
+			srvrEncHand.getBilinearMappingHandler(), MAX_MSG_LENGTH, false); //creating a new empty CT
+
+	serializer2.deserializeBond(deserializedBond, CT_str); //deserialize
+
+//	compareCTs(cipherText,deserializedcipherText,clientEncHand.getBilinearMappingHandler());
+
+	srvrEncHand.completePartialEncryption(deserializedBond, virus);	//complete the enc.
+	srvrEncHand.decrypt(decryptRes, desirializedSK, deserializedBond,serverSM);  //decrypt
+
+	BilinearMappingHandler* mapper = srvrEncHand.getBilinearMappingHandler();
+
+	if (!mapper->compareElements(theMsgElem, decryptRes))
+		cout << "Elements match!\n";
+	else
+		cout << "No match!\n";
 
 //		memberElement toCompress;
 //		mapper->initRandomMemberElementFromGT(toCompress);
@@ -125,25 +141,23 @@ void debug_EncryptionTest(bool isClient)
 //		else
 //		    cout << "No match!\n";
 
-
-
 	//	machineOfStates.moveToNextState('a');
-	//	cout << machineOfStates.toString() << "\n";
+	//	cout << serverSM.toString() << "\n";
 	//
 	//	machineOfStates.moveToNextState('b');
-	//	cout << machineOfStates.toString() << "\n";
+	//	cout << serverSM.toString() << "\n";
 	//
 	//	machineOfStates.moveToNextState('v');
-	//	cout << machineOfStates.toString() << "\n";
+	//	cout << serverSM.toString() << "\n";
 	//
 	//	machineOfStates.moveToNextState('i');
-	//	cout << machineOfStates.toString() << "\n";
+	//	cout << serverSM.toString() << "\n";
 	//
 	//	machineOfStates.moveToNextState('r');
-	//	cout << machineOfStates.toString() << "\n";
+	//	cout << serverSM.toString() << "\n";
 	//
 	//	machineOfStates.moveToNextState('u');
-	//	cout << machineOfStates.toString() << "\n";
+	//	cout << serverSM.toString() << "\n";
 	//
 	//	machineOfStates.moveToNextState('v');
 	//	cout << machineOfStates.toString() << "\n";
@@ -151,7 +165,7 @@ void debug_EncryptionTest(bool isClient)
 	//	machineOfStates.moveToNextState('s');
 	//	cout << machineOfStates.toString() << "\n";
 	//
-	//	const std::vector<Transition3Tuple>* vect = machineOfStates.translateStateMachineToTriples();
+	//	const std::vector<Transition3Tuple>* vect = serverSM.translateStateMachineToTriples();
 	//	for (unsigned int i=0; i < vect->size() ;i++)
 	//		cout << (*vect)[i].toString() << endl;
 }
@@ -248,5 +262,45 @@ void debug_mapperTest()
 
 }//end of debug_mapperTest
 
+void compareCTs(EncryptionHandler::CT& ct1, EncryptionHandler::CT& ct2, BilinearMappingHandler* mapper)
+{
 
+	if (!mapper->compareElements(ct1.m_C_start1,ct2.m_C_start1))
+		cout << "Elements match!\n";
+	else
+		cout << "No match!\n";
+
+	if (!mapper->compareElements(ct1.m_C_start2,ct2.m_C_start2))
+		cout << "Elements match!\n";
+	else
+		cout << "No match!\n";
+
+	if (!mapper->compareElements(ct1.m_C_end1,ct2.m_C_end1))
+		cout << "Elements match!\n";
+	else
+		cout << "No match!\n";
+
+	if (!mapper->compareElements(ct1.m_C_end2,ct2.m_C_end2))
+		cout << "Elements match!\n";
+	else
+		cout << "No match!\n";
+
+	if (!mapper->compareElements(ct1.m_Cm,ct2.m_Cm))
+		cout << "Elements match!\n";
+	else
+		cout << "No match!\n";
+
+
+	for (int i = 0; i < MAX_MSG_LENGTH; i++)
+	{
+		for (int j = 0; j < ALPHABET_SIZE + 1; j++)
+		{
+			if (!mapper->compareElements(ct1.m_Ci[j][i], ct2.m_Ci[j][i]))
+				cout << "Elements match!\n";
+			else
+				cout << "No match!\n";
+		}
+	}
+
+}
 

@@ -21,7 +21,7 @@ public:
 	StateMachineAndKey::Bond m_Bond;
 	StateMachineAndKey::StateMachine m_Machine;
 	StateMachineAndKey::SecretKey m_SK;
-	EncryptionHandler* m_encHandler;
+	BilinearMappingHandler* m_mapper;
 	bool m_isStateMachineSet, m_isSecretKeySet, m_isBondSet;
 
 
@@ -31,7 +31,7 @@ private:
 								StateMachine& SM, const std::vector<Transition3Tuple>*,int);
 
 public:
-	ObjectSerializer(EncryptionHandler&);
+	ObjectSerializer(BilinearMappingHandler&);
 	virtual ~ObjectSerializer();
 	void setStateMachine (StateMachine& SM, std::string optionalVirusString);
 	void setSecretKey (EncryptionHandler::SK& SK, StateMachine& );

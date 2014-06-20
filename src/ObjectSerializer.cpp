@@ -8,9 +8,9 @@
 
 using namespace std;
 
-ObjectSerializer::ObjectSerializer(EncryptionHandler& encHandler)
+ObjectSerializer::ObjectSerializer(BilinearMappingHandler& mapper)
 {
-	m_encHandler = &encHandler;   //set a ptr to an encryption handler.
+	m_mapper = &mapper;   //set a ptr to an encryption handler.
 	m_isBondSet = false;
 	m_isSecretKeySet = false;
 	m_isStateMachineSet = false;
@@ -28,27 +28,26 @@ void ObjectSerializer::deserializeSecretKey (EncryptionHandler::SK& saveHere,std
 {
 	//TODO MAKE SURE THIS IS RUN ONLY WITH AN SK-SHELL (Server's SK)
 
-	BilinearMappingHandler* mapper = m_encHandler->getBilinearMappingHandler(); //get the mapper
 	m_SK.ParseFromString(SK_string);  //deserialize the SK
 
 	//getting Kstart1:
-	 mapper->byteArrayToElement(saveHere.m_K_start1,(unsigned char*)m_SK.k_start1().c_str(),false);
+	 m_mapper->byteArrayToElement(saveHere.m_K_start1,(unsigned char*)m_SK.k_start1().c_str(),false);
 
 	//getting Kstart2:
-	 mapper->byteArrayToElement(saveHere.m_K_start2,(unsigned char*)m_SK.k_start2().c_str(),false);
+	 m_mapper->byteArrayToElement(saveHere.m_K_start2,(unsigned char*)m_SK.k_start2().c_str(),false);
 
 	 //getting Kt,i:
 	 int numOfTrans = m_SK.k_t_1_size();  //get the number of Kt,i
 	 for (int t=0; t<numOfTrans; t++)
 	 {
 		//getting Kt,1:
-		 mapper->byteArrayToElement(saveHere.m_K_t[0][t],(unsigned char*)m_SK.k_t_1(t).c_str(),false);
+		 m_mapper->byteArrayToElement(saveHere.m_K_t[0][t],(unsigned char*)m_SK.k_t_1(t).c_str(),false);
 
 		//getting Kt,2:
-		 mapper->byteArrayToElement(saveHere.m_K_t[1][t],(unsigned char*)m_SK.k_t_2(t).c_str(),false);
+		 m_mapper->byteArrayToElement(saveHere.m_K_t[1][t],(unsigned char*)m_SK.k_t_2(t).c_str(),false);
 
 		//getting Kt,3:
-		 mapper->byteArrayToElement(saveHere.m_K_t[2][t],(unsigned char*)m_SK.k_t_3(t).c_str(),false);
+		 m_mapper->byteArrayToElement(saveHere.m_K_t[2][t],(unsigned char*)m_SK.k_t_3(t).c_str(),false);
 	 }//for
 
 	 //getting Kendx,i
@@ -56,45 +55,48 @@ void ObjectSerializer::deserializeSecretKey (EncryptionHandler::SK& saveHere,std
 	 for (int x=0; x<numOfAcceptanceStates; x++)
 	 {
 		 //getting Kend,1:
-		 mapper->byteArrayToElement(saveHere.m_K_for_q_x[0][x],(unsigned char*)m_SK.k_for_q_x_1(x).c_str(),false);
+		 m_mapper->byteArrayToElement(saveHere.m_K_for_q_x[0][x],(unsigned char*)m_SK.k_for_q_x_1(x).c_str(),false);
 
 		 //getting Kend,2:
-		 mapper->byteArrayToElement(saveHere.m_K_for_q_x[1][x],(unsigned char*)m_SK.k_for_q_x_2(x).c_str(),false);
+		 m_mapper->byteArrayToElement(saveHere.m_K_for_q_x[1][x],(unsigned char*)m_SK.k_for_q_x_2(x).c_str(),false);
 	 }
 
 }//end of deserializeSecretKey()
 
 void ObjectSerializer::deserializeBond (EncryptionHandler::CT& saveHere, std::string bond_string)
 {
-	BilinearMappingHandler* mapper = m_encHandler->getBilinearMappingHandler(); //get the mapper
 	m_Bond.ParseFromString(bond_string);  //deserialize the Bond
 
 	//getting Cm:
-	 mapper->byteArrayToElement(saveHere.m_Cm,(unsigned char*)m_Bond.cm().c_str(),true);
+	m_mapper->byteArrayToElement(saveHere.m_Cm,(unsigned char*)m_Bond.cm().c_str(),true);
 
 	//getting Cstart1:
-	 mapper->byteArrayToElement(saveHere.m_C_start1,(unsigned char*)m_Bond.c_start1().c_str(),false);
+	m_mapper->byteArrayToElement(saveHere.m_C_start1,(unsigned char*)m_Bond.c_start1().c_str(),false);
 
 	//getting Cstart2:
-	 mapper->byteArrayToElement(saveHere.m_C_start2,(unsigned char*)m_Bond.c_start2().c_str(),false);
+	m_mapper->byteArrayToElement(saveHere.m_C_start2,(unsigned char*)m_Bond.c_start2().c_str(),false);
 
 	//getting Cend1:
-	 mapper->byteArrayToElement(saveHere.m_C_end1,(unsigned char*)m_Bond.c_end1().c_str(),false);
+	m_mapper->byteArrayToElement(saveHere.m_C_end1,(unsigned char*)m_Bond.c_end1().c_str(),false);
 
 	//getting Cend2:
-	 mapper->byteArrayToElement(saveHere.m_C_end2,(unsigned char*)m_Bond.c_end2().c_str(),false);
+	m_mapper->byteArrayToElement(saveHere.m_C_end2,(unsigned char*)m_Bond.c_end2().c_str(),false);
 
+	 int indexInC_i_2_array = 0; //will run from 0 to MAX_MSG_LENGTH*ALPHABET_SIZE
 	 int numOfCi = m_Bond.c_i_1_size();   //get the number of Ci
 	 for (int i=0; i<numOfCi ;i++)
 	 {
+
 		//getting Ci,1:
-		 mapper->byteArrayToElement(saveHere.m_Ci[0][i],(unsigned char*)m_Bond.c_i_1(i).c_str(),false);
+		 m_mapper->byteArrayToElement(saveHere.m_Ci[0][i],(unsigned char*)m_Bond.c_i_1(i).c_str(),false);
 
 		 //for all the Ci,2 possibilities:
 		 for (int j=1; j<ALPHABET_SIZE+1 ;j++)
 		 {
 			//getting Ci,2:
-			 mapper->byteArrayToElement(saveHere.m_Ci[j][i],(unsigned char*)m_Bond.c_i_2(j-1).c_str(),false);
+			 m_mapper->byteArrayToElement(saveHere.m_Ci[j][i],
+					 (unsigned char*)m_Bond.c_i_2(indexInC_i_2_array).c_str(),false);
+			 indexInC_i_2_array++; //move to the next c_i_2
 		 }
 	 }//outer for
 }//end of deserializeBond()
@@ -141,7 +143,6 @@ void ObjectSerializer::deserializeStateMachine (StateMachine& saveHere, std::str
 		for (int j=0; j<currentNumOfTrans ;j++)
 		{
 			serialzerTrans = serializerState.transitionvec(j);  	//get a transition
-			cout << serialzerTrans.input();
 			transitionTable[j][0] = serialzerTrans.input(); 	//get Sigma
 			transitionTable[j][1] = serialzerTrans.nextstate(); 	//get the next state
 		}//for every transition
@@ -159,21 +160,20 @@ void ObjectSerializer::deserializeStateMachine (StateMachine& saveHere, std::str
  */
 void ObjectSerializer::setSecretKey (EncryptionHandler::SK& SK, StateMachine& SM)
 {
-	BilinearMappingHandler* mapper = m_encHandler->getBilinearMappingHandler();  //get a ptr to a bilinear mapper
 	int n;
 	unsigned char data[MAX_ELEMENT_LENGTH_IN_BYTES];
 	string *K_t_i, *K_end_i;
 
 
 	//Kstart1:
-	n = mapper->getElementLengthInBytes(SK.m_K_start1,false);  //get the num of bytes needed to represent Kstart1
-	mapper->elementToByteArray(data,SK.m_K_start1,false);     //convert
+	n = m_mapper->getElementLengthInBytes(SK.m_K_start1,false);  //get the num of bytes needed to represent Kstart1
+	m_mapper->elementToByteArray(data,SK.m_K_start1,false);     //convert
 
 	m_SK.set_k_start1((char*)data,n);				//set Kstart1
 
 	//Kstart2:
-	n = mapper->getElementLengthInBytes(SK.m_K_start2,false);  //get the num of bytes needed to represent Kstart2
-	mapper->elementToByteArray(data,SK.m_K_start2,false);     //convert
+	n = m_mapper->getElementLengthInBytes(SK.m_K_start2,false);  //get the num of bytes needed to represent Kstart2
+	m_mapper->elementToByteArray(data,SK.m_K_start2,false);     //convert
 
 	m_SK.set_k_start2((char*)data,n);				//set Kstart2
 
@@ -181,22 +181,22 @@ void ObjectSerializer::setSecretKey (EncryptionHandler::SK& SK, StateMachine& SM
 	for (int t=0; t<SM.getTotalNumOfTransitions() ;t++)
 	{
 		//Kt,1:
-		n = mapper->getElementLengthInBytes(SK.m_K_t[0][t],false);  //get the num of bytes needed to represent Kt,1
-		mapper->elementToByteArray(data,SK.m_K_t[0][t],false);     //convert
+		n = m_mapper->getElementLengthInBytes(SK.m_K_t[0][t],false);  //get the num of bytes needed to represent Kt,1
+		m_mapper->elementToByteArray(data,SK.m_K_t[0][t],false);     //convert
 
 		K_t_i = m_SK.add_k_t_1();   //get a new, empty string for Kt,1
 		K_t_i->assign((char*)data,n);				//set Kt,1
 
 		//Kt,2:
-		n = mapper->getElementLengthInBytes(SK.m_K_t[1][t],false);  //get the num of bytes needed to represent Kt,2
-		mapper->elementToByteArray(data,SK.m_K_t[1][t],false);     //convert
+		n = m_mapper->getElementLengthInBytes(SK.m_K_t[1][t],false);  //get the num of bytes needed to represent Kt,2
+		m_mapper->elementToByteArray(data,SK.m_K_t[1][t],false);     //convert
 
 		K_t_i = m_SK.add_k_t_2();   //get a new, empty string for Kt,2
 		K_t_i->assign((char*)data,n);				//set Kt,2
 
 		//Kt,3:
-		n = mapper->getElementLengthInBytes(SK.m_K_t[2][t],false);  //get the num of bytes needed to represent Kt,3
-		mapper->elementToByteArray(data,SK.m_K_t[2][t],false);     //convert
+		n = m_mapper->getElementLengthInBytes(SK.m_K_t[2][t],false);  //get the num of bytes needed to represent Kt,3
+		m_mapper->elementToByteArray(data,SK.m_K_t[2][t],false);     //convert
 
 		K_t_i = m_SK.add_k_t_3();   //get a new, empty string for Kt,3
 		K_t_i->assign((char*)data,n);				//set Kt,3
@@ -206,15 +206,15 @@ void ObjectSerializer::setSecretKey (EncryptionHandler::SK& SK, StateMachine& SM
 	for (int x=0; x<SM.getTotalNumOfAcceptenceStates() ;x++)
 	{
 		//Kendx,1:
-		n = mapper->getElementLengthInBytes(SK.m_K_for_q_x[0][x],false);  //get the num of bytes needed to represent Kendx,1
-		mapper->elementToByteArray(data,SK.m_K_for_q_x[0][x],false);     //convert
+		n = m_mapper->getElementLengthInBytes(SK.m_K_for_q_x[0][x],false);  //get the num of bytes needed to represent Kendx,1
+		m_mapper->elementToByteArray(data,SK.m_K_for_q_x[0][x],false);     //convert
 
 		K_end_i = m_SK.add_k_for_q_x_1();   //get a new, empty string for Kendx,1
 		K_end_i->assign((char*)data,n);				//set Kendx,1
 
 		//Kendx,2:
-		n = mapper->getElementLengthInBytes(SK.m_K_for_q_x[1][x],false);  //get the num of bytes needed to represent Kendx,2
-		mapper->elementToByteArray(data,SK.m_K_for_q_x[1][x],false);     //convert
+		n = m_mapper->getElementLengthInBytes(SK.m_K_for_q_x[1][x],false);  //get the num of bytes needed to represent Kendx,2
+		m_mapper->elementToByteArray(data,SK.m_K_for_q_x[1][x],false);     //convert
 
 		K_end_i = m_SK.add_k_for_q_x_2();   //get a new, empty string for Kendx,2
 		K_end_i->assign((char*)data,n);				//set Kendx,2
@@ -232,68 +232,60 @@ void ObjectSerializer::setSecretKey (EncryptionHandler::SK& SK, StateMachine& SM
  */
 void ObjectSerializer::setBond (EncryptionHandler::CT& CT)
 {
-	BilinearMappingHandler* mapper = m_encHandler->getBilinearMappingHandler();  //get a ptr to a bilinear mapper
 	int n;
 	unsigned char data[MAX_ELEMENT_LENGTH_IN_BYTES];
 	string *C_i_1, *C_i_2;
 
 	//Cm:
-	n = mapper->getElementLengthInBytes(CT.m_Cm,true);  //get the num of bytes needed to represent Cm
-	mapper->elementToByteArray(data,CT.m_Cm,true);     //convert
-	data[n]='\0';            //modify data to be a valid cstring
+	n = m_mapper->getElementLengthInBytes(CT.m_Cm,true);  //get the num of bytes needed to represent Cm
+	m_mapper->elementToByteArray(data,CT.m_Cm,true);     //convert
 
-	m_Bond.set_cm((char*)data);				//set Cm
+	m_Bond.set_cm((char*)data,n);				//set Cm
 
 	//Cstart1:
-	n = mapper->getElementLengthInBytes(CT.m_C_start1,false);  //get the num of bytes needed to represent Cstart1
-	mapper->elementToByteArray(data,CT.m_C_start1,false);     //convert
-	data[n]='\0';            //modify data to be a valid cstring
+	n = m_mapper->getElementLengthInBytes(CT.m_C_start1,false);  //get the num of bytes needed to represent Cstart1
+	m_mapper->elementToByteArray(data,CT.m_C_start1,false);     //convert
 
-	m_Bond.set_c_start1((char*)data);				//set Cstart1
+	m_Bond.set_c_start1((char*)data,n);				//set Cstart1
 
 	//Cstart2:
-	n = mapper->getElementLengthInBytes(CT.m_C_start2,false);  //get the num of bytes needed to represent Cstart2
-	mapper->elementToByteArray(data,CT.m_C_start2,false);     //convert
-	data[n]='\0';            //modify data to be a valid cstring
+	n = m_mapper->getElementLengthInBytes(CT.m_C_start2,false);  //get the num of bytes needed to represent Cstart2
+	m_mapper->elementToByteArray(data,CT.m_C_start2,false);     //convert
 
-	m_Bond.set_c_start2((char*)data);				//set Cstart2
+	m_Bond.set_c_start2((char*)data,n);				//set Cstart2
 
 	//Cend1:
-	n = mapper->getElementLengthInBytes(CT.m_C_end1,false);  //get the num of bytes needed to represent Cend1
-	mapper->elementToByteArray(data,CT.m_C_end1,false);     //convert
-	data[n]='\0';            //modify data to be a valid cstring
+	n = m_mapper->getElementLengthInBytes(CT.m_C_end1,false);  //get the num of bytes needed to represent Cend1
+	m_mapper->elementToByteArray(data,CT.m_C_end1,false);     //convert
 
-	m_Bond.set_c_end1((char*)data);				//set Cend1
+	m_Bond.set_c_end1((char*)data,n);				//set Cend1
 
 	//Cend2:
-	n = mapper->getElementLengthInBytes(CT.m_C_end2,false);  //get the num of bytes needed to represent Cend2
-	mapper->elementToByteArray(data,CT.m_C_end2,false);     //convert
-	data[n]='\0';            //modify data to be a valid cstring
+	n = m_mapper->getElementLengthInBytes(CT.m_C_end2,false);  //get the num of bytes needed to represent Cend2
+	m_mapper->elementToByteArray(data,CT.m_C_end2,false);     //convert
 
-	m_Bond.set_c_end2((char*)data);				//set Cend2
+	m_Bond.set_c_end2((char*)data,n);				//set Cend2
 
 	//Ci,1 and Ci,2:
 	//i is the current column
 	for (int i=0; i<MAX_MSG_LENGTH ;i++)
 	{
 		//adding Ci,1:
-		n = mapper->getElementLengthInBytes(CT.m_Ci[0][i],false);  //get the num of bytes needed to represent Ci,1
-		mapper->elementToByteArray(data,CT.m_Ci[0][i],false);     //convert
-		data[n]='\0';            //modify data to be a valid cstring
+		n = m_mapper->getElementLengthInBytes(CT.m_Ci[0][i],false);  //get the num of bytes needed to represent Ci,1
+		m_mapper->elementToByteArray(data,CT.m_Ci[0][i],false);     //convert
 
 		C_i_1 = m_Bond.add_c_i_1();      //get a new empty string
-		C_i_1->assign((char*)data);				//set Ci,1
+		C_i_1->assign((char*)data,n);				//set Ci,1
 
 		//j is the current row
 		for (int j=1; j<ALPHABET_SIZE+1 ;j++)
 		{
 			//adding all possible Ci,2:
-			n = mapper->getElementLengthInBytes(CT.m_Ci[j][i],false);  //get the num of bytes needed to represent Ci,2
-			mapper->elementToByteArray(data,CT.m_Ci[j][i],false);     //convert
-			data[n]='\0';            //modify data to be a valid cstring
+			n = m_mapper->getElementLengthInBytes(CT.m_Ci[j][i],false);  //get the num of bytes needed to represent Ci,2
+			m_mapper->elementToByteArray(data,CT.m_Ci[j][i],false);     //convert
 
 			C_i_2 = m_Bond.add_c_i_2();      //get a new empty string
-			C_i_2->assign((char*)data);				//set Ci,2
+			C_i_2->assign((char*)data,n);				//set Ci,2
 
 		}//inner for
 	}//outer for

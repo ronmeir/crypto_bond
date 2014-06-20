@@ -161,7 +161,7 @@ void EncryptionHandler::completePartialEncryption(CT& partial_ct,
 	partial_ct.mVirus = virus;  //set the virus
 
 	partial_ct.mIsPartialCT = false; //note that this encryption is no longer partial
-	printf(" encryption is done!\n\n");
+	printf("encryption is done!\n\n");
 }       //end of completePartialEncryption()
 
 /**
@@ -585,9 +585,9 @@ EncryptionHandler::MSK::~MSK()
 /*
  * @param msk
  */
-EncryptionHandler::CT::CT(const MSK* msk, int virusLength)
+EncryptionHandler::CT::CT(BilinearMappingHandler* mapper, int virusLength, bool isClient)
 {
-	mMapper = msk->mMapper;
+	mMapper = mapper;
 	mIsPartialCT = true;
 
 	m_Ci = new memberElement*[ALPHABET_SIZE + 1]; //allocate the 1st dimension

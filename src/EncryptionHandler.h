@@ -114,7 +114,7 @@ public:
 			bool mIsPartialCT;
 			std::string mVirus;
 
-			CT(const MSK* msk, int virus_string_length);
+			CT(BilinearMappingHandler* mapper, int virus_string_length,bool isClient);
 			void get_C_i_1 (memberElement& ans, int i);
 			void get_C_i_2 (memberElement& ans, int i, unsigned char letter, bool isUsedWithPartialCT);
 			virtual ~CT();
