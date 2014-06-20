@@ -30,7 +30,7 @@ void compareCTs(EncryptionHandler::CT& ct1, EncryptionHandler::CT& ct2, Bilinear
 
 int main()
 {
-#if !DEBUG
+#if DEBUG
 	printf("running....");
 	ClientMachine client("user","ip1","ip2");
 	client.run();
@@ -43,7 +43,7 @@ int main()
 	google::protobuf::ShutdownProtobufLibrary();
 #else
 	//debug_mapperTest();
-	debug_EncryptionTest(true);
+//	debug_EncryptionTest(true);
 #endif
 
 	return 0;
