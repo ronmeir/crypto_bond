@@ -14,9 +14,9 @@ ObjectSerializer::ObjectSerializer(EncryptionHandler& encHandler)
 	m_isBondSet = false;
 	m_isSecretKeySet = false;
 	m_isStateMachineSet = false;
-  // Verify that the version of the library that we linked against is
-  // compatible with the version of the headers we compiled against.
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
+    // Verify that the version of the library that we linked against is
+    // compatible with the version of the headers we compiled against:
+    GOOGLE_PROTOBUF_VERIFY_VERSION;
 }//end of constructor
 
 /*
@@ -26,7 +26,7 @@ ObjectSerializer::ObjectSerializer(EncryptionHandler& encHandler)
  */
 void ObjectSerializer::deserializeSecretKey (EncryptionHandler::SK& saveHere,std::string SK_string)
 {
-	//TODO MAKE SURE THIS IS RUN ONLY WITH AN SK-SHELL
+	//TODO MAKE SURE THIS IS RUN ONLY WITH AN SK-SHELL (Server's SK)
 
 	BilinearMappingHandler* mapper = m_encHandler->getBilinearMappingHandler(); //get the mapper
 	m_SK.ParseFromString(SK_string);  //deserialize the SK
@@ -160,7 +160,7 @@ void ObjectSerializer::setSecretKey (EncryptionHandler::SK& SK, StateMachine& SM
 {
 	BilinearMappingHandler* mapper = m_encHandler->getBilinearMappingHandler();  //get a ptr to a bilinear mapper
 	int n;
-	unsigned char data[512];
+	unsigned char data[MAX_ELEMENT_LENGTH_IN_BYTES];
 	string *K_t_i, *K_end_i;
 
 
@@ -240,7 +240,7 @@ void ObjectSerializer::setBond (EncryptionHandler::CT& CT)
 {
 	BilinearMappingHandler* mapper = m_encHandler->getBilinearMappingHandler();  //get a ptr to a bilinear mapper
 	int n;
-	unsigned char data[512];
+	unsigned char data[MAX_ELEMENT_LENGTH_IN_BYTES];
 	string *C_i_1, *C_i_2;
 
 	//Cm:

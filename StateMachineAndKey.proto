@@ -17,7 +17,6 @@
 	  optional int32 l_numOfCs = 	8;	//the number of Cs needed - 'l' in the paper
 	}//end of Bond
 	
-	
 	//DONE WITH THE BOND!!!!
 	
 	
@@ -61,16 +60,13 @@
 		repeated string K_t_1 = 1;
 		repeated string K_t_2 = 2;
 		repeated string K_t_3 = 3;
-	    
-	    
-	    
+	  
 	  //in the cpp file memberElement** m_K_for_q_x	; //size() = [2][#acceptance-states]
 	  //therefore we'll use 2 'memberElement vectors ' to represent the memberElement** m_K_for_q_x matrix
 	  // denoted as m_K_for_q_x_1,  m_K_for_q_x_2
 	  
 		repeated string K_for_q_x_1 = 4;
 		repeated string K_for_q_x_2 = 5;
-	    
 	    
 	  //memberElement K_start1,m_K_start2    from the article paper
 	  

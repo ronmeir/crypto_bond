@@ -16,17 +16,19 @@
 #include "EncryptionHandler.h"
 #include "Constants.h"
 #include "ClientMachine.h"
+#define DEBUG 1
 
 using namespace std;                      //using the 'string' library
 
 void debug_initializeStateMachine(StateMachine* machine);
 void debug_mapperTest();
-void debug_EncryptionTest();
+void debug_EncryptionTest(bool);
 
 //program parameters: machine type (user/server/ca), user id, server and CA IP (relevant for the user only)
 
 int main()
 {
+#if !DEBUG
 	printf("running....");
 	ClientMachine client("user","ip1","ip2");
 	client.run();
@@ -37,6 +39,9 @@ int main()
 	}
 
 	google::protobuf::ShutdownProtobufLibrary();
+#else
+	debug_EncryptionTest(true);
+#endif
 
 	return 0;
 }//end of main()
@@ -77,27 +82,6 @@ void debug_EncryptionTest(bool isClient)
 		    cout << "Elements match!\n";
 		else
 		    cout << "No match!\n";
-
-		//TESTING THE COMPRESSION FEATURE FOR G1 ELEMENTS
-	//
-	//	memberElement toCompress;
-	//	mapper->initRandomMemberElementFromG1(toCompress);
-	//
-	//	int n = mapper->getElementLengthInBytes(toCompress,false);
-	//	unsigned char *data = (unsigned char*)malloc(n);
-	//	mapper->elementToByteArray(data, toCompress,false);
-	//
-	//	memberElement decompressed;
-	//	mapper->initEmptyMemberElementFromG1(decompressed);
-	//
-	//	mapper->byteArrayToElement(decompressed,data,false);
-	//
-	//	if (!mapper->compareElements(toCompress, decompressed))
-	//	    cout << "Elements match!\n";
-	//	else
-	//	    cout << "No match!\n";
-
-		//TESTING THE COMPRESSION FEATURE FOR GT ELEMENTS
 
 		memberElement toCompress;
 		mapper->initRandomMemberElementFromGT(toCompress);
