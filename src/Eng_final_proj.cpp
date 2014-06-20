@@ -53,6 +53,7 @@ void debug_EncryptionTest(bool isClient)
 	//	debug_mapperTest();
 
 		char* filePath = PARAM_FILE_PATH;
+		string SK_str, SM_str, CT_str;
 
 		//TODO MAKE SURE ALL OF THE FOLLOWIN 3 PARAMETERS MATCH:
 		StateMachine machineOfStates(6,0); //a new machine with 6 states. initial state is '0'
@@ -68,23 +69,29 @@ void debug_EncryptionTest(bool isClient)
 		memberElement theMsgElem;
 		memberElement decryptRes;
 
-		//SK serialization test:
+		//Serialization test:
 		ObjectSerializer serializer1(encHand);  //new serializer
 		ObjectSerializer serializer2(encHand);  //new serializer
+
 		serializer1.setSecretKey(*sk,machineOfStates); //set the SK
+		serializer1.setStateMachine(machineOfStates,virus); //set the SM
 
 		//construct a holder for the desirialized SK:
 		EncryptionHandler::SK desirializedSK(encHand.getBilinearMappingHandler(),&machineOfStates, msk, false);
-		string str;
 
-		serializer1.getSerializedSecretKeyString(str); //serialize
-		serializer2.deserializeSecretKey(desirializedSK,str);
+		serializer1.getSerializedSecretKeyString(SK_str); //serialize
+		serializer1.getSerializedStateMachineString(SM_str); //serialize
+
+		serializer2.deserializeSecretKey(desirializedSK,SK_str);  //deserialize the SK
+		int num_of_states = serializer2.getNumOfStatesInStateMachineFromSerialized(SM_str);
+		StateMachine deserializedmachineOfStates(num_of_states,0);  //create a new SM
+		serializer2.deserializeStateMachine(deserializedmachineOfStates,SM_str);//deserialize the SM
 		//done with the SK serialization test
 
-		if (!encHand.getBilinearMappingHandler()->compareElements(sk->m_K_start1,desirializedSK.m_K_start1))
-		    cout << "Elements match!\n";
-		else
-		    cout << "No match!\n";
+//		if (!encHand.getBilinearMappingHandler()->compareElements(sk->m_K_start1,desirializedSK.m_K_start1))
+//		    cout << "Elements match!\n";
+//		else
+//		    cout << "No match!\n";
 
 		//map the bond to some random element in G1
 		encHand.mapStringToElementFromGT(theMsgElem,"BOND STRING");
@@ -92,7 +99,7 @@ void debug_EncryptionTest(bool isClient)
 		EncryptionHandler::CT cipherText(msk,MAX_MSG_LENGTH);  //creating a new empty CT
 		encHand.createPartialEncryption(cipherText,virus,theMsgElem);  //generate a partial CT
 		encHand.completePartialEncryption(cipherText,virus);		//complete the enc.
-		encHand.decrypt(decryptRes,desirializedSK,cipherText,machineOfStates);  //decrypt
+		encHand.decrypt(decryptRes,desirializedSK,cipherText,deserializedmachineOfStates);  //decrypt
 
 		BilinearMappingHandler* mapper = encHand.getBilinearMappingHandler();
 
@@ -101,22 +108,22 @@ void debug_EncryptionTest(bool isClient)
 		else
 		    cout << "No match!\n";
 
-		memberElement toCompress;
-		mapper->initRandomMemberElementFromGT(toCompress);
-
-		int n = mapper->getElementLengthInBytes(toCompress,true);
-		unsigned char *data = (unsigned char*)malloc(n);
-		mapper->elementToByteArray(data, toCompress,true);
-
-		memberElement decompressed;
-		mapper->initEmptyMemberElementFromGT(decompressed);
-
-		mapper->byteArrayToElement(decompressed,data,true);
-
-		if (!mapper->compareElements(toCompress, decompressed))
-		    cout << "Elements match!\n";
-		else
-		    cout << "No match!\n";
+//		memberElement toCompress;
+//		mapper->initRandomMemberElementFromGT(toCompress);
+//
+//		int n = mapper->getElementLengthInBytes(toCompress,true);
+//		unsigned char *data = (unsigned char*)malloc(n);
+//		mapper->elementToByteArray(data, toCompress,true);
+//
+//		memberElement decompressed;
+//		mapper->initEmptyMemberElementFromGT(decompressed);
+//
+//		mapper->byteArrayToElement(decompressed,data,true);
+//
+//		if (!mapper->compareElements(toCompress, decompressed))
+//		    cout << "Elements match!\n";
+//		else
+//		    cout << "No match!\n";
 
 
 

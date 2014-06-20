@@ -190,7 +190,7 @@ void protobuf_AddDesc_StateMachineAndKey_2eproto() {
     "\007 \002(\014\022\021\n\tl_numOfCs\030\010 \001(\005\"\200\002\n\014StateMachin"
     "e\0228\n\010StateVec\030\001 \003(\0132&.StateMachineAndKey"
     ".StateMachine.State\022\r\n\005virus\030\002 \001(\t\032.\n\nTr"
-    "ansition\022\r\n\005input\030\001 \002(\t\022\021\n\tnextState\030\002 \002"
+    "ansition\022\r\n\005input\030\001 \002(\005\022\021\n\tnextState\030\002 \002"
     "(\005\032w\n\005State\022B\n\rtransitionVec\030\001 \003(\0132+.Sta"
     "teMachineAndKey.StateMachine.Transition\022"
     "\031\n\021isAcceptanceState\030\002 \002(\010\022\017\n\007stateID\030\003 "
@@ -769,7 +769,7 @@ StateMachine_Transition::StateMachine_Transition(const StateMachine_Transition& 
 
 void StateMachine_Transition::SharedCtor() {
   _cached_size_ = 0;
-  input_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  input_ = 0;
   nextstate_ = 0;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
@@ -779,9 +779,6 @@ StateMachine_Transition::~StateMachine_Transition() {
 }
 
 void StateMachine_Transition::SharedDtor() {
-  if (input_ != &::google::protobuf::internal::kEmptyString) {
-    delete input_;
-  }
   if (this != default_instance_) {
   }
 }
@@ -809,11 +806,7 @@ StateMachine_Transition* StateMachine_Transition::New() const {
 
 void StateMachine_Transition::Clear() {
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (has_input()) {
-      if (input_ != &::google::protobuf::internal::kEmptyString) {
-        input_->clear();
-      }
-    }
+    input_ = 0;
     nextstate_ = 0;
   }
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
@@ -826,15 +819,14 @@ bool StateMachine_Transition::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   while ((tag = input->ReadTag()) != 0) {
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // required string input = 1;
+      // required int32 input = 1;
       case 1: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_input()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-            this->input().data(), this->input().length(),
-            ::google::protobuf::internal::WireFormat::PARSE);
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &input_)));
+          set_has_input();
         } else {
           goto handle_uninterpreted;
         }
@@ -876,13 +868,9 @@ bool StateMachine_Transition::MergePartialFromCodedStream(
 
 void StateMachine_Transition::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // required string input = 1;
+  // required int32 input = 1;
   if (has_input()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->input().data(), this->input().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    ::google::protobuf::internal::WireFormatLite::WriteString(
-      1, this->input(), output);
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(1, this->input(), output);
   }
 
   // required int32 nextState = 2;
@@ -898,14 +886,9 @@ void StateMachine_Transition::SerializeWithCachedSizes(
 
 ::google::protobuf::uint8* StateMachine_Transition::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // required string input = 1;
+  // required int32 input = 1;
   if (has_input()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->input().data(), this->input().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        1, this->input(), target);
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(1, this->input(), target);
   }
 
   // required int32 nextState = 2;
@@ -924,10 +907,10 @@ int StateMachine_Transition::ByteSize() const {
   int total_size = 0;
 
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    // required string input = 1;
+    // required int32 input = 1;
     if (has_input()) {
       total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::StringSize(
+        ::google::protobuf::internal::WireFormatLite::Int32Size(
           this->input());
     }
 

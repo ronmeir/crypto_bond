@@ -24,20 +24,22 @@ public:
 	EncryptionHandler* m_encHandler;
 	bool m_isStateMachineSet, m_isSecretKeySet, m_isBondSet;
 
+
 	//methods:
+private:
 	void setSingleState(StateMachineAndKey::StateMachine_State* state,
 								StateMachine& SM, const std::vector<Transition3Tuple>*,int);
 
 public:
 	ObjectSerializer(EncryptionHandler&);
 	virtual ~ObjectSerializer();
-	void setStateMachine (StateMachine& SM, std::string);
+	void setStateMachine (StateMachine& SM, std::string optionalVirusString);
 	void setSecretKey (EncryptionHandler::SK& SK, StateMachine& );
 	void setBond (EncryptionHandler::CT& CT);
 	void getSerializedStateMachineString(std::string&);
 	void getSerializedSecretKeyString(std::string&);
 	void getSerializedBondString(std::string&);
-	int getNumOfStatesInStateMachineFromSerialized (std::string SM_string);
+	int  getNumOfStatesInStateMachineFromSerialized (std::string SM_string);
 	void deserializeStateMachine (StateMachine& saveHere, std::string SM_string);
 	void deserializeSecretKey (EncryptionHandler::SK& saveHere,std::string SK_string);
 	void deserializeBond (EncryptionHandler::CT& saveHere, std::string bond_string);

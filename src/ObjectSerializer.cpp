@@ -31,12 +31,6 @@ void ObjectSerializer::deserializeSecretKey (EncryptionHandler::SK& saveHere,std
 	BilinearMappingHandler* mapper = m_encHandler->getBilinearMappingHandler(); //get the mapper
 	m_SK.ParseFromString(SK_string);  //deserialize the SK
 
-	cout << "the received string is of length:" <<
-			m_SK.k_start1().length() << "and is:" << m_SK.k_start1() << endl;
-
-	cout << "the received string is of length:" <<
-			m_SK.k_start2().length() << "and is:" << m_SK.k_start2() << endl;
-
 	//getting Kstart1:
 	 mapper->byteArrayToElement(saveHere.m_K_start1,(unsigned char*)m_SK.k_start1().c_str(),false);
 
@@ -147,7 +141,8 @@ void ObjectSerializer::deserializeStateMachine (StateMachine& saveHere, std::str
 		for (int j=0; j<currentNumOfTrans ;j++)
 		{
 			serialzerTrans = serializerState.transitionvec(j);  	//get a transition
-			transitionTable[j][0] = serialzerTrans.input().at(0); 	//get Sigma
+			cout << serialzerTrans.input();
+			transitionTable[j][0] = serialzerTrans.input(); 	//get Sigma
 			transitionTable[j][1] = serialzerTrans.nextstate(); 	//get the next state
 		}//for every transition
 
@@ -176,19 +171,11 @@ void ObjectSerializer::setSecretKey (EncryptionHandler::SK& SK, StateMachine& SM
 
 	m_SK.set_k_start1((char*)data,n);				//set Kstart1
 
-
-	cout << "the sent string is of length:" <<
-			m_SK.k_start1().length() << "and is:" << m_SK.k_start1() << endl;
-
-
 	//Kstart2:
 	n = mapper->getElementLengthInBytes(SK.m_K_start2,false);  //get the num of bytes needed to represent Kstart2
 	mapper->elementToByteArray(data,SK.m_K_start2,false);     //convert
 
 	m_SK.set_k_start2((char*)data,n);				//set Kstart2
-
-	cout << "the sent string is of length:" <<
-			m_SK.k_start2().length() << "and is:" << m_SK.k_start2() << endl;
 
 	//K_t_i  (3 elements for every transition)
 	for (int t=0; t<SM.getTotalNumOfTransitions() ;t++)
@@ -365,7 +352,7 @@ void ObjectSerializer::setSingleState(StateMachineAndKey::StateMachine_State* sa
 		{
 			StateMachineAndKey::StateMachine_Transition* transInSerializer =
 					saveHere->add_transitionvec();         //get a new, empty transition
-			transInSerializer->set_input( ""+trans3tuple.get_Sigma() ); //set sigma
+			transInSerializer->set_input( trans3tuple.get_Sigma() ); //set sigma
 			transInSerializer->set_nextstate(trans3tuple.get_Y());  //set Y
 		}
 		currentIndexInTransVector++; //advance

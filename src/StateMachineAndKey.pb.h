@@ -286,17 +286,12 @@ class StateMachine_Transition : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
-  // required string input = 1;
+  // required int32 input = 1;
   inline bool has_input() const;
   inline void clear_input();
   static const int kInputFieldNumber = 1;
-  inline const ::std::string& input() const;
-  inline void set_input(const ::std::string& value);
-  inline void set_input(const char* value);
-  inline void set_input(const char* value, size_t size);
-  inline ::std::string* mutable_input();
-  inline ::std::string* release_input();
-  inline void set_allocated_input(::std::string* input);
+  inline ::google::protobuf::int32 input() const;
+  inline void set_input(::google::protobuf::int32 value);
 
   // required int32 nextState = 2;
   inline bool has_nextstate() const;
@@ -314,7 +309,7 @@ class StateMachine_Transition : public ::google::protobuf::Message {
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
-  ::std::string* input_;
+  ::google::protobuf::int32 input_;
   ::google::protobuf::int32 nextstate_;
 
   mutable int _cached_size_;
@@ -1193,7 +1188,7 @@ inline void Bond::set_l_numofcs(::google::protobuf::int32 value) {
 
 // StateMachine_Transition
 
-// required string input = 1;
+// required int32 input = 1;
 inline bool StateMachine_Transition::has_input() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
@@ -1204,63 +1199,15 @@ inline void StateMachine_Transition::clear_has_input() {
   _has_bits_[0] &= ~0x00000001u;
 }
 inline void StateMachine_Transition::clear_input() {
-  if (input_ != &::google::protobuf::internal::kEmptyString) {
-    input_->clear();
-  }
+  input_ = 0;
   clear_has_input();
 }
-inline const ::std::string& StateMachine_Transition::input() const {
-  return *input_;
-}
-inline void StateMachine_Transition::set_input(const ::std::string& value) {
-  set_has_input();
-  if (input_ == &::google::protobuf::internal::kEmptyString) {
-    input_ = new ::std::string;
-  }
-  input_->assign(value);
-}
-inline void StateMachine_Transition::set_input(const char* value) {
-  set_has_input();
-  if (input_ == &::google::protobuf::internal::kEmptyString) {
-    input_ = new ::std::string;
-  }
-  input_->assign(value);
-}
-inline void StateMachine_Transition::set_input(const char* value, size_t size) {
-  set_has_input();
-  if (input_ == &::google::protobuf::internal::kEmptyString) {
-    input_ = new ::std::string;
-  }
-  input_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* StateMachine_Transition::mutable_input() {
-  set_has_input();
-  if (input_ == &::google::protobuf::internal::kEmptyString) {
-    input_ = new ::std::string;
-  }
+inline ::google::protobuf::int32 StateMachine_Transition::input() const {
   return input_;
 }
-inline ::std::string* StateMachine_Transition::release_input() {
-  clear_has_input();
-  if (input_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = input_;
-    input_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void StateMachine_Transition::set_allocated_input(::std::string* input) {
-  if (input_ != &::google::protobuf::internal::kEmptyString) {
-    delete input_;
-  }
-  if (input) {
-    set_has_input();
-    input_ = input;
-  } else {
-    clear_has_input();
-    input_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
+inline void StateMachine_Transition::set_input(::google::protobuf::int32 value) {
+  set_has_input();
+  input_ = value;
 }
 
 // required int32 nextState = 2;

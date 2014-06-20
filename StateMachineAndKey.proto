@@ -32,7 +32,7 @@
 			message Transition
 			{
 			//in this method of a single transition implementation, we assume that the current state is known
-			  required string input =	 1;	//the input received in the state machine
+			  required int32 input =	 1;	//the input received in the state machine
 			  required int32 nextState = 2;	//the next state the machine should move to
 	
 			}//end of Transition
