@@ -7,13 +7,13 @@
 	
 	message Bond    //A CipherText, containing the encrypted bond
 	{
-	  repeated string c_i_1 = 		1;
-	  repeated string c_i_2 = 		2;
-	  required string Cm = 			3;	//encrypted bond
-	  required string C_start1 = 	4;
-	  required string C_start2 = 	5;
-	  required string C_end1 = 		6;
-	  required string C_end2 = 		7;
+	  repeated bytes c_i_1 = 		1;
+	  repeated bytes c_i_2 = 		2;
+	  required bytes Cm = 			3;	//encrypted bond
+	  required bytes C_start1 = 	4;
+	  required bytes C_start2 = 	5;
+	  required bytes C_end1 = 		6;
+	  required bytes C_end2 = 		7;
 	  optional int32 l_numOfCs = 	8;	//the number of Cs needed - 'l' in the paper
 	}//end of Bond
 	
@@ -57,21 +57,21 @@
 	  //therefore we'll use 3 'memberElement vectors ' to represent the memberElement** m_K_t matrix
 	  // denoted as m_K_t_1 , m_K_t_2, m_K_t_3
 	  
-		repeated string K_t_1 = 1;
-		repeated string K_t_2 = 2;
-		repeated string K_t_3 = 3;
+		repeated bytes K_t_1 = 1;
+		repeated bytes K_t_2 = 2;
+		repeated bytes K_t_3 = 3;
 	  
 	  //in the cpp file memberElement** m_K_for_q_x	; //size() = [2][#acceptance-states]
 	  //therefore we'll use 2 'memberElement vectors ' to represent the memberElement** m_K_for_q_x matrix
 	  // denoted as m_K_for_q_x_1,  m_K_for_q_x_2
 	  
-		repeated string K_for_q_x_1 = 4;
-		repeated string K_for_q_x_2 = 5;
+		repeated bytes K_for_q_x_1 = 4;
+		repeated bytes K_for_q_x_2 = 5;
 	    
 	  //memberElement K_start1,m_K_start2    from the article paper
 	  
-		required string  K_start1 = 	6;
-		required string  K_start2 = 	7; 
+		required bytes  K_start1 = 	6;
+		required bytes  K_start2 = 	7; 
 		
 	}//end of SecretKey
 	

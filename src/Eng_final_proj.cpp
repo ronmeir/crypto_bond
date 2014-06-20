@@ -16,6 +16,7 @@
 #include "EncryptionHandler.h"
 #include "Constants.h"
 #include "ClientMachine.h"
+#include "ObjectSerializer.h"
 #define DEBUG 1
 
 using namespace std;                      //using the 'string' library
@@ -40,6 +41,7 @@ int main()
 
 	google::protobuf::ShutdownProtobufLibrary();
 #else
+	//debug_mapperTest();
 	debug_EncryptionTest(true);
 #endif
 
@@ -60,21 +62,37 @@ void debug_EncryptionTest(bool isClient)
 		EncryptionHandler encHand(filePath,&machineOfStates,isClient); //init enc. handler
 		printf("EncryptionHandler is ready\n\n");
 
-		const EncryptionHandler::MSK* msk = encHand.setup(); //gen. master key
+		EncryptionHandler::MSK* msk = encHand.setup(); //gen. master key
 		EncryptionHandler::SK* sk = encHand.keyGen();	//gen. secret key
 		printf("keyGen is ready\n\n");
 		memberElement theMsgElem;
 		memberElement decryptRes;
 
+		//SK serialization test:
+		ObjectSerializer serializer1(encHand);  //new serializer
+		ObjectSerializer serializer2(encHand);  //new serializer
+		serializer1.setSecretKey(*sk,machineOfStates); //set the SK
+
+		//construct a holder for the desirialized SK:
+		EncryptionHandler::SK desirializedSK(encHand.getBilinearMappingHandler(),&machineOfStates, msk, false);
+		string str;
+
+		serializer1.getSerializedSecretKeyString(str); //serialize
+		serializer2.deserializeSecretKey(desirializedSK,str);
+		//done with the SK serialization test
+
+		if (!encHand.getBilinearMappingHandler()->compareElements(sk->m_K_start1,desirializedSK.m_K_start1))
+		    cout << "Elements match!\n";
+		else
+		    cout << "No match!\n";
+
 		//map the bond to some random element in G1
 		encHand.mapStringToElementFromGT(theMsgElem,"BOND STRING");
-
-		//element_printf("%B\n", theMsgElem);
 
 		EncryptionHandler::CT cipherText(msk,MAX_MSG_LENGTH);  //creating a new empty CT
 		encHand.createPartialEncryption(cipherText,virus,theMsgElem);  //generate a partial CT
 		encHand.completePartialEncryption(cipherText,virus);		//complete the enc.
-		encHand.decrypt(decryptRes,*sk,cipherText,machineOfStates);  //decrypt
+		encHand.decrypt(decryptRes,desirializedSK,cipherText,machineOfStates);  //decrypt
 
 		BilinearMappingHandler* mapper = encHand.getBilinearMappingHandler();
 
@@ -204,44 +222,22 @@ void debug_mapperTest()
 	BilinearMappingHandler mapper (filePath);
 
 	mapper.initRandomMemberElementFromG1(g1);
-	mapper.initRandomMemberElementFromG2(g2);
-	mapper.initRandomExpElement(x);
-	mapper.initRandomExpElement(y);
-	mapper.initEmptyMemberElementFromGT(temp1);
-	mapper.initEmptyMemberElementFromGT(temp2);
-	mapper.initEmptyMemberElementFromG1(powered1);
-	mapper.initEmptyMemberElementFromG2(powered2);
+	mapper.initEmptyMemberElementFromG1(g2);
 
-	mapper.power_Zn(powered1,g1,y);
-	mapper.power_Zn(powered2,g2,x);
-	mapper.bilinearMap(temp1,powered1,powered2);
+	unsigned char data [1024];
+	int n;
 
-	mapper.power_Zn(powered1,g1,y);
-	mapper.power_Zn(powered2,g2,x);
-	mapper.bilinearMap(temp2,powered1,powered2);
+	n = mapper.getElementLengthInBytes(g1,false);
+	mapper.elementToByteArray(data,g1,false);
 
-	if (!mapper.compareElements(temp1, temp2))
+	mapper.byteArrayToElement(g2,data,false);
+
+
+	if (!mapper.compareElements(g1, g2))
 	    cout << "Elements match!\n";
 	else
 	    cout << "No match!\n";
 
-	//mixing stuff up, so the elements shouldn't match:
-	mapper.power_Zn(powered1,g1,x);
-	mapper.power_Zn(powered2,g2,x);
-	mapper.bilinearMap(temp2,powered1,powered2);
-
-	if (!mapper.compareElements(temp1, temp2))
-	    cout << "Elements match!\n" ;
-	else
-	    cout << "No match!\n";
-
-	//checking the cpy func:
-	mapper.element_cpy(temp1,temp2);
-
-	if (!mapper.compareElements(temp1, temp2))
-	    cout << "Elements match!\n" ;
-	else
-	    cout << "No match!\n";
 
 }//end of debug_mapperTest
 

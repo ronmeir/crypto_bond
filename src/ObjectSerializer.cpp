@@ -31,6 +31,12 @@ void ObjectSerializer::deserializeSecretKey (EncryptionHandler::SK& saveHere,std
 	BilinearMappingHandler* mapper = m_encHandler->getBilinearMappingHandler(); //get the mapper
 	m_SK.ParseFromString(SK_string);  //deserialize the SK
 
+	cout << "the received string is of length:" <<
+			m_SK.k_start1().length() << "and is:" << m_SK.k_start1() << endl;
+
+	cout << "the received string is of length:" <<
+			m_SK.k_start2().length() << "and is:" << m_SK.k_start2() << endl;
+
 	//getting Kstart1:
 	 mapper->byteArrayToElement(saveHere.m_K_start1,(unsigned char*)m_SK.k_start1().c_str(),false);
 
@@ -167,16 +173,22 @@ void ObjectSerializer::setSecretKey (EncryptionHandler::SK& SK, StateMachine& SM
 	//Kstart1:
 	n = mapper->getElementLengthInBytes(SK.m_K_start1,false);  //get the num of bytes needed to represent Kstart1
 	mapper->elementToByteArray(data,SK.m_K_start1,false);     //convert
-	data[n]='\0';            //modify data to be a valid cstring
 
-	m_SK.set_k_start1((char*)data);				//set Kstart1
+	m_SK.set_k_start1((char*)data,n);				//set Kstart1
+
+
+	cout << "the sent string is of length:" <<
+			m_SK.k_start1().length() << "and is:" << m_SK.k_start1() << endl;
+
 
 	//Kstart2:
 	n = mapper->getElementLengthInBytes(SK.m_K_start2,false);  //get the num of bytes needed to represent Kstart2
 	mapper->elementToByteArray(data,SK.m_K_start2,false);     //convert
-	data[n]='\0';            //modify data to be a valid cstring
 
-	m_SK.set_k_start2((char*)data);				//set Kstart2
+	m_SK.set_k_start2((char*)data,n);				//set Kstart2
+
+	cout << "the sent string is of length:" <<
+			m_SK.k_start2().length() << "and is:" << m_SK.k_start2() << endl;
 
 	//K_t_i  (3 elements for every transition)
 	for (int t=0; t<SM.getTotalNumOfTransitions() ;t++)
@@ -184,26 +196,23 @@ void ObjectSerializer::setSecretKey (EncryptionHandler::SK& SK, StateMachine& SM
 		//Kt,1:
 		n = mapper->getElementLengthInBytes(SK.m_K_t[0][t],false);  //get the num of bytes needed to represent Kt,1
 		mapper->elementToByteArray(data,SK.m_K_t[0][t],false);     //convert
-		data[n]='\0';            //modify data to be a valid cstring
 
 		K_t_i = m_SK.add_k_t_1();   //get a new, empty string for Kt,1
-		K_t_i->assign((char*)data);				//set Kt,1
+		K_t_i->assign((char*)data,n);				//set Kt,1
 
 		//Kt,2:
 		n = mapper->getElementLengthInBytes(SK.m_K_t[1][t],false);  //get the num of bytes needed to represent Kt,2
 		mapper->elementToByteArray(data,SK.m_K_t[1][t],false);     //convert
-		data[n]='\0';            //modify data to be a valid cstring
 
 		K_t_i = m_SK.add_k_t_2();   //get a new, empty string for Kt,2
-		K_t_i->assign((char*)data);				//set Kt,2
+		K_t_i->assign((char*)data,n);				//set Kt,2
 
 		//Kt,3:
 		n = mapper->getElementLengthInBytes(SK.m_K_t[2][t],false);  //get the num of bytes needed to represent Kt,3
 		mapper->elementToByteArray(data,SK.m_K_t[2][t],false);     //convert
-		data[n]='\0';            //modify data to be a valid cstring
 
 		K_t_i = m_SK.add_k_t_3();   //get a new, empty string for Kt,3
-		K_t_i->assign((char*)data);				//set Kt,3
+		K_t_i->assign((char*)data,n);				//set Kt,3
 	}//finished with K_t_i
 
 	//Kend,i (2 elements for every acceptance state)
@@ -212,18 +221,16 @@ void ObjectSerializer::setSecretKey (EncryptionHandler::SK& SK, StateMachine& SM
 		//Kendx,1:
 		n = mapper->getElementLengthInBytes(SK.m_K_for_q_x[0][x],false);  //get the num of bytes needed to represent Kendx,1
 		mapper->elementToByteArray(data,SK.m_K_for_q_x[0][x],false);     //convert
-		data[n]='\0';            //modify data to be a valid cstring
 
 		K_end_i = m_SK.add_k_for_q_x_1();   //get a new, empty string for Kendx,1
-		K_end_i->assign((char*)data);				//set Kendx,1
+		K_end_i->assign((char*)data,n);				//set Kendx,1
 
 		//Kendx,2:
 		n = mapper->getElementLengthInBytes(SK.m_K_for_q_x[1][x],false);  //get the num of bytes needed to represent Kendx,2
 		mapper->elementToByteArray(data,SK.m_K_for_q_x[1][x],false);     //convert
-		data[n]='\0';            //modify data to be a valid cstring
 
 		K_end_i = m_SK.add_k_for_q_x_2();   //get a new, empty string for Kendx,2
-		K_end_i->assign((char*)data);				//set Kendx,2
+		K_end_i->assign((char*)data,n);				//set Kendx,2
 
 	}//finished with Kend,i
 
@@ -368,7 +375,7 @@ void ObjectSerializer::setSingleState(StateMachineAndKey::StateMachine_State* sa
 /*
  * Returns a string that represents the StateMachine
  */
-void ObjectSerializer::getSerializedStateMachineString(std::string saveHere)
+void ObjectSerializer::getSerializedStateMachineString(std::string& saveHere)
 {
 	if (m_isStateMachineSet)
 		m_Machine.SerializeToString(&saveHere);
@@ -379,7 +386,7 @@ void ObjectSerializer::getSerializedStateMachineString(std::string saveHere)
 /*
  * Returns a string that represents the SecretKey
  */
-void ObjectSerializer::getSerializedSecretKeyString(std::string saveHere)
+void ObjectSerializer::getSerializedSecretKeyString(std::string& saveHere)
 {
 	if (m_isSecretKeySet)
 		m_SK.SerializeToString(&saveHere);
@@ -387,7 +394,7 @@ void ObjectSerializer::getSerializedSecretKeyString(std::string saveHere)
 		saveHere.assign("");
 }//end of getSerializedSecretKeyString()
 
-void ObjectSerializer::getSerializedBondString(std::string saveHere)
+void ObjectSerializer::getSerializedBondString(std::string& saveHere)
 {
 	if (m_isBondSet)
 		m_Bond.SerializeToString(&saveHere);
