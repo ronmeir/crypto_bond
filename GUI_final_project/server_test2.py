@@ -14,6 +14,9 @@ def startMSG():
 def getReadSize():
 	return 1000	
 	
+def quitMSG():
+	return 'Quit!!!'
+	
 	
 				
 def main():	
@@ -33,7 +36,7 @@ def main():
 		client_socket.shutdown(0)
 		client_socket.close()
 		
-		if(data == 'Q' or data == 'q'):
+		if(data == quitMSG()):
 			print('closing!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
 			server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
