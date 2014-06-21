@@ -30,11 +30,11 @@ private:
 
 public:
 	//Methods
-	SocketWrapper(std::string&, int);
-	SocketWrapper(int);
+	SocketWrapper(std::string& destIPaddr, int dest_port);
+	SocketWrapper(int socketDiscrptr);
 	int getSocketDescriptor();
 	int receiveFromSocket(char* buffer, int numOfBytesToRead);
-	int sendToSocket (char* buffer, int numOfBytesToSend);
+	int sendToSocket (const char* buffer, int numOfBytesToSend);
 	void closeSocket();
 	virtual ~SocketWrapper();
 };

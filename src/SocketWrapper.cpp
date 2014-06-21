@@ -57,7 +57,7 @@ int SocketWrapper::receiveFromSocket(char* buffer, int numOfBytesToRead)
 	return n;
 }//end of receiveFromSocket()
 
-int SocketWrapper::sendToSocket (char* buffer, int numOfBytesToSend)
+int SocketWrapper::sendToSocket (const char* buffer, int numOfBytesToSend)
 {
 	if (m_socketDiscrptr==-1)
 	{

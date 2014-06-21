@@ -12,7 +12,7 @@
 #include "Messages.h"
 #include <string>
 #include <cstdlib>
-#include <cstring>
+#include <sstream>
 
 #ifndef CLIENTMACHINE_H_
 #define CLIENTMACHINE_H_
@@ -40,8 +40,10 @@ private:
 	UserState m_program_state;
 
 	//methods:
-	void setStateMachine (StateMachine* SM,bool isClient);
 	std::vector<std::string> readAndParseMessageFromSocket(SocketWrapper& sock);
+	int UI_Callback_requestSM_FromServer();
+	int UI_Callback_CreateSK_AndBond();
+	int UI_Callback_SendSK_AndBondToCA();
 
 public:
 	ClientMachine(const std::string,const std::string,const std::string);

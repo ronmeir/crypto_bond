@@ -14,16 +14,18 @@
  * When the '|' are just for visual explanation, they won't appear in the message
  */
 
-#define SFSC 7  //define the SFSC to be the char with this ascii value
+#define SFSC (char)7  //define the SFSC to be the char with this ascii value
 
 //names:
-#define SRVR_NAME "SRVR"
+#define SERVER_NAME "SRVR"
 #define CA_NAME "CA"
 
 //contents:
 #define CONTENT_ACK "ACK"
 #define CONTENT_VALID "VALID"
+#define CONTENT_VALIDATE "VALIDATE"
 #define CONTENT_INVALID "INVALID"
+#define CONTENT_SM_REQUEST "SM PLZ"
 
 //opcodes:
 #define OPCODE_CLIENT_TO_SERVER_REQUEST_SM "1"

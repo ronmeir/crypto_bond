@@ -119,7 +119,7 @@ int ObjectSerializer::getNumOfStatesInStateMachineFromSerialized (std::string SM
  * @param saveHere - an empty stateMachine that can support the required number of states
  * @param SM_string - the stateMachine's serialized string
  */
-void ObjectSerializer::deserializeStateMachine (StateMachine& saveHere, std::string SM_string)
+void ObjectSerializer::deserializeStateMachine (StateMachine& saveHere,string* saveVirusHere, std::string SM_string)
 {
 	int transitionTable[ALPHABET_SIZE][2];
 	int currentNumOfTrans;
@@ -133,6 +133,8 @@ void ObjectSerializer::deserializeStateMachine (StateMachine& saveHere, std::str
 
 	StateMachineAndKey::StateMachine_State serializerState;
 	StateMachineAndKey::StateMachine_Transition serialzerTrans;
+
+	*saveVirusHere = m_Machine.virus();   //extract the virus string.
 
 	//for every state:
 	for (int i=0; i<numOfStates ;i++)

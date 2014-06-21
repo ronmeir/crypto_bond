@@ -43,7 +43,7 @@ int main()
 	google::protobuf::ShutdownProtobufLibrary();
 #else
 	//debug_mapperTest();
-	//debug_EncryptionTest(true);
+	debug_EncryptionTest(true);
 #endif
 
 	return 0;
@@ -61,7 +61,7 @@ void debug_EncryptionTest(bool isClient)
 //Server:
 	StateMachine serverSM(6, 0); //a new machine with 6 states. initial state is '0'
 	debug_initializeStateMachine(&serverSM); //init the machine
-	const string virus = "virus";
+	string virus = "virus";
 
 	EncryptionHandler srvrEncHand(filePath, &serverSM, false); //init enc. handler
 	printf("EncryptionHandler is ready\n\n");
@@ -76,7 +76,7 @@ void debug_EncryptionTest(bool isClient)
 	int num_of_states = serializer1.getNumOfStatesInStateMachineFromSerialized(SM_str); //get the num of states @ SM
 
 	StateMachine clientSM(num_of_states, 0); //create a new SM
-	serializer1.deserializeStateMachine(clientSM,SM_str);//deserialize the received SM
+	serializer1.deserializeStateMachine(clientSM,&virus,SM_str);//deserialize the received SM
 
 	EncryptionHandler clientEncHand(filePath, &clientSM, true); //init enc. handler
 
@@ -103,7 +103,7 @@ void debug_EncryptionTest(bool isClient)
 //Server:
 	//construct a holder for the desirialized SK:
 	EncryptionHandler::SK desirializedSK(
-			srvrEncHand.getBilinearMappingHandler(), &serverSM, msk, false);
+			srvrEncHand.getBilinearMappingHandler(), &serverSM, NULL, false);
 	serializer2.deserializeSecretKey(desirializedSK, SK_str); //deserialize the SK
 
 

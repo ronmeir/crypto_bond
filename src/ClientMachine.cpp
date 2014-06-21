@@ -26,17 +26,143 @@ ClientMachine::ClientMachine(const string userID,const string ServerIP,const str
 
 }//end of constructor
 
-/*
- * Creates an enc. handler based on the given state-machine
+/**
+ * Initialize all required parameters and creates an SK and Bond.
  */
-void ClientMachine::setStateMachine (StateMachine* SM,bool isClient)
+int ClientMachine::UI_Callback_CreateSK_AndBond()
 {
-	if (m_EncHandler!=NULL)
+	if (m_program_state == NEED_STATE_MACHINE) //if we have no SM yet
+		return UI_RESPONSE_SK_AND_BOND_CREATE_FAILED;
+
+	if (m_EncHandler!=NULL) //if an enc_handler already exists
 		delete(m_EncHandler);
 
-	m_EncHandler = new EncryptionHandler(PARAM_FILE_PATH,SM,isClient);
-	m_program_state = NEED_CA_APPROVAL;  //update the state
-}//end of setStateMachine()
+	m_EncHandler = new EncryptionHandler(PARAM_FILE_PATH,m_SM,true);
+
+	m_MSK = m_EncHandler->setup(); //gen. master key
+	m_SK = m_EncHandler->keyGen();	//gen. secret key
+
+	memberElement theMsgElem;
+
+	//map the bond to some random element in G1
+	m_EncHandler->mapStringToElementFromGT(theMsgElem, "BOND STRING");
+
+	m_Bond = new EncryptionHandler::CT(m_EncHandler->getBilinearMappingHandler(),
+			MAX_MSG_LENGTH, true);  //creating a new empty CT
+	m_EncHandler->createPartialEncryption(*m_Bond,m_virus, theMsgElem); //generate a partial CT
+
+	m_serializer->setSecretKey(*m_SK,*m_SM);  //set the SK into the serializer
+	m_serializer->setBond(*m_Bond);			  //set the Bond into the serializer
+
+	return UI_RESPONSE_SK_AND_BOND_CREATED_OK;
+
+}//end of UI_Callback_CreateSK_AndBond()
+
+/*
+ * Send 3 messages to the CA and waits for a reply on each one before sending the next.
+ * Message order:
+ * 1. Sends SK message and waits for an ACK.
+ * 2. Sends Bond message and waits for an ACK.
+ * 3. Sends a Validation-Request message and waits for a reply.
+ */
+int ClientMachine::UI_Callback_SendSK_AndBondToCA()
+{
+	string msg_to_CA, content;
+
+	for (int i = 0; i < 2; i++) //repeat twice, once for the SK and once for the Bond
+	{
+		i==0?
+		m_serializer->getSerializedSecretKeyString(content): //get the serialized SK
+		m_serializer->getSerializedBondString(content);      //get the serialized Bond
+
+		//create a message containing the SK/Bond:
+		msg_to_CA = createMessage(m_ID, CA_NAME,
+				i==0? OPCODE_CLIENT_TO_CA_SEND_SK : OPCODE_CLIENT_TO_CA_SEND_BOND,
+				content.size(), content);
+
+		SocketWrapper sock_to_server(m_CA_IP, SERVER_AND_CA_TCP_PORT_NUM); //open a sock
+		sock_to_server.sendToSocket(msg_to_CA.c_str(), msg_to_CA.size()); //send the request
+
+		vector<string> parsed_reply = readAndParseMessageFromSocket(
+				sock_to_server); //receive the reply
+
+		sock_to_server.closeSocket(); //close the socket
+		//GOT A REPLY.
+		//checking the reply:
+
+		//if the opcode or content don't match
+		if (parsed_reply[2].compare(i==0 ? OPCODE_CA_TO_CLIENT_ACK_SK : OPCODE_CA_TO_CLIENT_ACK_BOND)
+				|| parsed_reply[4].compare(CONTENT_ACK))
+			return UI_RESPONSE_CA_SENT_UNKNOWN_REPLY;
+
+	}//for
+
+	//sent both SK and Bond. Asking the CA to validate them:
+
+	content = CONTENT_VALIDATE;
+	//create a message asking the CA to validate the bond
+	msg_to_CA = createMessage(m_ID, CA_NAME,
+			OPCODE_CLIENT_TO_CA_VALIDATE_BOND, content.size(), content);
+
+	SocketWrapper sock_to_server(m_CA_IP, SERVER_AND_CA_TCP_PORT_NUM); //open a sock
+	sock_to_server.sendToSocket(msg_to_CA.c_str(), msg_to_CA.size()); //send the request
+
+	vector<string> parsed_reply = readAndParseMessageFromSocket(
+			sock_to_server); //receive the reply
+
+	sock_to_server.closeSocket(); //close the socket
+	//GOT A REPLY.
+	//checking the reply:
+
+	//if the opcode is incorrect
+	if (parsed_reply[2].compare(OPCODE_CA_TO_CLIENT_REPLY_VALIDATE_BOND))
+		return UI_RESPONSE_CA_SENT_UNKNOWN_REPLY;
+
+	//if the opcode is correct and the CA has approved
+	if (parsed_reply[4].compare(CONTENT_VALID))
+		return UI_RESPONSE_CA_APPROVED_SK_AND_BOND;
+	else //the CA didn't approve
+		return UI_RESPONSE_CA_DISAPPROVED_SK_AND_BOND;
+
+}//end of UI_Callback_SendSK_AndBondToCA()
+
+
+/*
+ * On UI request, sends an SM request to the server
+ */
+int ClientMachine::UI_Callback_requestSM_FromServer()
+{
+	string sm_request;
+	string content(CONTENT_SM_REQUEST);
+
+	//create a message header:
+	sm_request = createMessage(m_ID,SERVER_NAME,OPCODE_CLIENT_TO_SERVER_REQUEST_SM,content.size(),CONTENT_SM_REQUEST);
+
+	SocketWrapper sock_to_server(m_ServerIP,SERVER_AND_CA_TCP_PORT_NUM); //open a sock
+	sock_to_server.sendToSocket(sm_request.c_str(),sm_request.size()); //send the request
+
+	vector<string> parsed_reply = readAndParseMessageFromSocket(sock_to_server); //receive the reply
+
+	sock_to_server.closeSocket(); //close the socket
+	//GOT A REPLY.
+	//checking the reply:
+
+	//if the reply doesn't match the expected reply:
+	if (parsed_reply[0].compare(SERVER_NAME) || parsed_reply[1].compare(m_ID) ||
+			parsed_reply[2].compare(OPCODE_SERVER_TO_CLIENT_REPLY_SM))
+	{
+		return UI_RESPONSE_SM_NOT_RECEIVED;
+	}
+
+	int num_of_states = m_serializer->getNumOfStatesInStateMachineFromSerialized(parsed_reply[4]); //get the num of states @ SM
+	m_SM = new StateMachine(num_of_states, 0); //create a new SM
+	m_serializer->deserializeStateMachine(*m_SM,&m_virus,parsed_reply[4]);//deserialize the received SM
+
+	m_program_state=NEED_CA_APPROVAL;  //update the state
+
+	return UI_RESPONSE_SM_RECEIVED_OK;
+
+}//end of UI_Callback_requestSM_FromServer()
 
 /*
  * Reads a single message from a socket and parses it by fields.
@@ -48,6 +174,8 @@ vector<string> ClientMachine::readAndParseMessageFromSocket(SocketWrapper& sock)
 	string currentField;
 	char currentChar=0;
 	vector<string> results;
+
+	//TODO WE HAVE NO TIMEOUT ON THE READ ATTEMPT. CONSIDER ADDING IT.
 
 	//reading the first 4 fields:
 	for (int i=0; i<4 ;i++)
