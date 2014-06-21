@@ -63,17 +63,17 @@ if __name__ == "__main__":
 	global var1, optionList, om_selected_var, om
 	master = tk.Tk()
 	master.geometry('800x300')
-	master.title("The title") # the title of the window
-	titleLabel = ttk.Label(master,text="Welcome")
-	titleLabel.grid(row=0,column=0)
+	master.title("Client GUI") # the title of the window
+	#titleLabel = ttk.Label(master,text="press the Connect button")
+	#titleLabel.grid(row=0,column=0)
 	
 	om_selected_var = tk.StringVar()
 	optionList = ['None']
 	om = ttk.OptionMenu(master,om_selected_var,*optionList)
 	om_selected_var.set(optionList[0])
 	
-	om.grid(row=1,column=0)
-	addOptionsToOptionList(['MSG 1','MSG 2','MSG 3','Q'])
+	om.grid(row=1,column=0,columnspan = 2)
+	addOptionsToOptionList(['MSG 1    ','MSG 2    ','MSG 3    ','free text ','quit        '])
 	#im_ok  = tk.PhotoImage(file='ok.gif')
 	#b_ok = ttk.Button(master, compound=tk.LEFT, image=im_ok, text="OK",command=ok_was_pressed)
 	b_send = ttk.Button(master,text="Send"	  ,command=send_was_pressed,state='disabled')
@@ -81,7 +81,7 @@ if __name__ == "__main__":
 	b_clear	= ttk.Button(master,text="clear"	  ,command=clear_was_pressed,state='disabled')    
 	
 	b_connect.grid(row=2,column=1, padx=1, pady=1)
-	b_send.grid(row=10,column=0, padx=5, pady=5)
+	b_send.grid(row=10,column=0, padx=5, pady=5,columnspan = 2)
 	b_clear.grid(row=2,column=0, padx=5, pady=5)
 
 	
@@ -92,6 +92,6 @@ if __name__ == "__main__":
 		width = 80,
 		height = 10)
 	textbox.grid(row=1,column=2, rowspan=10, columnspan=10, padx=15, pady=15)
-	textbox.insert(tk.INSERT, "this is how\nwe insert test to the text field\n")
+	#textbox.insert(tk.INSERT, "this is how\nwe insert test to the text field\n")
 	master.mainloop()
 
