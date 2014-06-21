@@ -7,8 +7,9 @@
 
 #include "Client_UI_Server.h"
 
-Client_UI_Server::Client_UI_Server(int port) : BasicMultithreadedServer(port)
+Client_UI_Server::Client_UI_Server(ClientMachine* clientMachine ,int port) : BasicMultithreadedServer(port)
 {
+	m_clientMachine = clientMachine; //set a ptr to the clientMachine
 }
 
 bool Client_UI_Server::run()
@@ -23,24 +24,22 @@ bool Client_UI_Server::run()
 
 	pthread_detach(threadId); //detach the thread
 	return true;
-}
+}//end of run()
 
 /*
- * This function runs a welcome socket.
+ * Runs a welcome socket.
  */
 void* Client_UI_Server::IntermediateWelcomeSocketThreadLauncher(void *obj)
 {
 	  //cast to a static instance, though it actually isn't. Need to make sure this instance is alive
 	  //throughout the execution of this thread:
-	Client_UI_Server *thisObj = static_cast<Client_UI_Server*>(obj);
+	  Client_UI_Server *thisObj = static_cast<Client_UI_Server*>(obj);
 	  thisObj->runWelcomeSocket();   //start the welcome socket. runs infinitely.
-
-	  pthread_exit(NULL);
-}
+}//end of IntermediateWelcomeSocketThreadLauncher()
 
 /*
  * @override
- * This method will be executed on the worker thread.
+ * This method will be executed on a worker thread.
  */
 int Client_UI_Server::execOnWorkerThread (SocketWrapper sock)
 {
