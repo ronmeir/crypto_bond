@@ -17,7 +17,7 @@
 #include "Constants.h"
 #include "ClientMachine.h"
 #include "ObjectSerializer.h"
-#define DEBUG 1
+#define DEBUG 0
 
 using namespace std;                      //using the 'string' library
 
@@ -30,7 +30,7 @@ void compareCTs(EncryptionHandler::CT& ct1, EncryptionHandler::CT& ct2, Bilinear
 
 int main()
 {
-#if DEBUG
+#if !DEBUG
 	printf("running....");
 	ClientMachine client("user","ip1","ip2");
 	client.run();
@@ -43,7 +43,7 @@ int main()
 	google::protobuf::ShutdownProtobufLibrary();
 #else
 	//debug_mapperTest();
-//	debug_EncryptionTest(true);
+	//debug_EncryptionTest(true);
 #endif
 
 	return 0;

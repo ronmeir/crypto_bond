@@ -5,13 +5,13 @@
  *      Author: slava
  */
 
-#include "ClientWebServer.h"
+#include "Client_UI_Server.h"
 
-ClientWebServer::ClientWebServer(int port) : BasicMultithreadedServer(port)
+Client_UI_Server::Client_UI_Server(int port) : BasicMultithreadedServer(port)
 {
 }
 
-bool ClientWebServer::run()
+bool Client_UI_Server::run()
 {
 	pthread_t threadId;
 
@@ -28,11 +28,11 @@ bool ClientWebServer::run()
 /*
  * This function runs a welcome socket.
  */
-void* ClientWebServer::IntermediateWelcomeSocketThreadLauncher(void *obj)
+void* Client_UI_Server::IntermediateWelcomeSocketThreadLauncher(void *obj)
 {
 	  //cast to a static instance, though it actually isn't. Need to make sure this instance is alive
 	  //throughout the execution of this thread:
-	  ClientWebServer *thisObj = static_cast<ClientWebServer*>(obj);
+	Client_UI_Server *thisObj = static_cast<Client_UI_Server*>(obj);
 	  thisObj->runWelcomeSocket();   //start the welcome socket. runs infinitely.
 
 	  pthread_exit(NULL);
@@ -42,7 +42,7 @@ void* ClientWebServer::IntermediateWelcomeSocketThreadLauncher(void *obj)
  * @override
  * This method will be executed on the worker thread.
  */
-int ClientWebServer::execOnWorkerThread (SocketWrapper sock)
+int Client_UI_Server::execOnWorkerThread (SocketWrapper sock)
 {
 	char buff[BUF_SIZE+1]; //will be used to read data from the socket
 	int readBytes;
@@ -65,12 +65,12 @@ int ClientWebServer::execOnWorkerThread (SocketWrapper sock)
     return 1;
 }//end of webServerWorkerThread()
 
-int ClientWebServer::getPort ()
+int Client_UI_Server::getPort ()
 {
 	return m_TCP_PortNum;
 }
 
-ClientWebServer::~ClientWebServer()
+Client_UI_Server::~Client_UI_Server()
 {
 	// TODO Auto-generated destructor stub
 }

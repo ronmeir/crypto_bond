@@ -7,7 +7,7 @@
 #include "StateMachine.h"
 #include "WelcomeSocket.h"
 #include "SocketWrapper.h"
-#include "ClientWebServer.h"
+#include "Client_UI_Server.h"
 #include <string>
 #include <cstring>
 
@@ -23,7 +23,7 @@ private:
 	//members:
 	std::string m_ID, m_ServerIP, m_CA_IP;
 	EncryptionHandler* m_EncHandler;
-	ClientWebServer* m_WebServer;
+	Client_UI_Server* m_UI_Server;
 	UserState m_program_state;
 
 	//methods:

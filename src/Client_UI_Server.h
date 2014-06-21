@@ -1,17 +1,17 @@
 /*
- * ClientWebServer.h
+ * Client_UI_Server.h
  * Defines a web server that is run by the client.
  * Provides the web-based UI for the project.
  */
 
-#ifndef CLIENTWEBSERVER_H_
-#define CLIENTWEBSERVER_H_
+#ifndef CLIENT_UI_SERVER_H_
+#define CLIENT_UI_SERVER_H_
 
 #include "BasicMultithreadedServer.h"
 #include "Constants.h"
 
 
-class ClientWebServer : public BasicMultithreadedServer
+class Client_UI_Server : public BasicMultithreadedServer
 {
 private:
 
@@ -20,10 +20,10 @@ private:
 	static void* IntermediateWelcomeSocketThreadLauncher(void *);
 
 public:
-	ClientWebServer(int tcp_port);
-	virtual ~ClientWebServer();
+	Client_UI_Server(int tcp_port);
+	virtual ~Client_UI_Server();
 	int getPort ();
 	bool run();
 };
 
-#endif /* CLIENTWEBSERVER_H_ */
+#endif /* Client_UI_Server */

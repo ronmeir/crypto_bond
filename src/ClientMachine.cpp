@@ -16,7 +16,7 @@ ClientMachine::ClientMachine(const string userID,const string ServerIP,const str
 	m_ServerIP.assign(ServerIP);
 	m_CA_IP.assign(CA_IP);
 	m_EncHandler = NULL;
-	m_WebServer = new ClientWebServer (CLIENT_WEB_SERVER_TCP_PORT_NUM);
+	m_UI_Server = new Client_UI_Server (CLIENT_WEB_SERVER_TCP_PORT_NUM);
 	m_program_state = NEED_STATE_MACHINE;  //init the program's state
 
 }//end of constructor
@@ -41,7 +41,7 @@ void ClientMachine::run()
 
 	//try to start the web server:
 	for (int i=0; i<3 && !isWebServerUp ;i++)
-		isWebServerUp = m_WebServer->run();
+		isWebServerUp = m_UI_Server->run();
 
 	if (!isWebServerUp)
 		cout << "UNABLE TO START THE WEB SERVER!";
@@ -55,6 +55,6 @@ ClientMachine::~ClientMachine()
 	if (m_EncHandler!=NULL)
 		delete(m_EncHandler);
 
-	delete(m_WebServer);
+	delete(m_UI_Server);
 }
 
