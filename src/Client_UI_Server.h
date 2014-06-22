@@ -19,7 +19,7 @@ private:
 	ClientMachine* m_clientMachine;
 
 	//methods:
-	int execOnWorkerThread(SocketWrapper);
+	int execOnWorkerThread(SocketWrapper, void* arg);
 	static void* IntermediateWelcomeSocketThreadLauncher(void *);
 
 public:

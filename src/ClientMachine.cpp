@@ -26,13 +26,34 @@ ClientMachine::ClientMachine(const string userID,const string ServerIP,const str
 
 }//end of constructor
 
+string ClientMachine::UI_Callback_SendMsg(string msg)
+{
+	string msgToSend = createMessage(m_ID, SERVER_NAME,OPCODE_CLIENT_TO_SERVER_SEND_MSG,
+			msg.size(), msg);
+
+	SocketWrapper sock_to_server(m_ServerIP,SERVER_AND_CA_TCP_PORT_NUM); //open a sock
+	sock_to_server.sendToSocket(msgToSend.c_str(), msgToSend.size()); //send the request
+
+	vector<string> parsed_reply = readAndParseMessageFromSocket(
+			sock_to_server); //receive the reply
+
+	sock_to_server.closeSocket(); //close the socket
+
+	//if the opcode doesn't match
+	if (parsed_reply[2].compare(OPCODE_SERVER_TO_CLIENT_ECHO_MSG))
+		return "Unknown server response!";
+
+	return parsed_reply[4];   //return the server's message content
+
+}//end of UI_Callback_SendMsg()
+
 /**
  * Initialize all required parameters and creates an SK and Bond.
  */
 int ClientMachine::UI_Callback_CreateSK_AndBond()
 {
 	if (m_program_state == NEED_STATE_MACHINE) //if we have no SM yet
-		return UI_RESPONSE_SK_AND_BOND_CREATE_FAILED;
+		return RET_VAL_TO_UI_SERVER_SK_AND_BOND_CREATE_FAILED;
 
 	if (m_EncHandler!=NULL) //if an enc_handler already exists
 		delete(m_EncHandler);
@@ -54,20 +75,20 @@ int ClientMachine::UI_Callback_CreateSK_AndBond()
 	m_serializer->setSecretKey(*m_SK,*m_SM);  //set the SK into the serializer
 	m_serializer->setBond(*m_Bond);			  //set the Bond into the serializer
 
-	return UI_RESPONSE_SK_AND_BOND_CREATED_OK;
+	return RET_VAL_TO_UI_SERVER_SK_AND_BOND_CREATED_OK;
 
 }//end of UI_Callback_CreateSK_AndBond()
 
 /*
- * Send 3 messages to the CA and waits for a reply on each one before sending the next.
+ * Sends the SK and Bond to the CA/Serve, waits for a reply on each one before sending the next.
  * Message order:
  * 1. Sends SK message and waits for an ACK.
  * 2. Sends Bond message and waits for an ACK.
- * 3. Sends a Validation-Request message and waits for a reply.
+ * 3. If the dst is the CA, sends a Validation-Request message and waits for a reply.
  */
-int ClientMachine::UI_Callback_SendSK_AndBondToCA()
+int ClientMachine::UI_Callback_SendSK_AndBond(bool isSendToCA)
 {
-	string msg_to_CA, content;
+	string msgToSend, content;
 
 	for (int i = 0; i < 2; i++) //repeat twice, once for the SK and once for the Bond
 	{
@@ -76,12 +97,22 @@ int ClientMachine::UI_Callback_SendSK_AndBondToCA()
 		m_serializer->getSerializedBondString(content);      //get the serialized Bond
 
 		//create a message containing the SK/Bond:
-		msg_to_CA = createMessage(m_ID, CA_NAME,
+
+		if (isSendToCA)  //if the message is to be sent to the CA
+		{
+		msgToSend = createMessage(m_ID, CA_NAME,
 				i==0? OPCODE_CLIENT_TO_CA_SEND_SK : OPCODE_CLIENT_TO_CA_SEND_BOND,
 				content.size(), content);
+		}
+		else //the message is to be sent to the server
+		{
+			msgToSend = createMessage(m_ID, SERVER_NAME,
+					i==0? OPCODE_CLIENT_TO_SERVER_SEND_SK : OPCODE_CLIENT_TO_SERVER_SEND_BOND,
+					content.size(), content);
+		}
 
-		SocketWrapper sock_to_server(m_CA_IP, SERVER_AND_CA_TCP_PORT_NUM); //open a sock
-		sock_to_server.sendToSocket(msg_to_CA.c_str(), msg_to_CA.size()); //send the request
+		SocketWrapper sock_to_server(isSendToCA ? m_CA_IP : m_ServerIP,SERVER_AND_CA_TCP_PORT_NUM); //open a sock
+		sock_to_server.sendToSocket(msgToSend.c_str(), msgToSend.size()); //send the request
 
 		vector<string> parsed_reply = readAndParseMessageFromSocket(
 				sock_to_server); //receive the reply
@@ -90,22 +121,35 @@ int ClientMachine::UI_Callback_SendSK_AndBondToCA()
 		//GOT A REPLY.
 		//checking the reply:
 
-		//if the opcode or content don't match
-		if (parsed_reply[2].compare(i==0 ? OPCODE_CA_TO_CLIENT_ACK_SK : OPCODE_CA_TO_CLIENT_ACK_BOND)
-				|| parsed_reply[4].compare(CONTENT_ACK))
-			return UI_RESPONSE_CA_SENT_UNKNOWN_REPLY;
+		if (isSendToCA) //if the reply came from the CA
+		{
+			//if the opcode or content don't match
+			if (parsed_reply[2].compare( i == 0 ? OPCODE_CA_TO_CLIENT_ACK_SK : OPCODE_CA_TO_CLIENT_ACK_BOND)
+					|| parsed_reply[4].compare(CONTENT_ACK))
+				return RET_VAL_TO_UI_SERVER_CA_SENT_UNKNOWN_REPLY;
 
+		}
+		else  //the reply came from the server
+		{
+			//if the opcode or content don't match
+			if (parsed_reply[2].compare( i == 0 ? OPCODE_SERVER_TO_CLIENT_ACK_SK : OPCODE_SERVER_TO_CLIENT_ACK_BOND)
+					|| parsed_reply[4].compare(CONTENT_ACK))
+				return RET_VAL_TO_UI_SERVER_SERVER_SENT_UNKNOWN_REPLY;
+
+			m_program_state = OPERATIONAL;
+			return RET_VAL_TO_UI_SERVER_SERVER_RECEIVED_SK_AND_BOND;
+		}
 	}//for
 
-	//sent both SK and Bond. Asking the CA to validate them:
-
+	//THIS POINT IS REACHED ONLY IF WE'VE SEND DATA TO THE CA:
+	//asking the CA to validate the SK and Bond:
 	content = CONTENT_VALIDATE;
 	//create a message asking the CA to validate the bond
-	msg_to_CA = createMessage(m_ID, CA_NAME,
-			OPCODE_CLIENT_TO_CA_VALIDATE_BOND, content.size(), content);
+	msgToSend = createMessage(m_ID, CA_NAME,
+	OPCODE_CLIENT_TO_CA_VALIDATE_BOND, content.size(), content);
 
 	SocketWrapper sock_to_server(m_CA_IP, SERVER_AND_CA_TCP_PORT_NUM); //open a sock
-	sock_to_server.sendToSocket(msg_to_CA.c_str(), msg_to_CA.size()); //send the request
+	sock_to_server.sendToSocket(msgToSend.c_str(), msgToSend.size()); //send the request
 
 	vector<string> parsed_reply = readAndParseMessageFromSocket(
 			sock_to_server); //receive the reply
@@ -116,13 +160,17 @@ int ClientMachine::UI_Callback_SendSK_AndBondToCA()
 
 	//if the opcode is incorrect
 	if (parsed_reply[2].compare(OPCODE_CA_TO_CLIENT_REPLY_VALIDATE_BOND))
-		return UI_RESPONSE_CA_SENT_UNKNOWN_REPLY;
+		return RET_VAL_TO_UI_SERVER_CA_SENT_UNKNOWN_REPLY;
 
 	//if the opcode is correct and the CA has approved
 	if (parsed_reply[4].compare(CONTENT_VALID))
-		return UI_RESPONSE_CA_APPROVED_SK_AND_BOND;
-	else //the CA didn't approve
-		return UI_RESPONSE_CA_DISAPPROVED_SK_AND_BOND;
+	{
+		m_program_state = GOT_CA_APPROVAL;
+		return RET_VAL_TO_UI_SERVER_CA_APPROVED_SK_AND_BOND;
+	}
+	else
+		//the CA didn't approve
+		return RET_VAL_TO_UI_SERVER_CA_DISAPPROVED_SK_AND_BOND;
 
 }//end of UI_Callback_SendSK_AndBondToCA()
 
@@ -151,7 +199,7 @@ int ClientMachine::UI_Callback_requestSM_FromServer()
 	if (parsed_reply[0].compare(SERVER_NAME) || parsed_reply[1].compare(m_ID) ||
 			parsed_reply[2].compare(OPCODE_SERVER_TO_CLIENT_REPLY_SM))
 	{
-		return UI_RESPONSE_SM_NOT_RECEIVED;
+		return RET_VAL_TO_UI_SERVER_SM_NOT_RECEIVED;
 	}
 
 	int num_of_states = m_serializer->getNumOfStatesInStateMachineFromSerialized(parsed_reply[4]); //get the num of states @ SM
@@ -160,7 +208,7 @@ int ClientMachine::UI_Callback_requestSM_FromServer()
 
 	m_program_state=NEED_CA_APPROVAL;  //update the state
 
-	return UI_RESPONSE_SM_RECEIVED_OK;
+	return RET_VAL_TO_UI_SERVER_SM_RECEIVED_OK;
 
 }//end of UI_Callback_requestSM_FromServer()
 

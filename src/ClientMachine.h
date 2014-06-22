@@ -19,7 +19,7 @@
 
 class Client_UI_Server; //forward declaration of the Client_UI_Server
 
-enum UserState {NEED_STATE_MACHINE, NEED_CA_APPROVAL, GOT_CA_APPROVAL, BUSTED };
+enum UserState {NEED_STATE_MACHINE, NEED_CA_APPROVAL, GOT_CA_APPROVAL, OPERATIONAL, BUSTED };
 
 class ClientMachine
 {
@@ -43,7 +43,8 @@ private:
 	std::vector<std::string> readAndParseMessageFromSocket(SocketWrapper& sock);
 	int UI_Callback_requestSM_FromServer();
 	int UI_Callback_CreateSK_AndBond();
-	int UI_Callback_SendSK_AndBondToCA();
+	int UI_Callback_SendSK_AndBond(bool isSendToCA);
+	std::string UI_Callback_SendMsg(std::string msg);
 
 public:
 	ClientMachine(const std::string,const std::string,const std::string);
