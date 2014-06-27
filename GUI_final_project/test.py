@@ -106,15 +106,19 @@ def send(msg):
 		
 	insert_text(msg,color)
 	s.send(msg.encode())
-	recv=str(s.recv(getReadSize()))
-	
+	recv=str(s.recv(getReadSize()).decode('utf-8'))
+
 	#when we get a startMSG as echo it means the server work and we have connection
 	#all the buttons and be enabled!!
-	if(recv.find(startMSG())):
+	if(recv==str(startMSG())):
 		b_send.state(["!disabled"])
 
 	color='blue'
+	#recv=str(recv))
 	insert_text(recv+"\n",color)
+	
+	print(msg)
+	
 	s.close
 	
 	
