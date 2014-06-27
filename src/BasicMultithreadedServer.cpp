@@ -14,8 +14,8 @@ BasicMultithreadedServer::BasicMultithreadedServer(int tcp_port)
 }
 
 /*
- * Launches a welcome-socket that fires up worker thread for every incoming connection.
- * @param *f - ptr to the function that'll run on the worker thread
+ * Launches a welcome-socket that fires up a worker thread for every incoming connection.
+ * @param *fargForWorkerThread - an argument to be passed to the worker thread
  */
 void BasicMultithreadedServer::runWelcomeSocket(void* argForWorkerThread)
 {

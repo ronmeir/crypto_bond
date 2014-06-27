@@ -59,6 +59,11 @@ int Client_UI_Server::execOnWorkerThread (SocketWrapper sock, void* arg)
     printf("%s",buff);
 
     //TODO complete the actual handling
+    //fucking around:
+    string temp (buff);
+    temp = "Server echo: "+temp;
+    sock.sendToSocket(temp.c_str(),strlen(temp.c_str()));
+    //finished fucking around.
 
     sock.closeSocket();
     return 1;
