@@ -1,13 +1,16 @@
 import tkinter as tk
 import tkinter.scrolledtext as tkst
 import ttk
-import socket               
-
+import socket  
+import easygui
+             
 #we can change the port to send the msg in this function
 #usefull because when we close the server the port must be changed
 def getPort():
 	return 12345
 
+def getIP():
+	return '127.0.0.1'
 #defines the message that will be sent when pressing the "connect" button
 def startMSG():
 		return "start_msg"
@@ -44,13 +47,23 @@ def addOptionsToOptionList(l=[]):
 
 #called when the "send" button is preesed
 def send_was_pressed():
-	#print("ok button was pressed\n")
+	#check what msg do we want to send
 	msg = om_selected_var.get()
+	#if it's a freeText msg we need to send the text in the msgbox 
+	#otherwise we send the actual MSG
 	if(msg==freeText()):
-		msg=(msgbox.get('1.0', 'end')).strip()
-		msgbox.delete('1.0', 'end')
-	insert_text("send - sending message: "+msg)
-	send(msg)
+		msg=(msgbox.get('1.0', 'end')).strip()	#remove emptySpaces
+		msgbox.delete('1.0', 'end')				# clear the msgbox
+		
+		if(msg==""):
+			#we must send some MSG - otherwise we'll get error
+			easygui.msgbox("You cannot send an empty MSG!!!", title="Error")
+			
+	#now we can send the MSG		
+	if(msg!=""):
+		send(msg)
+		
+		
 
 #called when the "clear" button is preesed	
 def clear_was_pressed():
@@ -59,12 +72,15 @@ def clear_was_pressed():
 #called when the "connect" button is preesed   
 def connect_was_pressed():
    # print("connect button was pressed\n")
-	insert_text("connecting...")
+	insert_text("connecting...\n")
 	send(startMSG())
     
 #txt is the text to be shown in our terminal and also in the regular one
-def insert_text(txt):
-	textbox.insert(tk.INSERT, txt+"\n")
+#the color parm sets the color of the text in the terminal
+#it can be one of these colors only: {'green','blue','black','red'}
+#if we don't choose coler the msg we be painted black
+def insert_text(txt,color='black'):
+	textbox.insert(tk.INSERT, txt+"\n",color)
 	print(txt)
 
 #this is the message that'll be shown in the message menu bar
@@ -74,17 +90,30 @@ def freeText():
 
 #msg to be sent via socket	
 def send(msg):
-	HOST, PORT,size = '127.0.0.1', getPort(), getReadSize()
+	#define host ip, port and the size of the buffer to be read from socket
+	HOST, PORT,size = getIP(), getPort(), getReadSize()
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	s.connect((HOST, PORT))
-	insert_text("	sending :"+msg)
+	#a normal msg that we send should be green
+	color='green'
+	
+	#"quit" msg is painted red
+	if(msg==quitMSG()):
+		color='red'
+		
+	insert_text(msg,color)
 	s.send(msg.encode())
 	recv=str(s.recv(size))
+	
+	#when we get a startMSG as echo it means the server work and we have connection
+	#all the buttons and be enabled!!
 	if(recv.find(startMSG())):
 		b_send.state(["!disabled"])
 		b_clear.state(["!disabled"])
-
-	insert_text("	recieving:"+recv)
+	#incomming 'quit' msg is painted red - all the other incomming msges are blur
+	if(msg!=quitMSG()):
+		color='blue'
+	insert_text(recv+"\n",color)
 	s.close
 	
 	
@@ -137,8 +166,12 @@ if __name__ == "__main__":
 		width = 80,
 		height = 10)
 	textbox.grid(row=1,column=2, rowspan=10, columnspan=10, padx=15, pady=15)
-	
-	
+	textbox.tag_configure('green', foreground='#01DF01')
+	textbox.tag_configure('red', foreground='#DF0101')
+	textbox.tag_configure('black', foreground='#000000')
+	textbox.tag_configure('blue', foreground='#0000FF')
+
+
 	
 	
 	msgbox = tkst.ScrolledText(
