@@ -6,7 +6,7 @@
 import socket
 
 def getPort():
-	return 12346
+	return 12345
 	
 def startMSG():
 		return 'start_msg'
@@ -36,7 +36,7 @@ def main():
 		client_socket.shutdown(0)
 		client_socket.close()
 		
-		if(data == quitMSG()
+		if(data == quitMSG()):
 			print('closing!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
 			server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
@@ -46,4 +46,3 @@ def main():
 if __name__ == '__main__':
 	main()
 
-bin(ba[0]).split('b')[1]

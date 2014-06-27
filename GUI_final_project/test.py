@@ -7,7 +7,7 @@ import easygui
 #we can change the port to send the msg in this function
 #usefull because when we close the server the port must be changed
 def getPort():
-	return 12346
+	return 12345
 
 def getIP():
 	return '127.0.0.1'
