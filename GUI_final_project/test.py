@@ -6,7 +6,7 @@ import socket
 #we can change the port to send the msg in this function
 #usefull because when we close the server the port must be changed
 def getPort():
-	return 12310
+	return 12345
 
 #defines the message that will be sent when pressing the "connect" button
 def startMSG():
@@ -16,11 +16,6 @@ def startMSG():
 #this is also the msg the will shown in the massages menu bar
 def quitMSG():
 	return 'Quit!!!'
-
-#this is the message that'll be shown in the message menu bar
-#when we choose it we can sent a free text to the other side sever 
-def freeText():
-	return 'freeText'		
 
 #the size of how much to read from the socket is defined in here
 def getReadSize():
@@ -51,7 +46,10 @@ def addOptionsToOptionList(l=[]):
 def send_was_pressed():
 	#print("ok button was pressed\n")
 	msg = om_selected_var.get()
-	insert_text("send - sending message: ")
+	if(msg==freeText()):
+		msg=(msgbox.get('1.0', 'end')).strip()
+		msgbox.delete('1.0', 'end')
+	insert_text("send - sending message: "+msg)
 	send(msg)
 
 #called when the "clear" button is preesed	
@@ -64,11 +62,15 @@ def connect_was_pressed():
 	insert_text("connecting...")
 	send(startMSG())
     
-
 #txt is the text to be shown in our terminal and also in the regular one
 def insert_text(txt):
 	textbox.insert(tk.INSERT, txt+"\n")
 	print(txt)
+
+#this is the message that'll be shown in the message menu bar
+#when we choose it we can sent a free text to the other side sever 
+def freeText():
+	return 'freeText'			
 
 #msg to be sent via socket	
 def send(msg):
@@ -81,9 +83,12 @@ def send(msg):
 	if(recv.find(startMSG())):
 		b_send.state(["!disabled"])
 		b_clear.state(["!disabled"])
-		
+
 	insert_text("	recieving:"+recv)
 	s.close
+	
+	
+		
 		
 	
 

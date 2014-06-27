@@ -6,7 +6,7 @@
 import socket
 
 def getPort():
-	return 12310
+	return 12345
 	
 def startMSG():
 		return 'start_msg'
@@ -31,7 +31,7 @@ def main():
 		client_socket, address = server_socket.accept()
 		print("TCP Server received connect from: " + str(address))
 		data = client_socket.recv(1000)
-		print('		Received: ' +data+"\n")
+		print('		Received: ' +str(data)+"\n")
 		client_socket.send(data)
 		client_socket.shutdown(0)
 		client_socket.close()
