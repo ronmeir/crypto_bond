@@ -12,7 +12,7 @@ def startMSG():
 		return 'start_msg'
 		
 def getReadSize():
-	return 1000	
+	return 8192	
 	
 def quitMSG():
 	return 'Quit!!!'

@@ -3,7 +3,7 @@ import tkinter.scrolledtext as tkst
 import ttk
 import socket  
 import easygui
-             
+ 
 #we can change the port to send the msg in this function
 #usefull because when we close the server the port must be changed
 def getPort():
@@ -22,7 +22,7 @@ def quitMSG():
 
 #the size of how much to read from the socket is defined in here
 def getReadSize():
-	return 1000		
+	return 8192		
 
 #this function returns the msg that should be shown in the i'th place of the menu - we use it  is addOptionsToOptionList
 def setMsg(i):
@@ -81,7 +81,6 @@ def connect_was_pressed():
 #if we don't choose coler the msg we be painted black
 def insert_text(txt,color='black'):
 	textbox.insert(tk.INSERT, txt+"\n",color)
-	print(txt)
 
 #this is the message that'll be shown in the message menu bar
 #when we choose it we can sent a free text to the other side sever 
@@ -91,28 +90,28 @@ def freeText():
 #msg to be sent via socket	
 def send(msg):
 	#define host ip, port and the size of the buffer to be read from socket
-	HOST, PORT,size = getIP(), getPort(), getReadSize()
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	s.connect((HOST, PORT))
+	try:
+		s.connect((getIP(), getPort()))
+	except ConnectionRefusedError:
+		insert_text("Connection refused",'red')
+		return
+		
 	#a normal msg that we send should be green
 	color='green'
 	
-	#"quit" msg is painted red
-	if(msg==quitMSG()):
-		color='red'
+	
 		
 	insert_text(msg,color)
 	s.send(msg.encode())
-	recv=str(s.recv(size))
+	recv=str(s.recv(getReadSize()))
 	
 	#when we get a startMSG as echo it means the server work and we have connection
 	#all the buttons and be enabled!!
 	if(recv.find(startMSG())):
 		b_send.state(["!disabled"])
-		b_clear.state(["!disabled"])
-	#incomming 'quit' msg is painted red - all the other incomming msges are blur
-	if(msg!=quitMSG()):
-		color='blue'
+
+	color='blue'
 	insert_text(recv+"\n",color)
 	s.close
 	
@@ -140,8 +139,7 @@ if __name__ == "__main__":
 	om.grid(row=1,column=0,columnspan = 2)
 	
 	
-	#addOptionsToOptionList(['MSG 1    ','MSG 2    ','MSG 3    ','free text ',quitMSG()])
-	addOptionsToOptionList([setMsg(1)    ,setMsg(2)    ,setMsg(3)    ,setMsg(4),setMsg(5)])
+	addOptionsToOptionList([setMsg(i) for i in range(1,6)])
 	
 	
 	
@@ -152,7 +150,7 @@ if __name__ == "__main__":
 	#b_ok = ttk.Button(master, compound=tk.LEFT, image=im_ok, text="OK",command=ok_was_pressed)
 	b_send = ttk.Button(master,text="Send"	  ,command=send_was_pressed,state='disabled')
 	b_connect = ttk.Button(master,text="Connect",command=connect_was_pressed)
-	b_clear	= ttk.Button(master,text="clear"	  ,command=clear_was_pressed,state='disabled')    
+	b_clear	= ttk.Button(master,text="Clear"	  ,command=clear_was_pressed)    
 	
 	b_connect.grid(row=2,column=1, padx=1, pady=1)
 	b_send.grid(row=10,column=0, padx=5, pady=5,columnspan = 2)
