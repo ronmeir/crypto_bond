@@ -43,26 +43,29 @@ void* Client_UI_Server::IntermediateWelcomeSocketThreadLauncher(void *obj)
  */
 int Client_UI_Server::execOnWorkerThread (SocketWrapper sock, void* arg)
 {
-	char buff[BUF_SIZE+1]; //will be used to read data from the socket
+	char buff[BUF_SIZE+1] = "Server echo: "; //will be used to read data from the socket
+	char* ptr_to_mid_of_buffer;
 	int readBytes;
 
-    readBytes = sock.receiveFromSocket(buff,BUF_SIZE);
+	int reply_prefix_len = strlen(buff);  //get the reply prefix's length
+	ptr_to_mid_of_buffer = buff+reply_prefix_len;  //set a ptr to the 1st char after the prefix
+	//the data from the socket will be written from here on
+
+	//read from socket:
+    readBytes = sock.receiveFromSocket(ptr_to_mid_of_buffer,BUF_SIZE-reply_prefix_len);
     if (readBytes<1) //failed to receive data
     {
         sock.closeSocket();
         pthread_exit(NULL);
     }
 
-
-    buff[readBytes]='\0';   //gonna be working with cstring
+    ptr_to_mid_of_buffer[readBytes]='\0';   //gonna be working with cstring
 
     printf("%s",buff);
 
     //TODO complete the actual handling
     //fucking around:
-    string temp (buff);
-    temp = "Server echo: "+temp;
-    sock.sendToSocket(temp.c_str(),strlen(temp.c_str()));
+    sock.sendToSocket(buff,reply_prefix_len+readBytes);
     //finished fucking around.
 
     sock.closeSocket();
