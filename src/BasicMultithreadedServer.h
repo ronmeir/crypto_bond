@@ -18,6 +18,7 @@
 typedef struct arg_struct
 {
 	void* obj;
+	void* arg;
 	int sockDescrptr;
 }arg_struct;
 
@@ -33,8 +34,8 @@ protected:
 	int m_TCP_PortNum;
 
 	//methods:
-	virtual int execOnWorkerThread(SocketWrapper)=0;
-	void runWelcomeSocket();
+	virtual int execOnWorkerThread(SocketWrapper, void* arg)=0;
+	void runWelcomeSocket(void* argForWorkerThread);
 
 public:
 	BasicMultithreadedServer(int);

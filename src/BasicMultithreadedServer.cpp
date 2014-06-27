@@ -17,7 +17,7 @@ BasicMultithreadedServer::BasicMultithreadedServer(int tcp_port)
  * Launches a welcome-socket that fires up worker thread for every incoming connection.
  * @param *f - ptr to the function that'll run on the worker thread
  */
-void BasicMultithreadedServer::runWelcomeSocket()
+void BasicMultithreadedServer::runWelcomeSocket(void* argForWorkerThread)
 {
 	WelcomeSocket temp(m_TCP_PortNum);  //create a new welcome socket and start listening to the given port
 	m_welcomeSock = &temp;
@@ -41,6 +41,7 @@ void BasicMultithreadedServer::runWelcomeSocket()
 
 		arg_struct argz;
 		argz.obj=static_cast<void*>(this);
+		argz.arg = argForWorkerThread;
 		argz.sockDescrptr=sa.getSocketDescriptor();
 
 		if (pthread_create(&threadId, NULL,IntermediateWorkerThreadLauncher, &argz)) //create a new connection thread.
@@ -66,7 +67,7 @@ void* BasicMultithreadedServer::IntermediateWorkerThreadLauncher(void* argz)
 	  //cast to a static instance, though it actually isn't. Need to make sure this instance is alive
 	  //throughout the execution of this thread:
 	  BasicMultithreadedServer *thisObj = static_cast<BasicMultithreadedServer*>(args->obj);
-	  thisObj->execOnWorkerThread(SocketWrapper(args->sockDescrptr));   //exec the abstract func
+	  thisObj->execOnWorkerThread(SocketWrapper(args->sockDescrptr),args->arg);   //exec the abstract func
 
 }//end of IntermediateWorkerThreadLauncher()
 

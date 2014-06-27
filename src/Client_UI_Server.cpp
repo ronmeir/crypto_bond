@@ -34,14 +34,14 @@ void* Client_UI_Server::IntermediateWelcomeSocketThreadLauncher(void *obj)
 	  //cast to a static instance, though it actually isn't. Need to make sure this instance is alive
 	  //throughout the execution of this thread:
 	  Client_UI_Server *thisObj = static_cast<Client_UI_Server*>(obj);
-	  thisObj->runWelcomeSocket();   //start the welcome socket. runs infinitely.
+	  thisObj->runWelcomeSocket(NULL);   //start the welcome socket. runs infinitely.
 }//end of IntermediateWelcomeSocketThreadLauncher()
 
 /*
  * @override
  * This method will be executed on a worker thread.
  */
-int Client_UI_Server::execOnWorkerThread (SocketWrapper sock)
+int Client_UI_Server::execOnWorkerThread (SocketWrapper sock, void* arg)
 {
 	char buff[BUF_SIZE+1]; //will be used to read data from the socket
 	int readBytes;
