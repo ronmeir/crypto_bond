@@ -7,7 +7,7 @@ import easygui
 #we can change the port to send the msg in this function
 #usefull because when we close the server the port must be changed
 def getPort():
-	return 12345
+	return 12346
 
 def getIP():
 	return '127.0.0.1'
@@ -72,7 +72,9 @@ def clear_was_pressed():
 #called when the "connect" button is preesed   
 def connect_was_pressed():
    # print("connect button was pressed\n")
-	insert_text("connecting...\n")
+	insert_text("connecting...")
+	insert_text("	IP  :"+str(getIP()))
+	insert_text("	PORT:"+str(getPort())+"\n")
 	send(startMSG())
     
 #txt is the text to be shown in our terminal and also in the regular one
