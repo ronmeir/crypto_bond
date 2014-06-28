@@ -10,6 +10,7 @@
 #include "Client_UI_Server.h"
 #include "ObjectSerializer.h"
 #include "Messages.h"
+#include "General_Funcs.h"
 #include <string>
 #include <cstdlib>
 #include <sstream>

@@ -18,10 +18,20 @@ ServerMachine::ServerMachine() : BasicMultithreadedServer(SERVER_AND_CA_TCP_PORT
 
 }//end of constructor
 
+/**
+ * Handles all incoming connections to the server.
+ */
 int ServerMachine::execOnWorkerThread(SocketWrapper sock, void* arg)
 {
 	ServerMachine* this_machine = (ServerMachine*)arg;  //get a ptr to the running server_machine class instance
-//todo write a worker thread (receive data, update user DB, send reply).
+
+/* todo
+ * Objectives:
+ * 1. Handle SM request
+ * 2. Handle CA client approvals
+ * 3. Handle Client SK and Bond sendings
+ * 4. Perform echo on incoming messages
+ */
 }//end of execOnWorkerThread()
 
 

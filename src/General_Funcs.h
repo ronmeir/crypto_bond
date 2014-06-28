@@ -14,10 +14,16 @@
 
 using namespace std;
 
+/**
+ * Since we want to implement functions in this header file and not only declare them, we chose to use
+ * 'inline' to prevent multiple declaration of functions in this header. We're aware that this move will
+ * increase the size of the program, but it's relatively negligible.
+ */
+
 /*
  * Creates a message according to the format described at Messages.h
  */
-static string createMessage(string src,string dst,string opcode,int content_length, string content)
+inline string createMessage(string src,string dst,string opcode,int content_length, string content)
 {
 	std::string res(src+SFSC+dst+SFSC+opcode+SFSC);
 	//convert the string's length from in to string (similar to itoa()'s result):
@@ -32,7 +38,7 @@ static string createMessage(string src,string dst,string opcode,int content_leng
  * @param sock - the socket
  * @return - a vector containing the message's fields (src,dst,opcode,size,content)
  */
-static vector<string> readAndParseMessageFromSocket(SocketWrapper& sock)
+inline vector<string> readAndParseMessageFromSocket(SocketWrapper& sock)
 {
 	string currentField;
 	char currentChar=0;

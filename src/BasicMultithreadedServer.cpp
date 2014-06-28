@@ -59,7 +59,7 @@ void BasicMultithreadedServer::runWelcomeSocket(void* argForWorkerThread)
 /*
  * This method is run on a worker thread. It's used for allowing usage of this class's member methods
  * on a thread with pthread_create (which allows static or global methods only)
- *@param currentObj - a ptr to the BasicMultithreadedServer object this method is run on
+ *@param argz - a ptr to an arg_struct, containing a ptr to this class' instance and an additional argument for this func.
  */
 void* BasicMultithreadedServer::IntermediateWorkerThreadLauncher(void* argz)
 {
