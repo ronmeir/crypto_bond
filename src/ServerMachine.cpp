@@ -14,6 +14,10 @@ ServerMachine::ServerMachine() : BasicMultithreadedServer(SERVER_AND_CA_TCP_PORT
 
 	m_encHandlder = new EncryptionHandler(PARAM_FILE_PATH,m_SM,false);
 	m_serializer = new ObjectSerializer(*m_encHandlder->getBilinearMappingHandler());
+
+	m_serializer->setStateMachine(*m_SM,VIRUS_STRING); //set the SM in the serializer
+    m_serializer->getSerializedStateMachineString(m_SM_string); //serialize the SM
+
 	m_users = new map<string,ServerMachine::User>;  //the user DB
 
 }//end of constructor
@@ -25,15 +29,181 @@ int ServerMachine::execOnWorkerThread(SocketWrapper sock, void* arg)
 {
 	ServerMachine* this_machine = (ServerMachine*)arg;  //get a ptr to the running server_machine class instance
 
-/* todo
+	vector<string> parsed_request = readAndParseMessageFromSocket(sock); //receive the request
+/*
  * Objectives:
  * 1. Handle SM request
  * 2. Handle CA client approvals
- * 3. Handle Client SK and Bond sendings
+ * 3. Handle Client SK and Bond transmissions
  * 4. Perform echo on incoming messages
  */
+	//if the opcode means that it's an SM request
+	if (!parsed_request[3].compare(OPCODE_CLIENT_TO_SERVER_REQUEST_SM) ||
+			!parsed_request[3].compare(OPCODE_CA_TO_SERVER_REQUEST_SM))
+	{
+		handleSM_request(parsed_request,sock);
+		return 0;
+	}
+
+	//if the CA sent us a client approval:
+	if (!parsed_request[3].compare(OPCODE_CA_TO_SERVER_APPROVE_CLIENT) &&
+			!parsed_request[0].compare(CA_NAME))
+	{
+		handleCA_userApproval(parsed_request,sock);
+		return 0;
+	}
+
+	//if a client sent us an SK:
+	if (!parsed_request[3].compare(OPCODE_CLIENT_TO_SERVER_SEND_SK))
+	{
+		handleClientSK(parsed_request,sock);
+		return 0;
+	}
+
+	//if a client sent us a BOND:
+	if (!parsed_request[3].compare(OPCODE_CLIENT_TO_SERVER_SEND_BOND))
+	{
+		handleClientBond(parsed_request,sock);
+		return 0;
+	}
+
+	//if a client sent us a message:
+	if (!parsed_request[3].compare(OPCODE_CLIENT_TO_SERVER_SEND_MSG))
+	{
+		//if the client exists in the DB
+		if (m_users->find(parsed_request[0]) != m_users->end())
+		{
+			handleClientMessage(parsed_request, sock);
+		}
+		//todo create a reply for an unregistered client?
+		return 0;
+	}
+
+	cout << "Received an unknown opcode: " + parsed_request[3] + "from user named: " + parsed_request[0] << endl;
+	sock.closeSocket();
+	return -1;
+
 }//end of execOnWorkerThread()
 
+
+void ServerMachine::handleSM_request (vector<string>& incomingMsg,SocketWrapper& sock)
+{
+	string msgToSend = createMessage(SERVER_NAME, incomingMsg[0],OPCODE_SERVER_TO_CLIENT_OR_CA_REPLY_SM,
+			m_SM_string.length(), m_SM_string); //generate a reply message
+
+	sock.sendToSocket(msgToSend.c_str(), msgToSend.size()); //send the response
+	sock.closeSocket(); //close the socket
+
+}//end of handleSM_request()
+
+void ServerMachine::handleCA_userApproval (vector<string>& incomingMsg,SocketWrapper& sock)
+{
+	string msgToSend = createMessage(SERVER_NAME, CA_NAME,OPCODE_SERVER_TO_CA_ACK_APPROVE_CLIENT,
+			strlen(CONTENT_ACK), CONTENT_ACK); //generate a reply message
+
+	sock.sendToSocket(msgToSend.c_str(), msgToSend.size()); //send the response
+	sock.closeSocket(); //close the socket
+
+	//finished with the reply. Now we need to create a new User entry in our DB:
+
+	ServerMachine::User newUser;
+	newUser.name = "TEMP NAME. NEED TO DEFINE THE CONTENT PATTERN FOR A USER APPROVAL MESSAGE";
+	newUser.state = NEED_SK_AND_BOND;
+
+	//todo NOTE: OUR DB DOESN'T SUPPORT MULTIPLE USERS WITH THE SAME NAME.
+	//WE ASSUME THAT A NAME IS A UNIQUE ID
+	m_users->at(newUser.name) = newUser; //insert the new user into the DB
+
+}//end of handleCA_userApproval()
+
+void ServerMachine::handleClientSK (vector<string>& incomingMsg,SocketWrapper& sock)
+{
+	if (m_users->find(incomingMsg[0]) == m_users->end())
+	{
+		//this username doesn't exist in our DB. Send an appropriate reply:
+		string msgToSend = createMessage(SERVER_NAME, incomingMsg[0],OPCODE_SERVER_TO_CLIENT_NOT_APPROVED_BY_CA,
+				strlen(CONTENT_NO_CA_APPROVAL), CONTENT_NO_CA_APPROVAL); //generate a reply message
+
+		sock.sendToSocket(msgToSend.c_str(), msgToSend.size()); //send the response
+		sock.closeSocket(); //close the socket
+	}
+	else
+	{
+		//the user exists (it was already approved by the CA):
+		string msgToSend = createMessage(SERVER_NAME, incomingMsg[0],OPCODE_SERVER_TO_CLIENT_ACK_SK,
+				strlen(CONTENT_ACK), CONTENT_ACK); //generate a reply message
+
+		sock.sendToSocket(msgToSend.c_str(), msgToSend.size()); //send the response
+		sock.closeSocket(); //close the socket
+
+		ServerMachine::User user = m_users->at(incomingMsg[0]);  //get the client from the DB
+		user.SK = incomingMsg[4];  //save the SK string
+
+		if (user.state == NEED_SK_AND_BOND) //if we need both SK and bond
+			user.state = NEED_BOND;    //update the state
+
+		if (user.state == NEED_SK)      //if we need only the SK
+			user.state = OPERATIONAL;   //update the state
+
+		m_users->at(incomingMsg[0]) = user;  //update the user's data in the DB
+	}
+}//end of handleClientSK()
+
+void ServerMachine::handleClientBond (vector<string>& incomingMsg,SocketWrapper& sock)
+{
+	//if the user isn't in the DB
+	if (m_users->find(incomingMsg[0]) == m_users->end())
+	{
+		//this username doesn't exist in our DB. Send an appropriate reply:
+		string msgToSend = createMessage(SERVER_NAME, incomingMsg[0],OPCODE_SERVER_TO_CLIENT_NOT_APPROVED_BY_CA,
+				strlen(CONTENT_NO_CA_APPROVAL), CONTENT_NO_CA_APPROVAL); //generate a reply message
+
+		sock.sendToSocket(msgToSend.c_str(), msgToSend.size()); //send the response
+		sock.closeSocket(); //close the socket
+	}
+	else
+	{
+		//the user exists (it was already approved by the CA):
+		string msgToSend = createMessage(SERVER_NAME, incomingMsg[0],OPCODE_SERVER_TO_CLIENT_ACK_BOND,
+				strlen(CONTENT_ACK), CONTENT_ACK); //generate a reply message
+
+		sock.sendToSocket(msgToSend.c_str(), msgToSend.size()); //send the response
+		sock.closeSocket(); //close the socket
+
+		ServerMachine::User user = m_users->at(incomingMsg[0]);  //get the client from the DB
+		user.Bond = incomingMsg[4];  //save the SK string
+
+		if (user.state == NEED_SK_AND_BOND) //if we need both SK and bond
+			user.state = NEED_SK;    //update the state
+
+		if (user.state == NEED_BOND)      //if we need only the bond
+			user.state = OPERATIONAL;   //update the state
+
+		m_users->at(incomingMsg[0]) = user;  //update the user's data in the DB
+	}
+}//end of handleClientBond()
+
+void ServerMachine::handleClientMessage (vector<string>& incomingMsg,SocketWrapper& sock)
+{
+	bool isVirus = m_SM->checkStringForViruses(incomingMsg[4]); //check the msg for viruses
+
+	if (isVirus)
+		recoverBond(incomingMsg[0]);
+	else
+	{
+		string content = "Server echo :" + incomingMsg[4];
+		string msgToSend = createMessage(SERVER_NAME, incomingMsg[0],OPCODE_SERVER_TO_CLIENT_ECHO_MSG,
+				content.length(), content); //generate a reply message
+
+		sock.sendToSocket(msgToSend.c_str(), msgToSend.size()); //send the response
+		sock.closeSocket(); //close the socket
+	}
+}//end of handleClientMessage()
+
+void ServerMachine::recoverBond (string& userName)
+{
+	//todo complete
+}//end of recoverBond()
 
 void ServerMachine::run()
 {

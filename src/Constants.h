@@ -17,6 +17,7 @@ using namespace std;
 
 #define BUF_SIZE 8192
 #define PARAM_FILE_PATH "./param/a.param" //the relative path of the parameter file
+#define VIRUS_STRING "virus"
 #define MAX_MSG_LENGTH 7
 #define ALPHABET_SIZE 256
 #define SYN_REQUEST_QUEUE_SIZE 10         //Max num of pending syn requests

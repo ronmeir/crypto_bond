@@ -46,6 +46,7 @@ public:
 	const int getTotalNumOfTransitions();
 	const int getTotalNumOfAcceptenceStates();
 	void resetMachineToInitialState();
+	bool checkStringForViruses (std::string& str);
 
 };
 

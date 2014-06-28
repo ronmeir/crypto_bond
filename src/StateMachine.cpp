@@ -61,6 +61,38 @@ int StateMachine::addState (int stateID, int transitionTable[][2], int numOfRows
 }//end of addState()
 
 /**
+ * Runs a string through the SM, WITHOUT CHANGING THE SM'S STATE
+ * @param str - the string to look for viruses in
+ * @return bool - true if the machine has reached an acceptance state, false otherwise.
+ */
+bool StateMachine::checkStringForViruses (std::string& str)
+{
+	int current_state = mInitialState;
+
+	//handling the case of an uninitialized state:
+	if (mStates[mInitialState]==NULL)
+	{
+		cout << "Error! Can't move, initial state is undefined!";
+		return -1;
+	}
+
+	for (int i=0; i<str.length() ;i++) //running on all the string's chars
+	{
+		//state is defined. retrieving the next state:
+		current_state = mStates[current_state]->getNextStateID(str.at(i));
+		if (current_state==-1) //if the machine can move to a new state
+		{
+			cout << "The current state has no defined transition for the given input!\n";
+			return false;
+		}
+	}//for
+
+	return mStates[current_state]->getIsAcceptanceState();
+
+}//end of checkStringForViruses()
+
+/**
+ * IMPORTANT: NOT THREAD SAFE. THIS FUNCTION CHANGES THE MACHINE'S CURRENT STATE
  * Tries to move the machine to the next state
  * @param input - the given input
  * @return 0 if the machine has successfully moved to the next state, -1 otherwise

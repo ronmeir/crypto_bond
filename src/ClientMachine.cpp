@@ -210,7 +210,7 @@ int ClientMachine::UI_Callback_requestSM_FromServer()
 
 	//if the reply doesn't match the expected reply:
 	if (parsed_reply[0].compare(SERVER_NAME) || parsed_reply[1].compare(m_ID) ||
-			parsed_reply[2].compare(OPCODE_SERVER_TO_CLIENT_REPLY_SM))
+			parsed_reply[2].compare(OPCODE_SERVER_TO_CLIENT_OR_CA_REPLY_SM))
 	{
 		return RET_VAL_TO_UI_SERVER_SM_NOT_RECEIVED;
 	}
