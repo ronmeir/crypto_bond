@@ -8,6 +8,8 @@
 #include <string>
 #include <cstdlib>
 #include <sstream>
+#include <vector>
+#include "SocketWrapper.h"
 #include "Messages.h"
 
 using namespace std;
@@ -36,14 +38,9 @@ using namespace std;
 #define RET_VAL_TO_UI_SERVER_SERVER_RECEIVED_SK_AND_BOND 0
 #define RET_VAL_TO_UI_SERVER_SERVER_SENT_UNKNOWN_REPLY 1
 
-static string createMessage(string src,string dst,string opcode,int content_length, string content)
-{
-	std::string res(src+SFSC+dst+SFSC+opcode+SFSC);
-	//length int to string:
-	string msg_length_str = static_cast<ostringstream*>( &(ostringstream() << content_length) )->str();
-	res.append(msg_length_str+SFSC+content);//length
+#define RET_VAL_TO_UI_SERVER_SERVER_REPLY_OK 0
 
-	return res;
-}
+#define RET_VAL_TO_UI_SERVER
+
 
 #endif

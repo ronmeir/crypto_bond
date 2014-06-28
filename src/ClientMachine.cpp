@@ -26,7 +26,13 @@ ClientMachine::ClientMachine(const string userID,const string ServerIP,const str
 
 }//end of constructor
 
-string ClientMachine::UI_Callback_SendMsg(string msg)
+/**
+ * Sends a single message to the servers and waits for a reply.
+ * @param msg- the msg to send
+ * @param servers_reply - the server's reply will be save here
+ * @return - the result OPCODE
+ */
+int ClientMachine::UI_Callback_SendMsg(string servers_reply, string msg)
 {
 	string msgToSend = createMessage(m_ID, SERVER_NAME,OPCODE_CLIENT_TO_SERVER_SEND_MSG,
 			msg.size(), msg);
@@ -41,14 +47,18 @@ string ClientMachine::UI_Callback_SendMsg(string msg)
 
 	//if the opcode doesn't match
 	if (parsed_reply[2].compare(OPCODE_SERVER_TO_CLIENT_ECHO_MSG))
-		return "Unknown server response!";
+	{
+		servers_reply = "Unknown server response!";
+		return RET_VAL_TO_UI_SERVER_SERVER_SENT_UNKNOWN_REPLY;
+	}
 
-	return parsed_reply[4];   //return the server's message content
+	servers_reply = parsed_reply[4];   //set the server's message content
+	return RET_VAL_TO_UI_SERVER_SERVER_REPLY_OK;
 
 }//end of UI_Callback_SendMsg()
 
 /**
- * Initialize all required parameters and creates an SK and Bond.
+ * Initializes all required parameters and creates an SK and Bond.
  */
 int ClientMachine::UI_Callback_CreateSK_AndBond()
 {
@@ -135,11 +145,15 @@ int ClientMachine::UI_Callback_SendSK_AndBond(bool isSendToCA)
 			if (parsed_reply[2].compare( i == 0 ? OPCODE_SERVER_TO_CLIENT_ACK_SK : OPCODE_SERVER_TO_CLIENT_ACK_BOND)
 					|| parsed_reply[4].compare(CONTENT_ACK))
 				return RET_VAL_TO_UI_SERVER_SERVER_SENT_UNKNOWN_REPLY;
-
-			m_program_state = OPERATIONAL;
-			return RET_VAL_TO_UI_SERVER_SERVER_RECEIVED_SK_AND_BOND;
 		}
-	}//for
+	}//for (send sk and bond)
+
+	if (!isSendToCA) //if we've sent to the server
+	{
+		//We've succesfuly sent the sk and bond to the server
+		m_program_state = OPERATIONAL;
+		return RET_VAL_TO_UI_SERVER_SERVER_RECEIVED_SK_AND_BOND;
+	}
 
 	//THIS POINT IS REACHED ONLY IF WE'VE SEND DATA TO THE CA:
 	//asking the CA to validate the SK and Bond:
@@ -163,7 +177,7 @@ int ClientMachine::UI_Callback_SendSK_AndBond(bool isSendToCA)
 		return RET_VAL_TO_UI_SERVER_CA_SENT_UNKNOWN_REPLY;
 
 	//if the opcode is correct and the CA has approved
-	if (parsed_reply[4].compare(CONTENT_VALID))
+	if (!parsed_reply[4].compare(CONTENT_VALID))
 	{
 		m_program_state = GOT_CA_APPROVAL;
 		return RET_VAL_TO_UI_SERVER_CA_APPROVED_SK_AND_BOND;
@@ -171,7 +185,6 @@ int ClientMachine::UI_Callback_SendSK_AndBond(bool isSendToCA)
 	else
 		//the CA didn't approve
 		return RET_VAL_TO_UI_SERVER_CA_DISAPPROVED_SK_AND_BOND;
-
 }//end of UI_Callback_SendSK_AndBondToCA()
 
 
@@ -212,49 +225,7 @@ int ClientMachine::UI_Callback_requestSM_FromServer()
 
 }//end of UI_Callback_requestSM_FromServer()
 
-/*
- * Reads a single message from a socket and parses it by fields.
- * @param sock - the socket
- * @return - a vector containing the message's fields (src,dst,opcode,size,content)
- */
-vector<string> ClientMachine::readAndParseMessageFromSocket(SocketWrapper& sock)
-{
-	string currentField;
-	char currentChar=0;
-	vector<string> results;
 
-	//TODO WE HAVE NO TIMEOUT ON THE READ ATTEMPT. CONSIDER ADDING IT.
-
-	//reading the first 4 fields:
-	for (int i=0; i<4 ;i++)
-	{
-		sock.receiveFromSocket(&currentChar,1); //read a single char
-
-		while (currentChar != SFSC) //in the current message field
-		{
-			currentField.append(""+currentChar);    //append the char to a string
-			sock.receiveFromSocket(&currentChar,1); //read the next char
-		}//while
-
-		results.push_back(currentField);
-		currentField.clear();
-	}//for
-
-	int content_length = atoi(results[3].c_str()); //convert the length string to an int
-	currentField.clear();
-
-	//extract the content:
-	for (int i=0; i<content_length ;i++)
-	{
-		sock.receiveFromSocket(&currentChar,1); //read the next char
-		currentField.append(""+currentChar);    //append the char to a string
-	}//for
-
-	results.push_back(currentField); //add to the vector
-
-	return results;
-
-}//end of readAndParseMessageFromSocket()
 
 /*
  * The client's main function.
@@ -274,7 +245,7 @@ void ClientMachine::run()
 }//end of run()
 
 
-
+//Destructor
 ClientMachine::~ClientMachine()
 {
 	if (m_EncHandler!=NULL)

@@ -40,11 +40,10 @@ private:
 	UserState m_program_state;
 
 	//methods:
-	std::vector<std::string> readAndParseMessageFromSocket(SocketWrapper& sock);
 	int UI_Callback_requestSM_FromServer();
 	int UI_Callback_CreateSK_AndBond();
 	int UI_Callback_SendSK_AndBond(bool isSendToCA);
-	std::string UI_Callback_SendMsg(std::string msg);
+	int UI_Callback_SendMsg(std::string servers_reply, std::string msg);
 
 public:
 	ClientMachine(const std::string,const std::string,const std::string);
