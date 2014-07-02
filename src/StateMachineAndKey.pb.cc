@@ -46,7 +46,7 @@ void protobuf_AssignDesc_StateMachineAndKey_2eproto() {
       "StateMachineAndKey.proto");
   GOOGLE_CHECK(file != NULL);
   Bond_descriptor_ = file->message_type(0);
-  static const int Bond_offsets_[8] = {
+  static const int Bond_offsets_[9] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Bond, c_i_1_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Bond, c_i_2_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Bond, cm_),
@@ -55,6 +55,7 @@ void protobuf_AssignDesc_StateMachineAndKey_2eproto() {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Bond, c_end1_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Bond, c_end2_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Bond, l_numofcs_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Bond, bond_in_pt_compressed_),
   };
   Bond_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -184,20 +185,21 @@ void protobuf_AddDesc_StateMachineAndKey_2eproto() {
 
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
     "\n\030StateMachineAndKey.proto\022\022StateMachine"
-    "AndKey\"\207\001\n\004Bond\022\r\n\005c_i_1\030\001 \003(\014\022\r\n\005c_i_2\030"
+    "AndKey\"\246\001\n\004Bond\022\r\n\005c_i_1\030\001 \003(\014\022\r\n\005c_i_2\030"
     "\002 \003(\014\022\n\n\002Cm\030\003 \002(\014\022\020\n\010C_start1\030\004 \002(\014\022\020\n\010C"
     "_start2\030\005 \002(\014\022\016\n\006C_end1\030\006 \002(\014\022\016\n\006C_end2\030"
-    "\007 \002(\014\022\021\n\tl_numOfCs\030\010 \001(\005\"\200\002\n\014StateMachin"
-    "e\0228\n\010StateVec\030\001 \003(\0132&.StateMachineAndKey"
-    ".StateMachine.State\022\r\n\005virus\030\002 \001(\t\032.\n\nTr"
-    "ansition\022\r\n\005input\030\001 \002(\005\022\021\n\tnextState\030\002 \002"
-    "(\005\032w\n\005State\022B\n\rtransitionVec\030\001 \003(\0132+.Sta"
-    "teMachineAndKey.StateMachine.Transition\022"
-    "\031\n\021isAcceptanceState\030\002 \002(\010\022\017\n\007stateID\030\003 "
-    "\002(\005\"\206\001\n\tSecretKey\022\r\n\005K_t_1\030\001 \003(\014\022\r\n\005K_t_"
-    "2\030\002 \003(\014\022\r\n\005K_t_3\030\003 \003(\014\022\023\n\013K_for_q_x_1\030\004 "
-    "\003(\014\022\023\n\013K_for_q_x_2\030\005 \003(\014\022\020\n\010K_start1\030\006 \002"
-    "(\014\022\020\n\010K_start2\030\007 \002(\014", 580);
+    "\007 \002(\014\022\021\n\tl_numOfCs\030\010 \001(\005\022\035\n\025bond_in_PT_c"
+    "ompressed\030\t \001(\014\"\200\002\n\014StateMachine\0228\n\010Stat"
+    "eVec\030\001 \003(\0132&.StateMachineAndKey.StateMac"
+    "hine.State\022\r\n\005virus\030\002 \001(\t\032.\n\nTransition\022"
+    "\r\n\005input\030\001 \002(\005\022\021\n\tnextState\030\002 \002(\005\032w\n\005Sta"
+    "te\022B\n\rtransitionVec\030\001 \003(\0132+.StateMachine"
+    "AndKey.StateMachine.Transition\022\031\n\021isAcce"
+    "ptanceState\030\002 \002(\010\022\017\n\007stateID\030\003 \002(\005\"\206\001\n\tS"
+    "ecretKey\022\r\n\005K_t_1\030\001 \003(\014\022\r\n\005K_t_2\030\002 \003(\014\022\r"
+    "\n\005K_t_3\030\003 \003(\014\022\023\n\013K_for_q_x_1\030\004 \003(\014\022\023\n\013K_"
+    "for_q_x_2\030\005 \003(\014\022\020\n\010K_start1\030\006 \002(\014\022\020\n\010K_s"
+    "tart2\030\007 \002(\014", 611);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "StateMachineAndKey.proto", &protobuf_RegisterTypes);
   Bond::default_instance_ = new Bond();
@@ -231,6 +233,7 @@ const int Bond::kCStart2FieldNumber;
 const int Bond::kCEnd1FieldNumber;
 const int Bond::kCEnd2FieldNumber;
 const int Bond::kLNumOfCsFieldNumber;
+const int Bond::kBondInPTCompressedFieldNumber;
 #endif  // !_MSC_VER
 
 Bond::Bond()
@@ -255,6 +258,7 @@ void Bond::SharedCtor() {
   c_end1_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   c_end2_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   l_numofcs_ = 0;
+  bond_in_pt_compressed_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -277,6 +281,9 @@ void Bond::SharedDtor() {
   }
   if (c_end2_ != &::google::protobuf::internal::kEmptyString) {
     delete c_end2_;
+  }
+  if (bond_in_pt_compressed_ != &::google::protobuf::internal::kEmptyString) {
+    delete bond_in_pt_compressed_;
   }
   if (this != default_instance_) {
   }
@@ -331,6 +338,13 @@ void Bond::Clear() {
       }
     }
     l_numofcs_ = 0;
+  }
+  if (_has_bits_[8 / 32] & (0xffu << (8 % 32))) {
+    if (has_bond_in_pt_compressed()) {
+      if (bond_in_pt_compressed_ != &::google::protobuf::internal::kEmptyString) {
+        bond_in_pt_compressed_->clear();
+      }
+    }
   }
   c_i_1_.Clear();
   c_i_2_.Clear();
@@ -456,6 +470,20 @@ bool Bond::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
+        if (input->ExpectTag(74)) goto parse_bond_in_PT_compressed;
+        break;
+      }
+
+      // optional bytes bond_in_PT_compressed = 9;
+      case 9: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_bond_in_PT_compressed:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadBytes(
+                input, this->mutable_bond_in_pt_compressed()));
+        } else {
+          goto handle_uninterpreted;
+        }
         if (input->ExpectAtEnd()) return true;
         break;
       }
@@ -525,6 +553,12 @@ void Bond::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteInt32(8, this->l_numofcs(), output);
   }
 
+  // optional bytes bond_in_PT_compressed = 9;
+  if (has_bond_in_pt_compressed()) {
+    ::google::protobuf::internal::WireFormatLite::WriteBytes(
+      9, this->bond_in_pt_compressed(), output);
+  }
+
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -585,6 +619,13 @@ void Bond::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(8, this->l_numofcs(), target);
   }
 
+  // optional bytes bond_in_PT_compressed = 9;
+  if (has_bond_in_pt_compressed()) {
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteBytesToArray(
+        9, this->bond_in_pt_compressed(), target);
+  }
+
   if (!unknown_fields().empty()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
@@ -636,6 +677,15 @@ int Bond::ByteSize() const {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::Int32Size(
           this->l_numofcs());
+    }
+
+  }
+  if (_has_bits_[8 / 32] & (0xffu << (8 % 32))) {
+    // optional bytes bond_in_PT_compressed = 9;
+    if (has_bond_in_pt_compressed()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::BytesSize(
+          this->bond_in_pt_compressed());
     }
 
   }
@@ -700,6 +750,11 @@ void Bond::MergeFrom(const Bond& from) {
       set_l_numofcs(from.l_numofcs());
     }
   }
+  if (from._has_bits_[8 / 32] & (0xffu << (8 % 32))) {
+    if (from.has_bond_in_pt_compressed()) {
+      set_bond_in_pt_compressed(from.bond_in_pt_compressed());
+    }
+  }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
 
@@ -731,6 +786,7 @@ void Bond::Swap(Bond* other) {
     std::swap(c_end1_, other->c_end1_);
     std::swap(c_end2_, other->c_end2_);
     std::swap(l_numofcs_, other->l_numofcs_);
+    std::swap(bond_in_pt_compressed_, other->bond_in_pt_compressed_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);

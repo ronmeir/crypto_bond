@@ -175,7 +175,7 @@ void EncryptionHandler::mapStringToElementFromGT(memberElement& ans,
 }       //end of mapStringToElementFromGT()
 
 /*
- *
+ * Performs the decryption.
  */
 void EncryptionHandler::decrypt(memberElement& decryptedMsgElem, SK& secretKey,
 		CT& cipherText, StateMachine stateMachine)

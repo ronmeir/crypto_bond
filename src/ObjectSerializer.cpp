@@ -20,6 +20,47 @@ ObjectSerializer::ObjectSerializer(BilinearMappingHandler& mapper)
 }//end of constructor
 
 /*
+ * Used by the client for clearing the bond in PT before sending the entire bond CT object to the server
+ */
+void ObjectSerializer::clearBondInPlainText ()
+{
+	if (m_Bond.has_bond_in_pt_compressed())
+		m_Bond.clear_bond_in_pt_compressed();
+}//end of clearBondInPlainText()
+
+/*
+ * Used by the CA to get the bond in PT
+ * @param saveHere - the decompressed element (the PT-bond) will be saved here
+ * @param isMemberOfGT - always true in our crypto scheme
+ */
+bool ObjectSerializer::getBondInPlainText (memberElement& saveHere, bool isMemberOfGT)
+{
+	if (!m_Bond.has_bond_in_pt_compressed()) //if there's no PT-bond set
+		return false;
+
+	m_mapper->byteArrayToElement(saveHere,(unsigned char*)m_Bond.bond_in_pt_compressed().c_str(),isMemberOfGT);
+	return true;
+}//end of getBondInPlainText()
+
+/*
+ * Used by the client to add the secret in PT to the bond object before sending it to the CA.
+ * @param bond - the secret
+ * @param isMemberOfGT - always true in our crypto scheme
+ */
+void ObjectSerializer::setBondInPlainText (memberElement& bond, bool isMemberOfGT)
+{
+	if (m_isBondSet)
+	{
+		int bondPT_size = m_mapper->getElementLengthInBytes(bond,isMemberOfGT);
+		unsigned char compressedBond[bondPT_size+1];  //allocate a buffer
+
+		m_mapper->elementToByteArray(compressedBond,bond,isMemberOfGT); //get the compresses element
+
+		m_Bond.set_bond_in_pt_compressed((char*)compressedBond);  //set
+	}
+}//end of setBondInPlainText()
+
+/*
  * Deserializes the SK string
  * @param saveHere - This SK should only contain allocated space that can be filled.
  * @param SK_string - the serialized SK

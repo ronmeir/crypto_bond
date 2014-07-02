@@ -70,7 +70,7 @@ bool StateMachine::checkStringForViruses (std::string& str)
 	int current_state = mInitialState;
 
 	//handling the case of an uninitialized state:
-	if (mStates[mInitialState]==NULL)
+	if (mStates[current_state]==NULL)
 	{
 		cout << "Error! Can't move, initial state is undefined!";
 		return -1;
@@ -82,7 +82,7 @@ bool StateMachine::checkStringForViruses (std::string& str)
 		current_state = mStates[current_state]->getNextStateID(str.at(i));
 		if (current_state==-1) //if the machine can move to a new state
 		{
-			cout << "The current state has no defined transition for the given input!\n";
+			cout << "State " << current_state << " has no defined transition for the given input!\n";
 			return false;
 		}
 	}//for

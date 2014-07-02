@@ -18,6 +18,9 @@
 #include "ClientMachine.h"
 #include "ObjectSerializer.h"
 #define DEBUG 0
+#define CLIENT 1
+#define SERVER 0
+#define CA 	   0
 
 using namespace std;                      //using the 'string' library
 
@@ -30,7 +33,7 @@ void compareCTs(EncryptionHandler::CT& ct1, EncryptionHandler::CT& ct2, Bilinear
 
 int main()
 {
-#if !DEBUG
+#if CLIENT
 	printf("running....");
 	ClientMachine client("user","ip1","ip2");
 	client.run();
@@ -41,7 +44,18 @@ int main()
 	}
 
 	google::protobuf::ShutdownProtobufLibrary();
-#else
+#endif
+#if SERVER
+
+
+#endif
+#if CA
+
+
+#endif
+
+#if DEBUG
+
 	//debug_mapperTest();
 	debug_EncryptionTest(true);
 #endif

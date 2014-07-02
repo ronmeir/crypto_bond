@@ -33,6 +33,7 @@ private:
 	BilinearMappingHandler* m_mapper;
 	EncryptionHandler* m_EncHandler;
 	StateMachine* m_SM;
+	memberElement m_theSecret;
 	EncryptionHandler::SK* m_SK;
 	EncryptionHandler::MSK* m_MSK;
 	EncryptionHandler::CT* m_Bond;

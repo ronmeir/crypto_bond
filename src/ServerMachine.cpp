@@ -139,10 +139,10 @@ void ServerMachine::handleClientSK (vector<string>& incomingMsg,SocketWrapper& s
 		ServerMachine::User user = m_users->at(incomingMsg[0]);  //get the client from the DB
 		user.SK = incomingMsg[4];  //save the SK string
 
-		if (user.state == NEED_SK_AND_BOND) //if we need both SK and bond
+		if (user.state == NEED_SK_AND_BOND) //if we've needed both SK and bond
 			user.state = NEED_BOND;    //update the state
 
-		if (user.state == NEED_SK)      //if we need only the SK
+		if (user.state == NEED_SK)      //if we've needed only the SK
 			user.state = OPERATIONAL;   //update the state
 
 		m_users->at(incomingMsg[0]) = user;  //update the user's data in the DB
@@ -173,10 +173,10 @@ void ServerMachine::handleClientBond (vector<string>& incomingMsg,SocketWrapper&
 		ServerMachine::User user = m_users->at(incomingMsg[0]);  //get the client from the DB
 		user.Bond = incomingMsg[4];  //save the SK string
 
-		if (user.state == NEED_SK_AND_BOND) //if we need both SK and bond
+		if (user.state == NEED_SK_AND_BOND) //if we;'ve needed both SK and bond
 			user.state = NEED_SK;    //update the state
 
-		if (user.state == NEED_BOND)      //if we need only the bond
+		if (user.state == NEED_BOND)      //if we've needed only the bond
 			user.state = OPERATIONAL;   //update the state
 
 		m_users->at(incomingMsg[0]) = user;  //update the user's data in the DB
@@ -186,28 +186,58 @@ void ServerMachine::handleClientBond (vector<string>& incomingMsg,SocketWrapper&
 void ServerMachine::handleClientMessage (vector<string>& incomingMsg,SocketWrapper& sock)
 {
 	bool isVirus = m_SM->checkStringForViruses(incomingMsg[4]); //check the msg for viruses
+	string content, msgToSend;
 
 	if (isVirus)
-		recoverBond(incomingMsg[0]);
-	else
 	{
-		string content = "Server echo :" + incomingMsg[4];
-		string msgToSend = createMessage(SERVER_NAME, incomingMsg[0],OPCODE_SERVER_TO_CLIENT_ECHO_MSG,
+		content = CONTENT_CLIENT_WAS_BUSTED + incomingMsg[0];  //create a reply content
+		msgToSend = createMessage(SERVER_NAME, incomingMsg[0],OPCODE_SERVER_TO_CLIENT_VIRUS_DETECTED_IN_MSG,
 				content.length(), content); //generate a reply message
 
-		sock.sendToSocket(msgToSend.c_str(), msgToSend.size()); //send the response
-		sock.closeSocket(); //close the socket
+		recoverBond(incomingMsg[0],incomingMsg[4]); //recover the bond
 	}
+	else
+	{
+		content = CONTENT_SERVER_ECHO_PREFIX + incomingMsg[4]; //create a reply content
+		msgToSend = createMessage(SERVER_NAME, incomingMsg[0],OPCODE_SERVER_TO_CLIENT_ECHO_MSG,
+				content.length(), content); //generate a reply message
+	}
+
+	//send:
+	sock.sendToSocket(msgToSend.c_str(), msgToSend.size()); //send the response
+	sock.closeSocket(); //close the socket
 }//end of handleClientMessage()
 
-void ServerMachine::recoverBond (string& userName)
+void ServerMachine::recoverBond (string& userName, string& virus)
 {
+	memberElement decryptRes;
 	//todo complete
+	cout << "THE SERVER HAS DETECTED A VIRUS IN A MESSAGE FROM: " << userName << endl;
+
+	ServerMachine::User user = m_users->at(userName); //extract the user from the DB
+
+	//construct a holder for the desirialized SK:
+	EncryptionHandler::SK desirializedSK(m_encHandlder->getBilinearMappingHandler(),
+			m_SM, NULL, false);
+
+	m_serializer->deserializeSecretKey(desirializedSK, user.SK); //deserialize the SK
+
+	//creating a new empty CT:
+	EncryptionHandler::CT deserializedBond(m_encHandlder->getBilinearMappingHandler(),
+			MAX_MSG_LENGTH, false);
+
+	m_serializer->deserializeBond(deserializedBond, user.Bond); //deserialize
+
+	m_encHandlder->completePartialEncryption(deserializedBond, virus);	//complete the enc.
+	m_encHandlder->decrypt(decryptRes, desirializedSK, deserializedBond, *m_SM);  //decrypt
+
+	//the bond is located in decryptRes
+
 }//end of recoverBond()
 
 void ServerMachine::run()
 {
-	runWelcomeSocket(this);   //launch the welcome socket
+	runWelcomeSocket(this);   //launch the welcome socket (the welcome socket doesn't run on a thread)
 }//end of run()
 
 void ServerMachine::initializeStateMachine(StateMachine* machine)

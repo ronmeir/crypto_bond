@@ -72,6 +72,9 @@ int Client_UI_Server::execOnWorkerThread (SocketWrapper sock, void* arg)
     return 1;
 }//end of webServerWorkerThread()
 
+/*
+ * Returns the tcp port number the UI server listens to.
+ */
 int Client_UI_Server::getPort ()
 {
 	return m_TCP_PortNum;

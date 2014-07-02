@@ -194,6 +194,18 @@ class Bond : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 l_numofcs() const;
   inline void set_l_numofcs(::google::protobuf::int32 value);
 
+  // optional bytes bond_in_PT_compressed = 9;
+  inline bool has_bond_in_pt_compressed() const;
+  inline void clear_bond_in_pt_compressed();
+  static const int kBondInPTCompressedFieldNumber = 9;
+  inline const ::std::string& bond_in_pt_compressed() const;
+  inline void set_bond_in_pt_compressed(const ::std::string& value);
+  inline void set_bond_in_pt_compressed(const char* value);
+  inline void set_bond_in_pt_compressed(const void* value, size_t size);
+  inline ::std::string* mutable_bond_in_pt_compressed();
+  inline ::std::string* release_bond_in_pt_compressed();
+  inline void set_allocated_bond_in_pt_compressed(::std::string* bond_in_pt_compressed);
+
   // @@protoc_insertion_point(class_scope:StateMachineAndKey.Bond)
  private:
   inline void set_has_cm();
@@ -208,6 +220,8 @@ class Bond : public ::google::protobuf::Message {
   inline void clear_has_c_end2();
   inline void set_has_l_numofcs();
   inline void clear_has_l_numofcs();
+  inline void set_has_bond_in_pt_compressed();
+  inline void clear_has_bond_in_pt_compressed();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -218,10 +232,11 @@ class Bond : public ::google::protobuf::Message {
   ::std::string* c_start2_;
   ::std::string* c_end1_;
   ::std::string* c_end2_;
+  ::std::string* bond_in_pt_compressed_;
   ::google::protobuf::int32 l_numofcs_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(8 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(9 + 31) / 32];
 
   friend void  protobuf_AddDesc_StateMachineAndKey_2eproto();
   friend void protobuf_AssignDesc_StateMachineAndKey_2eproto();
@@ -1182,6 +1197,76 @@ inline ::google::protobuf::int32 Bond::l_numofcs() const {
 inline void Bond::set_l_numofcs(::google::protobuf::int32 value) {
   set_has_l_numofcs();
   l_numofcs_ = value;
+}
+
+// optional bytes bond_in_PT_compressed = 9;
+inline bool Bond::has_bond_in_pt_compressed() const {
+  return (_has_bits_[0] & 0x00000100u) != 0;
+}
+inline void Bond::set_has_bond_in_pt_compressed() {
+  _has_bits_[0] |= 0x00000100u;
+}
+inline void Bond::clear_has_bond_in_pt_compressed() {
+  _has_bits_[0] &= ~0x00000100u;
+}
+inline void Bond::clear_bond_in_pt_compressed() {
+  if (bond_in_pt_compressed_ != &::google::protobuf::internal::kEmptyString) {
+    bond_in_pt_compressed_->clear();
+  }
+  clear_has_bond_in_pt_compressed();
+}
+inline const ::std::string& Bond::bond_in_pt_compressed() const {
+  return *bond_in_pt_compressed_;
+}
+inline void Bond::set_bond_in_pt_compressed(const ::std::string& value) {
+  set_has_bond_in_pt_compressed();
+  if (bond_in_pt_compressed_ == &::google::protobuf::internal::kEmptyString) {
+    bond_in_pt_compressed_ = new ::std::string;
+  }
+  bond_in_pt_compressed_->assign(value);
+}
+inline void Bond::set_bond_in_pt_compressed(const char* value) {
+  set_has_bond_in_pt_compressed();
+  if (bond_in_pt_compressed_ == &::google::protobuf::internal::kEmptyString) {
+    bond_in_pt_compressed_ = new ::std::string;
+  }
+  bond_in_pt_compressed_->assign(value);
+}
+inline void Bond::set_bond_in_pt_compressed(const void* value, size_t size) {
+  set_has_bond_in_pt_compressed();
+  if (bond_in_pt_compressed_ == &::google::protobuf::internal::kEmptyString) {
+    bond_in_pt_compressed_ = new ::std::string;
+  }
+  bond_in_pt_compressed_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* Bond::mutable_bond_in_pt_compressed() {
+  set_has_bond_in_pt_compressed();
+  if (bond_in_pt_compressed_ == &::google::protobuf::internal::kEmptyString) {
+    bond_in_pt_compressed_ = new ::std::string;
+  }
+  return bond_in_pt_compressed_;
+}
+inline ::std::string* Bond::release_bond_in_pt_compressed() {
+  clear_has_bond_in_pt_compressed();
+  if (bond_in_pt_compressed_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = bond_in_pt_compressed_;
+    bond_in_pt_compressed_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void Bond::set_allocated_bond_in_pt_compressed(::std::string* bond_in_pt_compressed) {
+  if (bond_in_pt_compressed_ != &::google::protobuf::internal::kEmptyString) {
+    delete bond_in_pt_compressed_;
+  }
+  if (bond_in_pt_compressed) {
+    set_has_bond_in_pt_compressed();
+    bond_in_pt_compressed_ = bond_in_pt_compressed;
+  } else {
+    clear_has_bond_in_pt_compressed();
+    bond_in_pt_compressed_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
 }
 
 // -------------------------------------------------------------------

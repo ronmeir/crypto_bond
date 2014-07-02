@@ -15,6 +15,7 @@
 	  required bytes C_end1 = 		6;
 	  required bytes C_end2 = 		7;
 	  optional int32 l_numOfCs = 	8;	//the number of Cs needed - 'l' in the paper
+	  optional bytes bond_in_PT_compressed = 9; //will be used when sending the bond to the CA
 	}//end of Bond
 	
 	//DONE WITH THE BOND!!!!

@@ -73,14 +73,12 @@ int ClientMachine::UI_Callback_CreateSK_AndBond()
 	m_MSK = m_EncHandler->setup(); //gen. master key
 	m_SK = m_EncHandler->keyGen();	//gen. secret key
 
-	memberElement theMsgElem;
-
 	//map the bond to some random element in G1
-	m_EncHandler->mapStringToElementFromGT(theMsgElem, "BOND STRING");
+	m_EncHandler->mapStringToElementFromGT(m_theSecret, "BOND STRING");
 
 	m_Bond = new EncryptionHandler::CT(m_EncHandler->getBilinearMappingHandler(),
 			MAX_MSG_LENGTH, true);  //creating a new empty CT
-	m_EncHandler->createPartialEncryption(*m_Bond,m_virus, theMsgElem); //generate a partial CT
+	m_EncHandler->createPartialEncryption(*m_Bond,m_virus, m_theSecret); //generate a partial CT
 
 	m_serializer->setSecretKey(*m_SK,*m_SM);  //set the SK into the serializer
 	m_serializer->setBond(*m_Bond);			  //set the Bond into the serializer
@@ -94,11 +92,17 @@ int ClientMachine::UI_Callback_CreateSK_AndBond()
  * Message order:
  * 1. Sends SK message and waits for an ACK.
  * 2. Sends Bond message and waits for an ACK.
+ * 4. If the dst is the CA, sends the bond in plaintext
  * 3. If the dst is the CA, sends a Validation-Request message and waits for a reply.
  */
 int ClientMachine::UI_Callback_SendSK_AndBond(bool isSendToCA)
 {
 	string msgToSend, content;
+
+	if(isSendToCA)
+		m_serializer->setBondInPlainText(m_theSecret,true); //set the PT in the bond
+	else
+		m_serializer->clearBondInPlainText();			    //make sure there's no PT in the bond
 
 	for (int i = 0; i < 2; i++) //repeat twice, once for the SK and once for the Bond
 	{
@@ -111,7 +115,7 @@ int ClientMachine::UI_Callback_SendSK_AndBond(bool isSendToCA)
 		if (isSendToCA)  //if the message is to be sent to the CA
 		{
 		msgToSend = createMessage(m_ID, CA_NAME,
-				i==0? OPCODE_CLIENT_TO_CA_SEND_SK : OPCODE_CLIENT_TO_CA_SEND_BOND,
+				i==0? OPCODE_CLIENT_TO_CA_SEND_SK : OPCODE_CLIENT_TO_CA_SEND_ENCRYPTED_BOND,
 				content.size(), content);
 		}
 		else //the message is to be sent to the server
@@ -134,7 +138,7 @@ int ClientMachine::UI_Callback_SendSK_AndBond(bool isSendToCA)
 		if (isSendToCA) //if the reply came from the CA
 		{
 			//if the opcode or content don't match
-			if (parsed_reply[2].compare( i == 0 ? OPCODE_CA_TO_CLIENT_ACK_SK : OPCODE_CA_TO_CLIENT_ACK_BOND)
+			if (parsed_reply[2].compare( i == 0 ? OPCODE_CA_TO_CLIENT_ACK_SK : OPCODE_CA_TO_CLIENT_ACK_ENCRYPTED_BOND)
 					|| parsed_reply[4].compare(CONTENT_ACK))
 				return RET_VAL_TO_UI_SERVER_CA_SENT_UNKNOWN_REPLY;
 
@@ -155,7 +159,8 @@ int ClientMachine::UI_Callback_SendSK_AndBond(bool isSendToCA)
 		return RET_VAL_TO_UI_SERVER_SERVER_RECEIVED_SK_AND_BOND;
 	}
 
-	//THIS POINT IS REACHED ONLY IF WE'VE SEND DATA TO THE CA:
+    //THIS POINT IS REACHED ONLY IF WE'VE SEND DATA TO THE CA:
+
 	//asking the CA to validate the SK and Bond:
 	content = CONTENT_VALIDATE;
 	//create a message asking the CA to validate the bond
