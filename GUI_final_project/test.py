@@ -142,7 +142,7 @@ if __name__ == "__main__":
 	om = ttk.OptionMenu(master,om_selected_var,*optionList)
 	om_selected_var.set(optionList[0])
 	
-	om.grid(row=1,column=0,columnspan = 2)
+	om.grid(row=0,column=0,columnspan = 2)
 	
 	
 	addOptionsToOptionList([setMsg(i) for i in range(1,6)])
@@ -158,10 +158,9 @@ if __name__ == "__main__":
 	b_connect = ttk.Button(master,text="Connect",command=connect_was_pressed)
 	b_clear	= ttk.Button(master,text="Clear"	  ,command=clear_was_pressed)    
 	
-	b_connect.grid(row=2,column=1, padx=1, pady=1)
-	b_send.grid(row=10,column=0, padx=5, pady=5,columnspan = 2)
-	b_clear.grid(row=2,column=0, padx=5, pady=5)
-
+	b_connect.grid(row=1,column=0, padx=1, pady=1)
+	b_clear.grid(row=10,column=1, padx=5, pady=5)
+	b_send.grid(row=10,column=0, padx=1, pady=5)#,columnspan = 2
 	
 	
 	textbox = tkst.ScrolledText(
