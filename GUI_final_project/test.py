@@ -132,10 +132,9 @@ def send(msg):
 if __name__ == "__main__":
 	global var1, optionList, om_selected_var, om
 	master = tk.Tk()
-	master.geometry('700x250')
+	master.geometry('680x210')
 	master.title("Client GUI") # the title of the window
-	#titleLabel = ttk.Label(master,text="press the Connect button")
-	#titleLabel.grid(row=0,column=0)
+	
 	
 	om_selected_var = tk.StringVar()
 	optionList = ['None']
@@ -158,8 +157,12 @@ if __name__ == "__main__":
 	b_connect = ttk.Button(master,text="Connect",command=connect_was_pressed)
 	b_clear	= ttk.Button(master,text="Clear"	  ,command=clear_was_pressed)    
 	
-	b_connect.grid(row=2,column=0, pady=1)#padx=1,
 	b_clear.grid(row=1,column=1, pady=5)#, padx=5
+	b_connect.grid(row=2,column=0, pady=1)#padx=1,
+	
+	titleLabel = ttk.Label(master,text="choose MSG:")
+	titleLabel.grid(row=10,column=0)
+	
 	b_send.grid(row=12,column=0, pady=5, padx=5)#,columnspan = 2
 	
 	
