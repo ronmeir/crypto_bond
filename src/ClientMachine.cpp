@@ -22,7 +22,7 @@ ClientMachine::ClientMachine(const string userID,const string ServerIP,const str
 	m_Bond = NULL;
 	m_serializer = new ObjectSerializer (*m_mapper);
 	m_UI_Server = new Client_UI_Server (this,CLIENT_UI_SERVER_TCP_PORT_NUM);
-	m_program_state = NEED_STATE_MACHINE;  //init the program's state
+	m_program_state = CLIENT_NEED_STATE_MACHINE;  //init the program's state
 
 }//end of constructor
 
@@ -62,7 +62,7 @@ int ClientMachine::UI_Callback_SendMsg(string servers_reply, string msg)
  */
 int ClientMachine::UI_Callback_CreateSK_AndBond()
 {
-	if (m_program_state == NEED_STATE_MACHINE) //if we have no SM yet
+	if (m_program_state == CLIENT_NEED_STATE_MACHINE) //if we have no SM yet
 		return RET_VAL_TO_UI_SERVER_SK_AND_BOND_CREATE_FAILED;
 
 	if (m_EncHandler!=NULL) //if an enc_handler already exists
@@ -115,7 +115,7 @@ int ClientMachine::UI_Callback_SendSK_AndBond(bool isSendToCA)
 		if (isSendToCA)  //if the message is to be sent to the CA
 		{
 		msgToSend = createMessage(m_ID, CA_NAME,
-				i==0? OPCODE_CLIENT_TO_CA_SEND_SK : OPCODE_CLIENT_TO_CA_SEND_ENCRYPTED_BOND,
+				i==0? OPCODE_CLIENT_TO_CA_SEND_SK : OPCODE_CLIENT_TO_CA_SEND_BOND,
 				content.size(), content);
 		}
 		else //the message is to be sent to the server
@@ -138,9 +138,17 @@ int ClientMachine::UI_Callback_SendSK_AndBond(bool isSendToCA)
 		if (isSendToCA) //if the reply came from the CA
 		{
 			//if the opcode or content don't match
-			if (parsed_reply[2].compare( i == 0 ? OPCODE_CA_TO_CLIENT_ACK_SK : OPCODE_CA_TO_CLIENT_ACK_ENCRYPTED_BOND)
+			if (parsed_reply[2].compare( i == 0 ? OPCODE_CA_TO_CLIENT_ACK_SK : OPCODE_CA_TO_CLIENT_ACK_BOND)
 					|| parsed_reply[4].compare(CONTENT_ACK))
-				return RET_VAL_TO_UI_SERVER_CA_SENT_UNKNOWN_REPLY;
+			{
+				//if the CA wasn't able to reach the server thus far.
+				if (!parsed_reply[2].compare(OPCODE_CA_TO_CLIENT_SERVICE_UNAVAILABLE))
+				{
+					return RET_VAL_TO_UI_SERVER_CA_SERVICE_UNAVAILABLE;
+				}
+				else
+					return RET_VAL_TO_UI_SERVER_CA_SENT_UNKNOWN_REPLY;
+			}
 
 		}
 		else  //the reply came from the server
@@ -155,7 +163,7 @@ int ClientMachine::UI_Callback_SendSK_AndBond(bool isSendToCA)
 	if (!isSendToCA) //if we've sent to the server
 	{
 		//We've succesfuly sent the sk and bond to the server
-		m_program_state = OPERATIONAL;
+		m_program_state = CLIENT_OPERATIONAL;
 		return RET_VAL_TO_UI_SERVER_SERVER_RECEIVED_SK_AND_BOND;
 	}
 
@@ -184,7 +192,7 @@ int ClientMachine::UI_Callback_SendSK_AndBond(bool isSendToCA)
 	//if the opcode is correct and the CA has approved
 	if (!parsed_reply[4].compare(CONTENT_VALID))
 	{
-		m_program_state = GOT_CA_APPROVAL;
+		m_program_state = CLIENT_GOT_CA_APPROVAL;
 		return RET_VAL_TO_UI_SERVER_CA_APPROVED_SK_AND_BOND;
 	}
 	else
@@ -224,7 +232,7 @@ int ClientMachine::UI_Callback_requestSM_FromServer()
 	m_SM = new StateMachine(num_of_states, 0); //create a new SM
 	m_serializer->deserializeStateMachine(*m_SM,&m_virus,parsed_reply[4]);//deserialize the received SM
 
-	m_program_state=NEED_CA_APPROVAL;  //update the state
+	m_program_state = CLIENT_NEED_CA_APPROVAL;  //update the state
 
 	return RET_VAL_TO_UI_SERVER_SM_RECEIVED_OK;
 

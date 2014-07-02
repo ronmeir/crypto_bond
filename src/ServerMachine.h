@@ -18,7 +18,8 @@
 
 using namespace std;
 
-enum UserState {NEED_SK_AND_BOND,NEED_BOND,NEED_SK,OPERATIONAL,BUSTED };
+enum Server_UserState {SERVER_NEED_SK_AND_BOND,SERVER_NEED_BOND,SERVER_NEED_SK,
+	SERVER_OPERATIONAL,SERVER_BUSTED };
 
 class ServerMachine: public BasicMultithreadedServer
 {
@@ -28,8 +29,8 @@ private:
 	class User
 	{
 	public:
-		std::string name;
-		UserState state;
+		string name;
+		Server_UserState state;
 		//saving the bond and SK as strings, to save memory space.
 		string SK;
 		string Bond;
@@ -40,6 +41,7 @@ private:
 	StateMachine* m_SM;
 	ObjectSerializer* m_serializer;
 	string m_SM_string;
+	string m_CA_IP_addr;
 	std::map <string,User>* m_users;
 
 	//methods:
@@ -54,7 +56,7 @@ private:
 
 
 public:
-	ServerMachine();
+	ServerMachine(string& CA_IP_addr);
 	virtual ~ServerMachine();
 	int getPort ();
 	void run();

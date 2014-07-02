@@ -16,11 +16,15 @@
 #include "EncryptionHandler.h"
 #include "Constants.h"
 #include "ClientMachine.h"
+#include "ServerMachine.h"
+#include "CA_Machine.h"
 #include "ObjectSerializer.h"
 #define DEBUG 0
 #define CLIENT 1
 #define SERVER 0
 #define CA 	   0
+#define SERVER_IP "127.0.0.1"
+#define CA_IP "127.0.0.1"
 
 using namespace std;                      //using the 'string' library
 
@@ -33,9 +37,11 @@ void compareCTs(EncryptionHandler::CT& ct1, EncryptionHandler::CT& ct2, Bilinear
 
 int main()
 {
+	string ip;
+
 #if CLIENT
 	printf("running....");
-	ClientMachine client("user","ip1","ip2");
+	ClientMachine client("mr. user",SERVER_IP,CA_IP);
 	client.run();
 
 	while (1)   //keep the main thread running infinitely
@@ -46,12 +52,14 @@ int main()
 	google::protobuf::ShutdownProtobufLibrary();
 #endif
 #if SERVER
-
-
+	ip.assign(SERVER_IP);
+	ServerMachine server (ip);
+	server.run();
 #endif
 #if CA
-
-
+	ip.assign(CA_IP);
+	CA_Machine ca(ip);
+	ca.run();
 #endif
 
 #if DEBUG
