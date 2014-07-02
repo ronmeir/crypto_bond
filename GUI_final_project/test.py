@@ -53,7 +53,7 @@ def send_was_pressed():
 	#otherwise we send the actual MSG
 	if(msg==freeText()):
 		msg=(msgbox.get('1.0', 'end')).strip()	#remove emptySpaces
-		msgbox.delete('1.0', 'end')				# clear the msgbox
+		
 		
 		if(msg==""):
 			#we must send some MSG - otherwise we'll get error
@@ -63,7 +63,7 @@ def send_was_pressed():
 	if(msg!=""):
 		send(msg)
 		
-		
+	msgbox.delete('1.0', 'end')				# clear the msgbox	
 
 #called when the "clear" button is preesed	
 def clear_was_pressed():
@@ -88,7 +88,7 @@ def insert_text(txt,color='black'):
 #this is the message that'll be shown in the message menu bar
 #when we choose it we can sent a free text to the other side sever 
 def freeText():
-	return 'freeText'			
+	return 'Text  '			
 
 #msg to be sent via socket	
 def send(msg):
@@ -113,25 +113,22 @@ def send(msg):
 	#all the buttons and be enabled!!
 	if(recv==str(startMSG())):
 		b_send.state(["!disabled"])
-		isConnected="T"
 
 	color='blue'
 	#recv=str(recv))
 	insert_text(recv+"\n",color)
 	
-	print(msg)
+	#print(msg)
 	
 	s.close
 	
 def keyPress(event):
 
-	print(event.keysym)
+#	print(event.keysym)
 	if event.keysym == 'Escape':
 		clear_was_pressed()
 	elif event.keysym == 'Return':
 			send_was_pressed()
-	elif event.keysym == 'space':
-			connect_was_pressed()
 		
 		
         
@@ -161,8 +158,10 @@ if __name__ == "__main__":
 	
 	#im_ok  = tk.PhotoImage(file='ok.gif')
 	#b_ok = ttk.Button(master, compound=tk.LEFT, image=im_ok, text="OK",command=ok_was_pressed)
-	b_send = ttk.Button(master,text="Send(Ent)"	  ,command=send_was_pressed,state='disabled')
-	b_connect = ttk.Button(master,text="Connect(Spa)",command=connect_was_pressed )
+	
+	
+	b_send = ttk.Button(master,text="Send(Enter)"	  ,command=send_was_pressed)#,state='disabled'
+	b_connect = ttk.Button(master,text="Connect",command=connect_was_pressed )
 	b_clear	= ttk.Button(master,text="Clear(Esc)"	  ,command=clear_was_pressed)    
 	
 	b_clear.grid(row=1,column=1, pady=5)#, padx=5
