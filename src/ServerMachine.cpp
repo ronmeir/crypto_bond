@@ -7,7 +7,7 @@
 
 #include "ServerMachine.h"
 
-ServerMachine::ServerMachine() : BasicMultithreadedServer(SERVER_AND_CA_TCP_PORT_NUM)
+ServerMachine::ServerMachine(string& CA_IP_addr) : BasicMultithreadedServer(SERVER_AND_CA_TCP_PORT_NUM)
 {
 	m_SM = new StateMachine(6,0);  //creating a new SM with 6 states
 	initializeStateMachine(m_SM); //init
@@ -19,6 +19,7 @@ ServerMachine::ServerMachine() : BasicMultithreadedServer(SERVER_AND_CA_TCP_PORT
     m_serializer->getSerializedStateMachineString(m_SM_string); //serialize the SM
 
 	m_users = new map<string,ServerMachine::User>;  //the user DB
+	m_CA_IP_addr = CA_IP_addr;
 
 }//end of constructor
 
@@ -27,8 +28,6 @@ ServerMachine::ServerMachine() : BasicMultithreadedServer(SERVER_AND_CA_TCP_PORT
  */
 int ServerMachine::execOnWorkerThread(SocketWrapper sock, void* arg)
 {
-	ServerMachine* this_machine = (ServerMachine*)arg;  //get a ptr to the running server_machine class instance
-
 	vector<string> parsed_request = readAndParseMessageFromSocket(sock); //receive the request
 /*
  * Objectives:
@@ -108,11 +107,12 @@ void ServerMachine::handleCA_userApproval (vector<string>& incomingMsg,SocketWra
 
 	ServerMachine::User newUser;
 	newUser.name = "TEMP NAME. NEED TO DEFINE THE CONTENT PATTERN FOR A USER APPROVAL MESSAGE";
-	newUser.state = NEED_SK_AND_BOND;
+	newUser.state = SERVER_NEED_SK_AND_BOND;
 
 	//todo NOTE: OUR DB DOESN'T SUPPORT MULTIPLE USERS WITH THE SAME NAME.
 	//WE ASSUME THAT A NAME IS A UNIQUE ID
 	m_users->at(newUser.name) = newUser; //insert the new user into the DB
+	//todo MAKE SURE THE INSERTION TO THE MAP COPIES THE ELEMENT RATHER THAN JUST KEEPS A REF TO IT.
 
 }//end of handleCA_userApproval()
 
@@ -139,11 +139,11 @@ void ServerMachine::handleClientSK (vector<string>& incomingMsg,SocketWrapper& s
 		ServerMachine::User user = m_users->at(incomingMsg[0]);  //get the client from the DB
 		user.SK = incomingMsg[4];  //save the SK string
 
-		if (user.state == NEED_SK_AND_BOND) //if we've needed both SK and bond
-			user.state = NEED_BOND;    //update the state
+		if (user.state == SERVER_NEED_SK_AND_BOND) //if we've needed both SK and bond
+			user.state = SERVER_NEED_BOND;    //update the state
 
-		if (user.state == NEED_SK)      //if we've needed only the SK
-			user.state = OPERATIONAL;   //update the state
+		if (user.state == SERVER_NEED_SK)      //if we've needed only the SK
+			user.state = SERVER_OPERATIONAL;   //update the state
 
 		m_users->at(incomingMsg[0]) = user;  //update the user's data in the DB
 	}
@@ -173,11 +173,11 @@ void ServerMachine::handleClientBond (vector<string>& incomingMsg,SocketWrapper&
 		ServerMachine::User user = m_users->at(incomingMsg[0]);  //get the client from the DB
 		user.Bond = incomingMsg[4];  //save the SK string
 
-		if (user.state == NEED_SK_AND_BOND) //if we;'ve needed both SK and bond
-			user.state = NEED_SK;    //update the state
+		if (user.state == SERVER_NEED_SK_AND_BOND) //if we;'ve needed both SK and bond
+			user.state = SERVER_NEED_SK;    //update the state
 
-		if (user.state == NEED_BOND)      //if we've needed only the bond
-			user.state = OPERATIONAL;   //update the state
+		if (user.state == SERVER_NEED_BOND)      //if we've needed only the bond
+			user.state = SERVER_OPERATIONAL;   //update the state
 
 		m_users->at(incomingMsg[0]) = user;  //update the user's data in the DB
 	}
@@ -237,7 +237,7 @@ void ServerMachine::recoverBond (string& userName, string& virus)
 
 void ServerMachine::run()
 {
-	runWelcomeSocket(this);   //launch the welcome socket (the welcome socket doesn't run on a thread)
+	runWelcomeSocket(NULL);   //launch the welcome socket (the welcome socket doesn't run on a thread)
 }//end of run()
 
 void ServerMachine::initializeStateMachine(StateMachine* machine)
@@ -308,9 +308,13 @@ int ServerMachine::getPort ()
 
 ServerMachine::~ServerMachine()
 {
-	delete(m_SM);
-	delete(m_encHandlder);
-	delete(m_serializer);
-	delete(m_users);
+	if (m_SM)
+		delete(m_SM);
+	if (m_encHandlder)
+		delete(m_encHandlder);
+	if (m_serializer)
+		delete(m_serializer);
+	if (m_users)
+		delete(m_users);
 }
 

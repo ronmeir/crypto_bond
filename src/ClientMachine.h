@@ -20,7 +20,9 @@
 
 class Client_UI_Server; //forward declaration of the Client_UI_Server
 
-enum UserState {NEED_STATE_MACHINE, NEED_CA_APPROVAL, GOT_CA_APPROVAL, OPERATIONAL, BUSTED };
+enum Client_UserState {CLIENT_NEED_STATE_MACHINE, CLIENT_NEED_CA_APPROVAL, CLIENT_GOT_CA_APPROVAL,
+	CLIENT_OPERATIONAL, CLIENT_BUSTED };
+
 
 class ClientMachine
 {
@@ -39,7 +41,7 @@ private:
 	EncryptionHandler::CT* m_Bond;
 	ObjectSerializer* m_serializer;
 	Client_UI_Server* m_UI_Server;
-	UserState m_program_state;
+	Client_UserState m_program_state;
 
 	//methods:
 	int UI_Callback_requestSM_FromServer();

@@ -24,7 +24,8 @@ class SocketWrapper
 private:
 	//Members
 	int m_socketDiscrptr;
-
+	std::string m_destIPaddr;
+	int m_dest_port;
 
 	int InitSocket (std::string& dest_ip, int dest_port);
 
@@ -36,6 +37,7 @@ public:
 	int receiveFromSocket(char* buffer, int numOfBytesToRead);
 	int sendToSocket (const char* buffer, int numOfBytesToSend);
 	void closeSocket();
+	void reconnect();
 	virtual ~SocketWrapper();
 };
 

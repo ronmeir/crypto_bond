@@ -11,13 +11,30 @@ using namespace std;
 
 /*
  * Creates a new socketWrapper that opens a socket to the given target address.
+ * If the connection fails, m_socketDiscrptr is set to -1.
  * @param destIPaddr - a string with the destination IP addr.
  * @param dest_port - the dst. port num.
  */
 SocketWrapper::SocketWrapper(string& destIPaddr, int dest_port)
 {
+	m_destIPaddr =destIPaddr;
+	m_dest_port = dest_port;
 	m_socketDiscrptr = InitSocket(destIPaddr,dest_port);
 }//end of SocketWrapper(string)
+
+/*
+ * Tries to reconnect
+ */
+void SocketWrapper::reconnect()
+{
+	//if the socket is currently connected
+	if (m_socketDiscrptr != -1)
+	{
+		closeSocket();
+	}
+
+	m_socketDiscrptr = InitSocket(m_destIPaddr,m_dest_port);
+}//end of reconnect()
 
 /*
  * Creates a new socketWrapper with a given socket descriptor
@@ -57,6 +74,13 @@ int SocketWrapper::receiveFromSocket(char* buffer, int numOfBytesToRead)
 	return n;
 }//end of receiveFromSocket()
 
+/*
+ * Tries to send data over the socket.
+ * @param buffer - the data buffer
+ * @param numOfBytesToSend - the number of bytes from the buffer to send
+ * @return - if succeeded, the number of sent bytes.
+ * 			 if failed, -1.
+ */
 int SocketWrapper::sendToSocket (const char* buffer, int numOfBytesToSend)
 {
 	if (m_socketDiscrptr==-1)
