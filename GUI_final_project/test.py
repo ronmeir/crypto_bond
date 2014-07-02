@@ -160,7 +160,7 @@ if __name__ == "__main__":
 	
 	b_connect.grid(row=1,column=0, padx=1, pady=1)
 	b_clear.grid(row=10,column=1, padx=5, pady=5)
-	b_send.grid(row=10,column=0, padx=1, pady=5)#,columnspan = 2
+	b_send.grid(row=12,column=0, pady=5, padx=5)#,columnspan = 2
 	
 	
 	textbox = tkst.ScrolledText(
@@ -182,7 +182,7 @@ if __name__ == "__main__":
 		wrap = tk.WORD,
 		width = 110,
 		height = 1)
-	msgbox.grid(row=12,column=0, rowspan=8, columnspan=10, padx=10, pady=5)
+	msgbox.grid(row=12,column=1, rowspan=8, columnspan=10, pady=5)#, padx=10
 	
 	
 
