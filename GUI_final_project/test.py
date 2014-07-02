@@ -7,7 +7,7 @@ import easygui
 #we can change the port to send the msg in this function
 #usefull because when we close the server the port must be changed
 def getPort():
-	return 12345
+	return 12346
 
 def getIP():
 	return '127.0.0.1'
@@ -83,6 +83,7 @@ def connect_was_pressed():
 #if we don't choose coler the msg we be painted black
 def insert_text(txt,color='black'):
 	textbox.insert(tk.INSERT, txt+"\n",color)
+	textbox.see('end')
 
 #this is the message that'll be shown in the message menu bar
 #when we choose it we can sent a free text to the other side sever 
@@ -112,6 +113,7 @@ def send(msg):
 	#all the buttons and be enabled!!
 	if(recv==str(startMSG())):
 		b_send.state(["!disabled"])
+		isConnected="T"
 
 	color='blue'
 	#recv=str(recv))
@@ -121,28 +123,33 @@ def send(msg):
 	
 	s.close
 	
-	
+def keyPress(event):
+
+	print(event.keysym)
+	if event.keysym == 'Escape':
+		clear_was_pressed()
+	elif event.keysym == 'Return':
+			send_was_pressed()
+	elif event.keysym == 'space':
+			connect_was_pressed()
 		
 		
-	
-
-
-
+        
 	
 if __name__ == "__main__":
-	global var1, optionList, om_selected_var, om
+	global var1, optionList, om_selected_var, om,isConnected
 	master = tk.Tk()
-	master.geometry('800x250')
+	master.geometry('680x210')
 	master.title("Client GUI") # the title of the window
-	#titleLabel = ttk.Label(master,text="press the Connect button")
-	#titleLabel.grid(row=0,column=0)
+	isConnected="F"
+	
 	
 	om_selected_var = tk.StringVar()
 	optionList = ['None']
 	om = ttk.OptionMenu(master,om_selected_var,*optionList)
 	om_selected_var.set(optionList[0])
 	
-	om.grid(row=1,column=0,columnspan = 2)
+	om.grid(row=11,column=0)#,columnspan = 2
 	
 	
 	addOptionsToOptionList([setMsg(i) for i in range(1,6)])
@@ -154,22 +161,25 @@ if __name__ == "__main__":
 	
 	#im_ok  = tk.PhotoImage(file='ok.gif')
 	#b_ok = ttk.Button(master, compound=tk.LEFT, image=im_ok, text="OK",command=ok_was_pressed)
-	b_send = ttk.Button(master,text="Send"	  ,command=send_was_pressed,state='disabled')
-	b_connect = ttk.Button(master,text="Connect",command=connect_was_pressed)
-	b_clear	= ttk.Button(master,text="Clear"	  ,command=clear_was_pressed)    
+	b_send = ttk.Button(master,text="Send(Ent)"	  ,command=send_was_pressed,state='disabled')
+	b_connect = ttk.Button(master,text="Connect(Spa)",command=connect_was_pressed )
+	b_clear	= ttk.Button(master,text="Clear(Esc)"	  ,command=clear_was_pressed)    
 	
-	b_connect.grid(row=2,column=1, padx=1, pady=1)
-	b_send.grid(row=10,column=0, padx=5, pady=5,columnspan = 2)
-	b_clear.grid(row=2,column=0, padx=5, pady=5)
-
+	b_clear.grid(row=1,column=1, pady=5)#, padx=5
+	b_connect.grid(row=2,column=0, pady=1)#padx=1,
+	
+	titleLabel = ttk.Label(master,text="choose MSG:")
+	titleLabel.grid(row=10,column=0)
+	
+	b_send.grid(row=12,column=0, pady=5, padx=5)#,columnspan = 2
 	
 	
 	textbox = tkst.ScrolledText(
 		master = master,
 		wrap = tk.WORD,
 		width = 80,
-		height = 10)
-	textbox.grid(row=1,column=2, rowspan=10, columnspan=10, padx=15, pady=15)
+		height = 9)
+	textbox.grid(row=2,column=1, rowspan=10, padx=5)# columnspan=10,, pady=15
 	textbox.tag_configure('green', foreground='#01DF01')
 	textbox.tag_configure('red', foreground='#DF0101')
 	textbox.tag_configure('black', foreground='#000000')
@@ -181,12 +191,14 @@ if __name__ == "__main__":
 	msgbox = tkst.ScrolledText(
 		master = master,
 		wrap = tk.WORD,
-		width = 110,
+		width = 80,
 		height = 1)
-	msgbox.grid(row=12,column=0, rowspan=8, columnspan=10, padx=10, pady=5)
+	msgbox.grid(row=12,column=1, rowspan=8, columnspan=10)#, padx=10, pady=5
+	msgbox.focus_set()
 	
 	
 
 	#textbox.insert(tk.INSERT, "this is how\nwe insert test to the text field\n")
+	master.bind_all('<KeyRelease>', keyPress)
 	master.mainloop()
 
