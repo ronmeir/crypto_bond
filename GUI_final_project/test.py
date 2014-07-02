@@ -132,7 +132,7 @@ def send(msg):
 if __name__ == "__main__":
 	global var1, optionList, om_selected_var, om
 	master = tk.Tk()
-	master.geometry('800x250')
+	master.geometry('700x250')
 	master.title("Client GUI") # the title of the window
 	#titleLabel = ttk.Label(master,text="press the Connect button")
 	#titleLabel.grid(row=0,column=0)
@@ -142,7 +142,7 @@ if __name__ == "__main__":
 	om = ttk.OptionMenu(master,om_selected_var,*optionList)
 	om_selected_var.set(optionList[0])
 	
-	om.grid(row=0,column=0,columnspan = 2)
+	om.grid(row=11,column=0)#,columnspan = 2
 	
 	
 	addOptionsToOptionList([setMsg(i) for i in range(1,6)])
@@ -158,8 +158,8 @@ if __name__ == "__main__":
 	b_connect = ttk.Button(master,text="Connect",command=connect_was_pressed)
 	b_clear	= ttk.Button(master,text="Clear"	  ,command=clear_was_pressed)    
 	
-	b_connect.grid(row=1,column=0, padx=1, pady=1)
-	b_clear.grid(row=10,column=1, padx=5, pady=5)
+	b_connect.grid(row=2,column=0, pady=1)#padx=1,
+	b_clear.grid(row=1,column=1, pady=5)#, padx=5
 	b_send.grid(row=12,column=0, pady=5, padx=5)#,columnspan = 2
 	
 	
@@ -167,8 +167,8 @@ if __name__ == "__main__":
 		master = master,
 		wrap = tk.WORD,
 		width = 80,
-		height = 10)
-	textbox.grid(row=1,column=2, rowspan=10, columnspan=10, padx=15, pady=15)
+		height = 9)
+	textbox.grid(row=2,column=1, rowspan=10, padx=5)# columnspan=10,, pady=15
 	textbox.tag_configure('green', foreground='#01DF01')
 	textbox.tag_configure('red', foreground='#DF0101')
 	textbox.tag_configure('black', foreground='#000000')
@@ -180,9 +180,9 @@ if __name__ == "__main__":
 	msgbox = tkst.ScrolledText(
 		master = master,
 		wrap = tk.WORD,
-		width = 110,
+		width = 80,
 		height = 1)
-	msgbox.grid(row=12,column=1, rowspan=8, columnspan=10, pady=5)#, padx=10
+	msgbox.grid(row=12,column=1, rowspan=8, columnspan=10)#, padx=10, pady=5
 	
 	
 
