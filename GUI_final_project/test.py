@@ -4,10 +4,8 @@ import ttk
 import socket  
 import easygui
 
-
-
 ####################################################################################################################
-######################################## CONSTS  ###############################################3###################
+######################################## CONSTS  ###################################################################
 ####################################################################################################################
 #    __  ___  ____   ___________  _____
 #   /  ]/   \|    \ / ___|      T/ ___/
@@ -28,14 +26,19 @@ def getIP():
 def startMSG():
 		return "start_msg"
 
+'''
 #this msg is the one that is sent when we want to kill the connection
 #this is also the msg the will shown in the massages menu bar
+'''
 def quitMSG():
 	return 'Quit!!!'
 
 #the size of how much to read from the socket is defined in here
 def getReadSize():
 	return 8192		
+	
+def numOfMSGs():
+	return 5	
 ####################################################################################################################
 
 
@@ -53,44 +56,85 @@ def getReadSize():
 #l___j___j \___l___,_j \___j      l__j  \___/       \___l_____l__j\_j \_/ l_____l__j\_j
 #############################################################################################################                                                                                      
 
+#send = msg content :      src	| dst | opc| cont-length	|cont
+#txt will be shown at the client's terminal
+# the   "send+=send+send+send+send"   padding is done to help the server parsing the MSG
+
 def FILED_SEPERATOR():
 	return chr(7)
 
 
+
+def MSG_req_sk_from_server():
+	send= str("0"+FILED_SEPERATOR())
+	send+=send+send+send+send
+	txt="request SK from servet"
+	return ((send,txt))
+
+
 def MSG_create_sk_and_bond():
-	return (("1"+FILED_SEPERATOR(),"sending:create SK and Bond MSG"))
+	send= str("1"+FILED_SEPERATOR())
+	send+=send+send+send+send
+	txt="sending:create SK and Bond MSG"
+	return ((send,txt))
 		
 def MSG_send_sk_and_bond_to_CA():
-	return (("2"+FILED_SEPERATOR(),"sending:SK and Bond to the CA"))
+	send= str("2"+FILED_SEPERATOR())
+	send+=send+send+send+send
+	txt="sending:SK and Bond to the CA"
+	return ((send,txt))
 
 def MSG_send_sk_and_bond_to_server():
-	return (("3"+FILED_SEPERATOR(),"sending:SK and Bond to the Server"))
+	send= str("3"+FILED_SEPERATOR())
+	send+=send+send+send+send
+	txt="sending:SK and Bond to the Server"
+	return ((send,txt))
 
-def MSG_send_this_msg(msg):
-	return (("4"+FILED_SEPERATOR()),msg)
+def MSG_send_this_msg(txt):
+	send= str("4"+FILED_SEPERATOR())
+	send+=send+send+send+txt
+	return ((send,txt))
 	
 
 
 #this function returns the msg that should be shown in the i'th place of the menu - we use it  is addOptionsToOptionList
 def setMsg(i):
+	if(i==0):
+		return 'MSG0'		
 	if(i==1):
-		return freeText()	
-	if(i==2):
 		return 'MSG1'
-	if(i==3):
+	if(i==2):
 		return 'MSG2'
-	if(i==4):
+	if(i==3):
 		return 'MSG3'
-	if(i==5):
-		return quitMSG()
+	if(i==4):
+		return freeText()
+		
 
-
-########## end of MSGs SERVER################################################################################
+########## end of MSGs to SERVER#############################################################################
 #############################################################################################################
 #-----------------------------------------------------------------------------------------------------------#
 
 
 
+################################# MSGs from server   #########################################################
+## ___ ___  _____ ____  _____     _____ ____   ___  ___ ___       _____  ___ ____  __ __   ___ ____ 		##
+##|   T   T/ ___//    T/ ___/    |     |    \ /   \|   T   T     / ___/ /  _|    \|  T  | /  _|    \ 		##
+##| _   _ (   \_Y   __(   \_     |   __|  D  Y     | _   _ |    (   \_ /  [_|  D  |  |  |/  [_|  D  )		##
+##|  \_/  |\__  |  T  |\__  T    |  l_ |    /|  O  |  \_/  |     \__  Y    _|    /|  |  Y    _|    / 		##
+##|   |   |/  \ |  l_ |/  \ |    |   _]|    \|     |   |   |     /  \ |   [_|    \l  :  |   [_|    \ 		##
+##|   |   |\    |     |\    |    |  T  |  .  l     |   |   |     \    |     |  .  Y\   /|     |  .  Y		##
+##l___j___j \___l___,_j \___j    l__j  l__j\_j\___/l___j___j      \___l_____l__j\_j \_/ l_____l__j\_j		##
+##																											##
+##  msg content :      src	| dst | opc| cont-length	|cont												##
+##############################################################################################################
+
+
+#this function receives a msg (string) from the server and parses it to array
+def MSG_parseMSG(msg,location=-1):
+		msgList=msg.split(FILED_SEPERATOR()) #msglist[i]= {src,dst,opc,length of content,contend}
+		return msgList
+		
 
 
 
@@ -123,14 +167,14 @@ def send_was_pressed():
 	#otherwise we send the actual MSG
 	if(msg==freeText()):
 		msg=(msgbox.get('1.0', 'end')).strip()	#remove emptySpaces
-		
-		
 		if(msg==""):
 			#we must send some MSG - otherwise we'll get error
-			easygui.msgbox("You cannot send an empty MSG!!!", title="Error")
-			
+			easygui.msgbox("You cannot send an empty MSG!!!", title="Error")		
+
+		
 	#now we can send the MSG		
 	if(msg!=""):
+		msg=MSG_send_this_msg(msg) #create a msg tuple (msg,txt)
 		send(msg)
 		
 	msgbox.delete('1.0', 'end')				# clear the msgbox	
@@ -141,22 +185,27 @@ def clear_was_pressed():
 
 #called when the "connect" button is preesed   
 def connect_was_pressed():
-   # print("connect button was pressed\n")
 	insert_text("connecting...")
 	insert_text("	IP  :"+str(getIP()))
 	insert_text("	PORT:"+str(getPort())+"\n")
-	send(startMSG())
-    
+	
+	msg=MSG_create_sk_and_bond()	#get to relevant msg tuple (toSend,toShow)
+	send(msg)						#this is the actual MSG sent 
+	
+'''    
 #txt is the text to be shown in our terminal and also in the regular one
 #the color parm sets the color of the text in the terminal
 #it can be one of these colors only: {'green','blue','black','red'}
 #if we don't choose coler the msg we be painted black
+'''
 def insert_text(txt,color='black'):
 	textbox.insert(tk.INSERT, txt+"\n",color)
 	textbox.see('end')
-
+	
+'''
 #this is the message that'll be shown in the message menu bar
 #when we choose it we can sent a free text to the other side sever 
+'''
 def freeText():
 	return 'Text  '			
 
@@ -172,11 +221,11 @@ def send(msg):
 		
 	#a normal msg that we send should be green
 	color='green'
-	
-	
 		
-	insert_text(msg,color)
-	s.send(msg.encode())
+	#insert_text(msg,color)
+	s.send(msg[0].encode())
+	print("printing msg:"+str(msg))
+	insert_text(str(msg[1]),color)
 	recv=str(s.recv(getReadSize()).decode('utf-8'))
 
 	#when we get a startMSG as echo it means the server work and we have connection
@@ -185,15 +234,14 @@ def send(msg):
 		b_send.state(["!disabled"])
 
 	color='blue'
-	#recv=str(recv))
-	insert_text(recv+"\n",color)
+	insert_text(MSG_parseMSG(recv)[4]+"\n",color)
+	
 	
 	#print(msg)
 	
 	s.close
 	
 def keyPress(event):
-
 
 	#ESC clears text box
 	if event.keysym == 'Escape':
@@ -202,8 +250,6 @@ def keyPress(event):
 	elif event.keysym == 'Return':
 			send_was_pressed()
 		
-		
-        
 	
 if __name__ == "__main__":
 	global var1, optionList, om_selected_var, om,isConnected
@@ -220,30 +266,23 @@ if __name__ == "__main__":
 	
 	om.grid(row=11,column=0)#,columnspan = 2
 	
-	
-	addOptionsToOptionList([setMsg(i) for i in range(1,6)])
-	
-	
-	
-	
-	
+	addOptionsToOptionList([setMsg(i) for i in range(0,numOfMSGs())])
 	
 	#im_ok  = tk.PhotoImage(file='ok.gif')
 	#b_ok = ttk.Button(master, compound=tk.LEFT, image=im_ok, text="OK",command=ok_was_pressed)
 	
 	
-	b_send = ttk.Button(master,text="Send(Enter)"	  ,command=send_was_pressed)#,state='disabled'
-	b_connect = ttk.Button(master,text="Connect",command=connect_was_pressed )
-	b_clear	= ttk.Button(master,text="Clear(Esc)"	  ,command=clear_was_pressed)    
+	b_send = 	ttk.Button(master,text="Send(Enter)",command=send_was_pressed)#,state='disabled'
+	b_connect = ttk.Button(master,text="Connect"	,command=connect_was_pressed)
+	b_clear	= 	ttk.Button(master,text="Clear(Esc)"	,command=clear_was_pressed)    
 	
-	b_clear.grid(row=1,column=1, pady=5)#, padx=5
-	b_connect.grid(row=2,column=0, pady=1)#padx=1,
+	b_clear.grid(	row=1,column=1, pady=5)	#, padx=5
+	b_connect.grid(	row=2,column=0, pady=1)	#padx=1,
 	
 	titleLabel = ttk.Label(master,text="choose MSG:")
 	titleLabel.grid(row=10,column=0)
 	
 	b_send.grid(row=12,column=0, pady=5, padx=5)#,columnspan = 2
-	
 	
 	textbox = tkst.ScrolledText(
 		master = master,
@@ -251,13 +290,10 @@ if __name__ == "__main__":
 		width = 80,
 		height = 9)
 	textbox.grid(row=2,column=1, rowspan=10, padx=5)# columnspan=10,, pady=15
-	textbox.tag_configure('green', foreground='#01DF01')
-	textbox.tag_configure('red', foreground='#DF0101')
-	textbox.tag_configure('black', foreground='#000000')
-	textbox.tag_configure('blue', foreground='#0000FF')
-
-
-	
+	textbox.tag_configure('green'	,foreground='#01DF01')
+	textbox.tag_configure('red'		,foreground='#DF0101')
+	textbox.tag_configure('black'	,foreground='#000000')
+	textbox.tag_configure('blue'	,foreground='#0000FF')
 	
 	msgbox = tkst.ScrolledText(
 		master = master,
@@ -267,9 +303,7 @@ if __name__ == "__main__":
 	msgbox.grid(row=12,column=1, rowspan=8, columnspan=10)#, padx=10, pady=5
 	msgbox.focus_set()
 	
-	
 
-	#textbox.insert(tk.INSERT, "this is how\nwe insert test to the text field\n")
 	master.bind_all('<KeyRelease>', keyPress)
 	master.mainloop()
 ###################################################################################################################
