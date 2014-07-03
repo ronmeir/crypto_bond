@@ -10,6 +10,7 @@
 #include "BasicMultithreadedServer.h"
 #include "ClientMachine.h"
 #include "Constants.h"
+#include <vector>
 
 
 class Client_UI_Server : public BasicMultithreadedServer
@@ -21,6 +22,7 @@ private:
 	//methods:
 	int execOnWorkerThread(SocketWrapper, void* arg);
 	static void* IntermediateWelcomeSocketThreadLauncher(void *);
+//	std::vector<string> readAndParseMessageFromUI (SocketWrapper& sock);
 
 public:
 	Client_UI_Server(ClientMachine* clientMachine, int tcp_port);

@@ -43,34 +43,127 @@ void* Client_UI_Server::IntermediateWelcomeSocketThreadLauncher(void *obj)
  */
 int Client_UI_Server::execOnWorkerThread (SocketWrapper sock, void* arg)
 {
-	char buff[BUF_SIZE+1] = "Server echo: "; //will be used to read data from the socket
-	char* ptr_to_mid_of_buffer;
-	int readBytes;
 
-	int reply_prefix_len = strlen(buff);  //get the reply prefix's length
-	ptr_to_mid_of_buffer = buff+reply_prefix_len;  //set a ptr to the 1st char after the prefix
-	//the data from the socket will be written from here on
+	vector<string> parsed_request = readAndParseMessageFromSocket(sock); //receive the request
 
-	//read from socket:
-    readBytes = sock.receiveFromSocket(ptr_to_mid_of_buffer,BUF_SIZE-reply_prefix_len);
-    if (readBytes<1) //failed to receive data
-    {
-        sock.closeSocket();
-        pthread_exit(NULL);
-    }
+	//if the ui has requested to create SK and bond
+	if (!parsed_request[2].compare(OPCODE_UI_CLIENT_TO_SERVER_CREATE_SK_AND_BOND))
+	{
 
-    ptr_to_mid_of_buffer[readBytes]='\0';   //gonna be working with cstring
+	}
 
-    printf("%s",buff);
+	//if the ui has requested to send the SK and bond to the CA
+	if (!parsed_request[2].compare(OPCODE_UI_CLIENT_TO_SERVER_SEND_SK_AND_BOND_TO_CA))
+	{
 
-    //TODO complete the actual handling
-    //fucking around:
-    sock.sendToSocket(buff,reply_prefix_len+readBytes);
-    //finished fucking around.
+	}
 
-    sock.closeSocket();
-    return 1;
+	//if the ui has requested to send the SK and bond to the Server
+	if (!parsed_request[2].compare(OPCODE_UI_CLIENT_TO_SERVER_SEND_SK_AND_BOND_TO_SERVER))
+	{
+
+	}
+
+	//if the ui has requested to send a message to the server
+	if (!parsed_request[2].compare(OPCODE_UI_CLIENT_TO_SERVER_SEND_MSG_TO_SERVER))
+	{
+
+	}
+
+	return 0;
 }//end of webServerWorkerThread()
+
+//vector<string> Client_UI_Server::readAndParseMessageFromUI (SocketWrapper& sock)
+//{
+//	char buff[BUF_SIZE];
+//	int readBytes, i;
+//	string temp;
+//	vector<string> res;
+//
+//	char* ptr_to_next_empty_byte_at_buff = buff;
+//
+//	//read the 2 first bytes from socket:
+//	for (i = 0; i < 2; i++)
+//	{
+//		readBytes = sock.receiveFromSocket(ptr_to_next_empty_byte_at_buff, 1);
+//		ptr_to_next_empty_byte_at_buff++;
+//
+//		if (readBytes < 1) //failed to receive data
+//		{
+//			sock.closeSocket();
+//			pthread_exit(NULL);
+//		}
+//	}
+//
+//	//got the first 2 bytes: OPCODE+SFSC
+//
+//	buff[1] = '\0';  //make it a cstring
+//	temp.assign(buff);
+//	res.push_back(temp); //push the 1st fields to the vector
+//
+//	if (  //if this is a request to create / send the SK and bond
+//			!temp.compare(OPCODE_UI_CLIENT_TO_SERVER_CREATE_SK_AND_BOND) ||
+//			!temp.compare(OPCODE_UI_CLIENT_TO_SERVER_SEND_SK_AND_BOND_TO_CA) ||
+//			!temp.compare(OPCODE_UI_CLIENT_TO_SERVER_SEND_SK_AND_BOND_TO_SERVER)
+//	   )
+//	{
+//		//no further reading from the buffer is needed. we have the opcode.
+//		return res;
+//	}
+//
+//	/* At this point, the client wishes to send a message to the server.
+//	 * Further parsing of the incoming request is required:
+//	 */
+//	ptr_to_next_empty_byte_at_buff=buff; //reset
+//
+//	//now we need to read the content-length field
+//    while (readBytes != 0 && readBytes != -1 && *buff != SFSC)
+//    {
+//    	//read the next byte:
+//    	readBytes = sock.receiveFromSocket(ptr_to_next_empty_byte_at_buff,1);
+//    	ptr_to_next_empty_byte_at_buff++;
+//    }
+//
+//	if (readBytes < 1) //failed to receive data
+//	{
+//		sock.closeSocket();
+//		pthread_exit(NULL);
+//	}
+//
+//	//at this point, buff contains the content length
+//	*(ptr_to_next_empty_byte_at_buff-1) = '\0'; //replace the SFSC with '\0'
+//	temp.assign(buff);   //set to the string
+//	res.push_back(temp);  //push the string to the vec
+//
+//	int contentLength = atoi(buff);  //get the length
+//
+//	contentLength = std::min(contentLength,MAX_MSG_LENGTH);  //making sure the message is smaller then the max length
+//
+//	ptr_to_next_empty_byte_at_buff=buff; //reset
+//	i=0;
+//
+//	//reading the message itself:
+//    while (readBytes != 0 && readBytes != -1 && i < contentLength)
+//    {
+//    	//read the next byte:
+//    	readBytes = sock.receiveFromSocket(ptr_to_next_empty_byte_at_buff,1);
+//    	ptr_to_next_empty_byte_at_buff++;
+//    	i++;
+//    }
+//
+//	if (readBytes < 1) //failed to receive data
+//	{
+//		sock.closeSocket();
+//		pthread_exit(NULL);
+//	}
+//
+//	buff[i]='\0';
+//	temp.assign(buff);
+//	res.push_back(temp);
+//
+//	return res;
+//
+//}//end of readAndParseMessageFromUI();
 
 /*
  * Returns the tcp port number the UI server listens to.

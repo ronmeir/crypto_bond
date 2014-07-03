@@ -2,6 +2,16 @@
 #define MESSAGES_H_
 
 /*
+  __  __  _____  _____       _          _                                                  _     _
+ |  \/  |/ ____|/ ____|     | |        | |                                                | |   (_)
+ | \  / | (___ | |  __ ___  | |__   ___| |___      _____  ___ _ __    _ __ ___   __ _  ___| |__  _ _ __   ___  ___
+ | |\/| |\___ \| | |_ / __| | '_ \ / _ \ __\ \ /\ / / _ \/ _ \ '_ \  | '_ ` _ \ / _` |/ __| '_ \| | '_ \ / _ \/ __|
+ | |  | |____) | |__| \__ \ | |_) |  __/ |_ \ V  V /  __/  __/ | | | | | | | | | (_| | (__| | | | | | | |  __/\__ \
+ |_|  |_|_____/ \_____|___/ |_.__/ \___|\__| \_/\_/ \___|\___|_| |_| |_| |_| |_|\__,_|\___|_| |_|_|_| |_|\___||___/
+
+ */
+
+/*
  * Denote SFSC= Specical Field Seperator Char - This char will separate between the message's fields.
  * Fields:
  * 1. SRC Name
@@ -10,7 +20,7 @@
  * 4. Content length
  * 5. Content
  *
- * Message Format: SRC|FSFR|DST|FSFR|Opcode|FSFR|Content Length|FSFR|Content
+ * Message Format: SRC|SFSC|DST|SFSC|Opcode|SFSC|Content Length|SFSC|Content
  * When the '|' are just for visual explanation, they won't appear in the message
  */
 
@@ -56,5 +66,37 @@
 #define OPCODE_SERVER_TO_CLIENT_NOT_APPROVED_BY_CA "18"
 #define OPCODE_SERVER_TO_CLIENT_ECHO_MSG "16"
 #define OPCODE_SERVER_TO_CLIENT_VIRUS_DETECTED_IN_MSG "19"
+
+
+/*
+ * _____ _ _            _    _    _ _____    _____                                            _   _    _ _____        _ _            _
+  / ____| (_)          | |  | |  | |_   _|  / ____|                                          | | | |  | |_   _|      | (_)          | |
+ | |    | |_  ___ _ __ | |_ | |  | | | |   | (___   ___ _ ____   _____ _ __    __ _ _ __   __| | | |  | | | |     ___| |_  ___ _ __ | |_
+ | |    | | |/ _ \ '_ \| __|| |  | | | |    \___ \ / _ \ '__\ \ / / _ \ '__|  / _` | '_ \ / _` | | |  | | | |    / __| | |/ _ \ '_ \| __|
+ | |____| | |  __/ | | | |_ | |__| |_| |_   ____) |  __/ |   \ V /  __/ |    | (_| | | | | (_| | | |__| |_| |_  | (__| | |  __/ | | | |_
+  \_____|_|_|\___|_| |_|\__| \____/|_____| |_____/ \___|_|    \_/ \___|_|     \__,_|_| |_|\__,_|  \____/|_____|  \___|_|_|\___|_| |_|\__|
+ *
+ */
+
+
+#define CONTENT_CA_APPROVED "The SK and Bond were approved by the CA and forwarded to the Server!"
+#define CONTENT_CA_DISAPPROVED "The SK and Bond were rejected by the CA!"
+#define CONTENT_CA_SENT_UNKNOWN_REPLY "An unknown reply was received from the CA!"
+#define CONTENT_CA_SERVICE_UNAVAILABLE "The CA wasn't able to contact the Server thus far. \nService unavailable!"
+
+#define CONTENT_SERVER_ACK "The SK and Bond were received by the Server!"
+#define CONTENT_SERVER_SENT_UNKNOWN_REPLY "An unknown reply was received from the Server!"
+
+#define OPCODE_UI_CLIENT_TO_SERVER_CREATE_SK_AND_BOND "1"
+#define OPCODE_UI_CLIENT_TO_SERVER_SEND_SK_AND_BOND_TO_CA "2"
+#define OPCODE_UI_CLIENT_TO_SERVER_SEND_SK_AND_BOND_TO_SERVER "3"
+#define OPCODE_UI_CLIENT_TO_SERVER_SEND_MSG_TO_SERVER "4"
+
+#define OPCODE_UI_SERVER_TO_CLIENT_REPLY_ON_CREATE_SK_AND_BOND "1"
+#define OPCODE_UI_SERVER_TO_CLIENT_SK_AND_BOND_APPROVED_BY_CA "20"
+#define OPCODE_UI_SERVER_TO_CLIENT_SK_AND_BOND_NOT_APPROVED_BY_CA "21"
+#define OPCODE_UI_SERVER_TO_CLIENT_SK_AND_BOND_RECEIVED_BY_SERVER "30"
+#define OPCODE_UI_SERVER_TO_CLIENT_SK_AND_BOND_NOT_RECEIVED_BY_SERVER "31"
+#define OPCODE_UI_SERVER_TO_CLIENT_SERVER_REPLY "4"
 
 #endif

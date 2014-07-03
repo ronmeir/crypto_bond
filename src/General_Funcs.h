@@ -8,7 +8,8 @@
 #ifndef STATIC_FUNCS_H_
 #define STATIC_FUNCS_H_
 
-#include <string>
+#include <string.h>
+#include <cstring>
 #include "SocketWrapper.h"
 #include "Constants.h"
 
@@ -76,6 +77,32 @@ inline vector<string> readAndParseMessageFromSocket(SocketWrapper& sock)
 	return results;
 
 }//end of readAndParseMessageFromSocket()
+
+/*
+ * Breaks down a string into tokens, using strtok(). Every Token will be of maximal length MAX_MSG_LENGTH
+ * @param saveHere - a 2d char array. the tokes will be copied here, so make sure it has enough allocated memory
+ * @param delimsStr - delimiters for strtok()
+ * @param str - the string to be tokenized.
+ */
+//inline void tokenizeString (char** saveHere, const char* delimsStr, const char* str)
+//{
+//	char* token;
+//	int i=0;
+//
+//	char copy[strlen(str)+1];
+//	strcpy(copy,str);   //create a copy of the input string
+//
+//   /* get the first token */
+//   token = strtok(copy, delimsStr);
+//
+//   /* walk through other tokens */
+//   while( token != NULL )
+//   {
+//	  strncpy(saveHere[i],token,MAX_MSG_LENGTH); //copy the token
+//
+//	  token = strtok(NULL, delimsStr);
+//   }
+//}//end of tokenizeString()
 
 
 #endif /* STATIC_FUNCS_H_ */

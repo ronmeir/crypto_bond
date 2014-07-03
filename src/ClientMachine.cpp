@@ -94,6 +94,17 @@ int ClientMachine::UI_Callback_CreateSK_AndBond()
  * 2. Sends Bond message and waits for an ACK.
  * 4. If the dst is the CA, sends the bond in plaintext
  * 3. If the dst is the CA, sends a Validation-Request message and waits for a reply.
+ * @param isSendToCA - indicated whether to send the SK and bond to the CA or the Server
+ * @return: if the message is sent to the CA, the result in one of the following:
+ * 				RET_VAL_TO_UI_SERVER_CA_SERVICE_UNAVAILABLE
+ * 				RET_VAL_TO_UI_SERVER_CA_SENT_UNKNOWN_REPLY
+ * 				RET_VAL_TO_UI_SERVER_CA_APPROVED_SK_AND_BOND
+ * 				RET_VAL_TO_UI_SERVER_CA_DISAPPROVED_SK_AND_BOND
+ *
+ * 			if the message was sent to the server, the result in one of the following:
+ * 			    RET_VAL_TO_UI_SERVER_SERVER_SENT_UNKNOWN_REPLY
+ * 			    RET_VAL_TO_UI_SERVER_SERVER_RECEIVED_SK_AND_BOND
+ *
  */
 int ClientMachine::UI_Callback_SendSK_AndBond(bool isSendToCA)
 {
