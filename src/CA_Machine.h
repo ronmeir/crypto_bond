@@ -39,6 +39,7 @@ private:
 
 //members:
 	EncryptionHandler* m_encHandlder;
+	BilinearMappingHandler* m_mapper;
 	StateMachine* m_SM;
 	ObjectSerializer* m_serializer;
 	std::map <string,User>* m_users;
