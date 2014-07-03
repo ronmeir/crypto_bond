@@ -50,7 +50,7 @@ private:
 	int execOnWorkerThread(SocketWrapper, void* arg);
 	int getSM_FromServer();
 	int updateTheServerWithClientDetails(string& clientDetails);
-	bool HanleSK_AndBondValidation(CA_Machine::User& user, SocketWrapper sock);
+	bool HandleSK_AndBondValidation(CA_Machine::User& user);
 	void handleClientSentSK_OrBond(vector<string>& parsed_request, SocketWrapper sock);
 
 public:

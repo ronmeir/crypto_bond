@@ -7,7 +7,7 @@
 
 #include "ServerMachine.h"
 
-ServerMachine::ServerMachine(string& CA_IP_addr) : BasicMultithreadedServer(SERVER_AND_CA_TCP_PORT_NUM)
+ServerMachine::ServerMachine(string& CA_IP_addr) : BasicMultithreadedServer(SERVER_TCP_PORT_NUM)
 {
 	m_SM = new StateMachine(6,0);  //creating a new SM with 6 states
 	initializeStateMachine(m_SM); //init

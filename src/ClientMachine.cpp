@@ -37,7 +37,7 @@ int ClientMachine::UI_Callback_SendMsg(string& servers_reply, string msg)
 	string msgToSend = createMessage(m_ID, SERVER_NAME,OPCODE_CLIENT_TO_SERVER_SEND_MSG,
 			msg.size(), msg);
 
-	SocketWrapper sock_to_server(m_ServerIP,SERVER_AND_CA_TCP_PORT_NUM); //open a sock
+	SocketWrapper sock_to_server(m_ServerIP,SERVER_TCP_PORT_NUM); //open a sock
 	sock_to_server.sendToSocket(msgToSend.c_str(), msgToSend.size()); //send the request
 
 	vector<string> parsed_reply = readAndParseMessageFromSocket(
@@ -136,7 +136,8 @@ int ClientMachine::UI_Callback_SendSK_AndBond(bool isSendToCA)
 					content.size(), content);
 		}
 
-		SocketWrapper sock_to_server(isSendToCA ? m_CA_IP : m_ServerIP,SERVER_AND_CA_TCP_PORT_NUM); //open a sock
+		SocketWrapper sock_to_server(isSendToCA ? m_CA_IP : m_ServerIP,
+				isSendToCA? CA_TCP_PORT_NUM : SERVER_TCP_PORT_NUM); //open a sock
 		sock_to_server.sendToSocket(msgToSend.c_str(), msgToSend.size()); //send the request
 
 		vector<string> parsed_reply = readAndParseMessageFromSocket(
@@ -186,7 +187,7 @@ int ClientMachine::UI_Callback_SendSK_AndBond(bool isSendToCA)
 	msgToSend = createMessage(m_ID, CA_NAME,
 	OPCODE_CLIENT_TO_CA_VALIDATE_BOND, content.size(), content);
 
-	SocketWrapper sock_to_server(m_CA_IP, SERVER_AND_CA_TCP_PORT_NUM); //open a sock
+	SocketWrapper sock_to_server(m_CA_IP, CA_TCP_PORT_NUM); //open a sock
 	sock_to_server.sendToSocket(msgToSend.c_str(), msgToSend.size()); //send the request
 
 	vector<string> parsed_reply = readAndParseMessageFromSocket(
@@ -225,7 +226,7 @@ int ClientMachine::UI_Callback_requestSM_FromServer()
 	//create a message header:
 	sm_request = createMessage(m_ID,SERVER_NAME,OPCODE_CLIENT_TO_SERVER_REQUEST_SM,content.size(),CONTENT_SM_REQUEST);
 
-	SocketWrapper sock_to_server(m_ServerIP,SERVER_AND_CA_TCP_PORT_NUM); //open a sock
+	SocketWrapper sock_to_server(m_ServerIP,SERVER_TCP_PORT_NUM); //open a sock
 	sock_to_server.sendToSocket(sm_request.c_str(),sm_request.size()); //send the request
 
 	vector<string> parsed_reply = readAndParseMessageFromSocket(sock_to_server); //receive the reply

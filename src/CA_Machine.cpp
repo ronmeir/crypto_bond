@@ -7,7 +7,7 @@
 
 #include "CA_Machine.h"
 
-CA_Machine::CA_Machine(string& Server_IP_addr) : BasicMultithreadedServer(SERVER_AND_CA_TCP_PORT_NUM)
+CA_Machine::CA_Machine(string& Server_IP_addr) : BasicMultithreadedServer(CA_TCP_PORT_NUM)
 {
 	m_users = new map<string,CA_Machine::User>;  //the user DB
 	m_Server_IP_addr = Server_IP_addr;
@@ -45,7 +45,7 @@ int CA_Machine::execOnWorkerThread(SocketWrapper sock, void* arg)
 
 			if (user.state == CA_NEED_APPROVAL)
 			{
-				if (HanleSK_AndBondValidation(user, sock)) //if the validation has passed
+				if (HandleSK_AndBondValidation(user)) //if the validation has passed
 				{
 					string msgToSend = createMessage(CA_NAME, parsed_request[0],
 						 OPCODE_CA_TO_CLIENT_REPLY_VALIDATE_BOND,
@@ -64,10 +64,15 @@ int CA_Machine::execOnWorkerThread(SocketWrapper sock, void* arg)
 					sock.sendToSocket(msgToSend.c_str(), msgToSend.length()); //send a reply to the client
 				}
 			}
+			else
+			{
+				//todo reply with a message stating that the SK and Bond weren't received
+			}
 		}
 		sock.closeSocket();
 	}//validate request
 
+	return 0;
 }//end of execOnWorkerThread()
 
 void CA_Machine::handleClientSentSK_OrBond(vector<string>& parsed_request, SocketWrapper sock)
@@ -117,7 +122,7 @@ void CA_Machine::handleClientSentSK_OrBond(vector<string>& parsed_request, Socke
  * @param user - the user
  * @return true of the decrypted bond matches the PT bond, false otherwise
  */
-bool CA_Machine::HanleSK_AndBondValidation(CA_Machine::User& user, SocketWrapper sock)
+bool CA_Machine::HandleSK_AndBondValidation(CA_Machine::User& user)
 {
 	memberElement bondPT;
 	memberElement decryptRes;
@@ -160,7 +165,7 @@ bool CA_Machine::HanleSK_AndBondValidation(CA_Machine::User& user, SocketWrapper
  */
 int CA_Machine::updateTheServerWithClientDetails(string& clientDetails)
 {
-	SocketWrapper sockToServer(m_Server_IP_addr,SERVER_AND_CA_TCP_PORT_NUM);
+	SocketWrapper sockToServer(m_Server_IP_addr,SERVER_TCP_PORT_NUM);
 	int i;
 
 	for (i=0; i<MAX_NUM_OF_SOCK_CONNECT_RETRIES ; i++)
@@ -201,7 +206,7 @@ void CA_Machine::run()
  */
 int CA_Machine::getSM_FromServer()
 {
-	SocketWrapper sockToServer(m_Server_IP_addr,SERVER_AND_CA_TCP_PORT_NUM);
+	SocketWrapper sockToServer(m_Server_IP_addr,SERVER_TCP_PORT_NUM);
 	int ctr=0;
 
 	while (sockToServer.getSocketDescriptor() == -1) //keep looping until we open a socket to the server

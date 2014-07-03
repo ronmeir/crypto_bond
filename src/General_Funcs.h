@@ -41,7 +41,6 @@ inline string createMessage(string src,string dst,string opcode,int content_leng
  */
 inline vector<string> readAndParseMessageFromSocket(SocketWrapper& sock)
 {
-	char currentChar=0;
 	char buff[BUF_SIZE];
 	vector<string> results;
 	int j;
