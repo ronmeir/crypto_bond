@@ -235,11 +235,9 @@ void Client_UI_Server::handleRequestToCreateSK_AndBond(SocketWrapper& sock)
 	//got the operation's result. send the appropriate answer to the UI client:
 	switch (resCode)
 	{
-		//at this point, we only have 1 possible result code:
 		case RET_VAL_TO_UI_SERVER_SK_AND_BOND_CREATED_OK:
 		{
 			//we want to send the secret (the PT bond) to the UI client:
-
 			//get the size of the PT:
 			int size = m_clientMachine->m_mapper->getElementLengthInBytes(m_clientMachine->m_theSecret,true);
 			unsigned char secret[size]; //allocate a buffer
@@ -247,9 +245,15 @@ void Client_UI_Server::handleRequestToCreateSK_AndBond(SocketWrapper& sock)
 			string PTstring((char*)secret);   //move to a string
 
 			//create a message:
-			 reply = createMessage(UI_SERVER,UI_CLIENT,OPCODE_UI_SERVER_TO_CLIENT_REPLY_ON_CREATE_SK_AND_BOND,
+			 reply = createMessage(UI_SERVER,UI_CLIENT,OPCODE_UI_SERVER_TO_CLIENT_REPLY_ON_CREATE_SK_AND_BOND_OK,
 				PTstring.length(),PTstring);
 			break;
+		}
+		case RET_VAL_TO_UI_SERVER_SK_AND_BOND_CREATE_FAILED:
+		{
+			//create a message:
+			 reply = createMessage(UI_SERVER,UI_CLIENT,OPCODE_UI_SERVER_TO_CLIENT_REPLY_ON_CREATE_SK_AND_BOND_ERROR,
+				strlen(CONTENT_CANT_CREATE_SK_AND_BOND),CONTENT_CANT_CREATE_SK_AND_BOND);
 		}
 	}//switch
 
