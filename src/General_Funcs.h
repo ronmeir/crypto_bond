@@ -74,8 +74,9 @@ inline vector<string> readAndParseMessageFromSocket(SocketWrapper& sock)
 		j++;
 	}//for
 
-	buff[i]='\0';
-	results.push_back(buff); //add to the vector
+	string temp(buff,content_length);  //create a string from the content buffer
+
+	results.push_back(temp); //add to the vector
 
 	return results;
 
