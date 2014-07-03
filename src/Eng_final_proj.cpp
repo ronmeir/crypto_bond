@@ -23,7 +23,7 @@
 #define CLIENT 0
 #define SERVER 0
 #define CA 	   1
-#define SERVER_IP "127.0.0.1"
+#define SERVER_IP "10.0.0.11"
 #define CA_IP "127.0.0.1"
 
 using namespace std;                      //using the 'string' library
@@ -57,7 +57,7 @@ int main()
 	server.run();
 #endif
 #if CA
-	ip.assign(CA_IP);
+	ip.assign(SERVER_IP);
 	CA_Machine ca(ip);
 	ca.run();
 #endif
