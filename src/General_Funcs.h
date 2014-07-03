@@ -41,7 +41,7 @@ inline string createMessage(string src,string dst,string opcode,int content_leng
  */
 inline vector<string> readAndParseMessageFromSocket(SocketWrapper& sock)
 {
-	string currentField;
+	string currentField="";
 	char currentChar=0;
 	vector<string> results;
 

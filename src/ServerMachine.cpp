@@ -37,15 +37,15 @@ int ServerMachine::execOnWorkerThread(SocketWrapper sock, void* arg)
  * 4. Perform echo on incoming messages
  */
 	//if the opcode means that it's an SM request
-	if (!parsed_request[3].compare(OPCODE_CLIENT_TO_SERVER_REQUEST_SM) ||
-			!parsed_request[3].compare(OPCODE_CA_TO_SERVER_REQUEST_SM))
+	if (!parsed_request[2].compare(OPCODE_CLIENT_TO_SERVER_REQUEST_SM) ||
+			!parsed_request[2].compare(OPCODE_CA_TO_SERVER_REQUEST_SM))
 	{
 		handleSM_request(parsed_request,sock);
 		return 0;
 	}
 
 	//if the CA sent us a client approval:
-	if (!parsed_request[3].compare(OPCODE_CA_TO_SERVER_APPROVE_CLIENT) &&
+	if (!parsed_request[2].compare(OPCODE_CA_TO_SERVER_APPROVE_CLIENT) &&
 			!parsed_request[0].compare(CA_NAME))
 	{
 		handleCA_userApproval(parsed_request,sock);
@@ -53,21 +53,21 @@ int ServerMachine::execOnWorkerThread(SocketWrapper sock, void* arg)
 	}
 
 	//if a client sent us an SK:
-	if (!parsed_request[3].compare(OPCODE_CLIENT_TO_SERVER_SEND_SK))
+	if (!parsed_request[2].compare(OPCODE_CLIENT_TO_SERVER_SEND_SK))
 	{
 		handleClientSK(parsed_request,sock);
 		return 0;
 	}
 
 	//if a client sent us a BOND:
-	if (!parsed_request[3].compare(OPCODE_CLIENT_TO_SERVER_SEND_BOND))
+	if (!parsed_request[2].compare(OPCODE_CLIENT_TO_SERVER_SEND_BOND))
 	{
 		handleClientBond(parsed_request,sock);
 		return 0;
 	}
 
 	//if a client sent us a message:
-	if (!parsed_request[3].compare(OPCODE_CLIENT_TO_SERVER_SEND_MSG))
+	if (!parsed_request[2].compare(OPCODE_CLIENT_TO_SERVER_SEND_MSG))
 	{
 		//if the client exists in the DB
 		if (m_users->find(parsed_request[0]) != m_users->end())
@@ -78,7 +78,7 @@ int ServerMachine::execOnWorkerThread(SocketWrapper sock, void* arg)
 		return 0;
 	}
 
-	cout << "Received an unknown opcode: " + parsed_request[3] + "from user named: " + parsed_request[0] << endl;
+	cout << "Received an unknown opcode: " + parsed_request[2] + "from user named: " + parsed_request[0] << endl;
 	sock.closeSocket();
 	return -1;
 
@@ -87,6 +87,8 @@ int ServerMachine::execOnWorkerThread(SocketWrapper sock, void* arg)
 
 void ServerMachine::handleSM_request (vector<string>& incomingMsg,SocketWrapper& sock)
 {
+	cout << "Sending a state machine to: " << incomingMsg[0] << endl;
+
 	string msgToSend = createMessage(SERVER_NAME, incomingMsg[0],OPCODE_SERVER_TO_CLIENT_OR_CA_REPLY_SM,
 			m_SM_string.length(), m_SM_string); //generate a reply message
 
@@ -106,13 +108,15 @@ void ServerMachine::handleCA_userApproval (vector<string>& incomingMsg,SocketWra
 	//finished with the reply. Now we need to create a new User entry in our DB:
 
 	ServerMachine::User newUser;
-	newUser.name = "TEMP NAME. NEED TO DEFINE THE CONTENT PATTERN FOR A USER APPROVAL MESSAGE";
+	newUser.name = incomingMsg[4];
 	newUser.state = SERVER_NEED_SK_AND_BOND;
 
 	//todo NOTE: OUR DB DOESN'T SUPPORT MULTIPLE USERS WITH THE SAME NAME.
 	//WE ASSUME THAT A NAME IS A UNIQUE ID
 	m_users->at(newUser.name) = newUser; //insert the new user into the DB
 	//todo MAKE SURE THE INSERTION TO THE MAP COPIES THE ELEMENT RATHER THAN JUST KEEPS A REF TO IT.
+
+	cout << "Receive SK and Bond validation for: " << incomingMsg[4] << endl;
 
 }//end of handleCA_userApproval()
 
@@ -147,6 +151,8 @@ void ServerMachine::handleClientSK (vector<string>& incomingMsg,SocketWrapper& s
 
 		m_users->at(incomingMsg[0]) = user;  //update the user's data in the DB
 	}
+
+	cout << "Received SK for client: " << incomingMsg[0] << endl;
 }//end of handleClientSK()
 
 void ServerMachine::handleClientBond (vector<string>& incomingMsg,SocketWrapper& sock)
@@ -181,6 +187,8 @@ void ServerMachine::handleClientBond (vector<string>& incomingMsg,SocketWrapper&
 
 		m_users->at(incomingMsg[0]) = user;  //update the user's data in the DB
 	}
+
+	cout << "Received Bond for client: " << incomingMsg[0] << endl;
 }//end of handleClientBond()
 
 void ServerMachine::handleClientMessage (vector<string>& incomingMsg,SocketWrapper& sock)
@@ -198,6 +206,7 @@ void ServerMachine::handleClientMessage (vector<string>& incomingMsg,SocketWrapp
 	}
 	else
 	{
+		cout << "Echoing the message: " << incomingMsg[4] << " to client: " << incomingMsg[0];
 		content = CONTENT_SERVER_ECHO_PREFIX + incomingMsg[4]; //create a reply content
 		msgToSend = createMessage(SERVER_NAME, incomingMsg[0],OPCODE_SERVER_TO_CLIENT_ECHO_MSG,
 				content.length(), content); //generate a reply message
