@@ -206,6 +206,7 @@ int CA_Machine::getSM_FromServer()
 
 	while (sockToServer.getSocketDescriptor() == -1) //keep looping until we open a socket to the server
 	{
+		cout << "retry to connect";
 		sleep(3000);
 		sockToServer.reconnect(); //retry
 		ctr++;
