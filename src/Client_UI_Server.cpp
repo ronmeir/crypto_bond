@@ -57,8 +57,7 @@ int Client_UI_Server::execOnWorkerThread (SocketWrapper sock, void* arg)
 	//if the ui has requested to create SK and bond
 	if (!parsed_request[2].compare(OPCODE_UI_CLIENT_TO_SERVER_CREATE_SK_AND_BOND))
 	{
-		if (m_clientMachine->m_program_state == CLIENT_NEED_CA_APPROVAL)
-			handleRequestToCreateSK_AndBond(sock);
+		handleRequestToCreateSK_AndBond(sock);
 	}
 
 	//if the ui has requested to send the SK and bond to the CA

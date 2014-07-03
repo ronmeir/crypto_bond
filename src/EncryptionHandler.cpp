@@ -510,25 +510,36 @@ EncryptionHandler::SK::~SK()
 
 	if (mIsClient)
 	{
-		delete[] (m_D_ElementSet);
-		delete[] (m_Rt_ExpSet);
-		delete[] (m_R_end_ExpSet);
+		if (m_D_ElementSet)
+			delete[] (m_D_ElementSet);
+		if (m_Rt_ExpSet)
+			delete[] (m_Rt_ExpSet);
+		if (m_R_end_ExpSet)
+			delete[] (m_R_end_ExpSet);
 	} //if
 
-	delete[] (m_K_for_q_x);
-	delete[] (m_K_t);
+	if (m_K_for_q_x)
+		delete[] (m_K_for_q_x);
+	if (m_K_t)
+		delete[] (m_K_t);
 
 	for (int i = 0; i < 2; i++)
 	{
-		delete (m_K_for_q_x[0]);
+		if (m_K_for_q_x[i])
+			delete (m_K_for_q_x[i]);
 	}
-	delete[] (m_K_for_q_x);
+
+	if (m_K_for_q_x)
+		delete[] (m_K_for_q_x);
 
 	for (int i = 0; i < 3; i++)
 	{
-		delete (m_K_t[i]);
+		if (m_K_t[i])
+			delete (m_K_t[i]);
 	} //for
-	delete[] (m_K_t);
+
+	if (m_K_t)
+		delete[] (m_K_t);
 
 } //end of Destructor
 
