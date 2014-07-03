@@ -165,19 +165,44 @@ def send_was_pressed():
 	msg = om_selected_var.get()
 	#if it's a freeText msg we need to send the text in the msgbox 
 	#otherwise we send the actual MSG
+	
+	#if it's a free text MSG:
 	if(msg==freeText()):
 		msg=(msgbox.get('1.0', 'end')).strip()	#remove emptySpaces
 		if(msg==""):
 			#we must send some MSG - otherwise we'll get error
 			easygui.msgbox("You cannot send an empty MSG!!!", title="Error")		
-
+		else:
+			msg=MSG_send_this_msg(msg) #create a msg tuple (msg,txt)
+			send(msg)
+			msgbox.delete('1.0', 'end')				# clear the msgbox	
+			
+	#if it's a built-in MSG		
+	else:
+		if(msg==setMsg(0)):
+			msg=MSG_req_sk_from_server()
+			
+		elif(msg==setMsg(1)):
+			msg=MSG_create_sk_and_bond()
+			
+		elif(msg==setMsg(2)):
+			msg=MSG_send_sk_and_bond_to_CA()
 		
+		elif(msg==setMsg(3)):
+			msg=MSG_send_sk_and_bond_to_server()
+	print(str(msg))		
+	send(msg)				
+					
+			
+
+'''
 	#now we can send the MSG		
 	if(msg!=""):
 		msg=MSG_send_this_msg(msg) #create a msg tuple (msg,txt)
 		send(msg)
-		
-	msgbox.delete('1.0', 'end')				# clear the msgbox	
+			msgbox.delete('1.0', 'end')				# clear the msgbox	
+'''		
+
 
 #called when the "clear" button is preesed	
 def clear_was_pressed():
