@@ -32,7 +32,7 @@ ClientMachine::ClientMachine(const string userID,const string ServerIP,const str
  * @param servers_reply - the server's reply will be save here
  * @return - the result OPCODE
  */
-int ClientMachine::UI_Callback_SendMsg(string servers_reply, string msg)
+int ClientMachine::UI_Callback_SendMsg(string& servers_reply, string msg)
 {
 	string msgToSend = createMessage(m_ID, SERVER_NAME,OPCODE_CLIENT_TO_SERVER_SEND_MSG,
 			msg.size(), msg);
@@ -203,7 +203,7 @@ int ClientMachine::UI_Callback_SendSK_AndBond(bool isSendToCA)
 	//if the opcode is correct and the CA has approved
 	if (!parsed_reply[4].compare(CONTENT_VALID))
 	{
-		m_program_state = CLIENT_GOT_CA_APPROVAL;
+		m_program_state = CLIENT_OPERATIONAL;
 		return RET_VAL_TO_UI_SERVER_CA_APPROVED_SK_AND_BOND;
 	}
 	else
@@ -214,6 +214,8 @@ int ClientMachine::UI_Callback_SendSK_AndBond(bool isSendToCA)
 
 /*
  * On UI request, sends an SM request to the server
+ * @return RET_VAL_TO_UI_SERVER_SM_NOT_RECEIVED if the SM wasn't received properly.
+ *         RET_VAL_TO_UI_SERVER_SM_RECEIVED_OK if the SM was received.
  */
 int ClientMachine::UI_Callback_requestSM_FromServer()
 {

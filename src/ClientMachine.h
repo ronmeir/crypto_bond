@@ -20,7 +20,7 @@
 
 class Client_UI_Server; //forward declaration of the Client_UI_Server
 
-enum Client_UserState {CLIENT_NEED_STATE_MACHINE, CLIENT_NEED_CA_APPROVAL, CLIENT_GOT_CA_APPROVAL,
+enum Client_UserState {CLIENT_NEED_STATE_MACHINE, CLIENT_NEED_CA_APPROVAL,
 	CLIENT_OPERATIONAL, CLIENT_BUSTED };
 
 
@@ -47,7 +47,7 @@ private:
 	int UI_Callback_requestSM_FromServer();
 	int UI_Callback_CreateSK_AndBond();
 	int UI_Callback_SendSK_AndBond(bool isSendToCA);
-	int UI_Callback_SendMsg(std::string servers_reply, std::string msg);
+	int UI_Callback_SendMsg(std::string& servers_reply, std::string msg);
 
 public:
 	ClientMachine(const std::string,const std::string,const std::string);

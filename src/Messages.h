@@ -29,6 +29,8 @@
 //names:
 #define SERVER_NAME "SRVR"
 #define CA_NAME "CA"
+#define UI_SERVER "UI Server"
+#define UI_CLIENT "UI Client"
 
 //message contents:
 #define CONTENT_ACK "ACK"
@@ -83,15 +85,20 @@
 #define CONTENT_CA_DISAPPROVED "The SK and Bond were rejected by the CA!"
 #define CONTENT_CA_SENT_UNKNOWN_REPLY "An unknown reply was received from the CA!"
 #define CONTENT_CA_SERVICE_UNAVAILABLE "The CA wasn't able to contact the Server thus far. \nService unavailable!"
+#define CONTENT_GET_SM_OK "Successfully received the state machine from the Server!"
+#define CONTENT_GET_SM_ERROR "Failed to receive a state machine from the Server!"
 
 #define CONTENT_SERVER_ACK "The SK and Bond were received by the Server!"
 #define CONTENT_SERVER_SENT_UNKNOWN_REPLY "An unknown reply was received from the Server!"
 
+#define OPCODE_UI_CLIENT_TO_SERVER_REQUEST_SM_FROM_SERVER "0"
 #define OPCODE_UI_CLIENT_TO_SERVER_CREATE_SK_AND_BOND "1"
 #define OPCODE_UI_CLIENT_TO_SERVER_SEND_SK_AND_BOND_TO_CA "2"
 #define OPCODE_UI_CLIENT_TO_SERVER_SEND_SK_AND_BOND_TO_SERVER "3"
 #define OPCODE_UI_CLIENT_TO_SERVER_SEND_MSG_TO_SERVER "4"
 
+#define OPCODE_UI_SERVER_TO_CLIENT_REPLY_ON_REQUEST_SM_OK "00"
+#define OPCODE_UI_SERVER_TO_CLIENT_REPLY_ON_REQUEST_SM_ERROR "01"
 #define OPCODE_UI_SERVER_TO_CLIENT_REPLY_ON_CREATE_SK_AND_BOND "1"
 #define OPCODE_UI_SERVER_TO_CLIENT_SK_AND_BOND_APPROVED_BY_CA "20"
 #define OPCODE_UI_SERVER_TO_CLIENT_SK_AND_BOND_NOT_APPROVED_BY_CA "21"

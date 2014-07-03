@@ -14,7 +14,6 @@
 
 using namespace std;
 
-
 #define BUF_SIZE 8192
 #define PARAM_FILE_PATH "./param/a.param" //the relative path of the parameter file
 #define VIRUS_STRING "virus"

@@ -22,6 +22,11 @@ private:
 	//methods:
 	int execOnWorkerThread(SocketWrapper, void* arg);
 	static void* IntermediateWelcomeSocketThreadLauncher(void *);
+	void handleRequestSM_FromServer(SocketWrapper& sock);
+	void handleRequestToCreateSK_AndBond(SocketWrapper& sock);
+	void handleRequestToSendSK_AndBondToCA (SocketWrapper& sock);
+	void handleRequestToSendSK_AndBondToServer (SocketWrapper& sock);
+	void handleRequestToSendMsgToServer (SocketWrapper& sock, std::string& msgToSend);
 //	std::vector<string> readAndParseMessageFromUI (SocketWrapper& sock);
 
 public:
