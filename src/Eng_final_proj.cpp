@@ -21,8 +21,8 @@
 #include "ObjectSerializer.h"
 #define DEBUG 0
 #define CLIENT 0
-#define SERVER 0
-#define CA 	   1
+#define SERVER 1
+#define CA     0
 #define SERVER_IP "127.0.0.1"
 #define CA_IP "127.0.0.1"
 
@@ -52,12 +52,12 @@ int main()
 	google::protobuf::ShutdownProtobufLibrary();
 #endif
 #if SERVER
-	ip.assign(SERVER_IP);
+	ip.assign(CA_IP);
 	ServerMachine server (ip);
 	server.run();
 #endif
 #if CA
-	ip.assign(CA_IP);
+	ip.assign(SERVER_IP);
 	CA_Machine ca(ip);
 	ca.run();
 #endif

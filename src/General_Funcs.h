@@ -41,38 +41,41 @@ inline string createMessage(string src,string dst,string opcode,int content_leng
  */
 inline vector<string> readAndParseMessageFromSocket(SocketWrapper& sock)
 {
-	string currentField="";
 	char currentChar=0;
+	char buff[BUF_SIZE];
 	vector<string> results;
+	int j;
 
 	//TODO WE HAVE NO TIMEOUT ON THE READ ATTEMPT. CONSIDER ADDING IT.
-
 	//reading the first 4 fields:
 	for (int i=0; i<4 ;i++)
 	{
-		sock.receiveFromSocket(&currentChar,1); //read a single char
+		j=0;
+		sock.receiveFromSocket(&buff[j],1); //read a single char
 
-		while (currentChar != SFSC) //in the current message field
+		while (buff[j] != SFSC) //in the current message field
 		{
-			currentField.append(""+currentChar);    //append the char to a string
-			sock.receiveFromSocket(&currentChar,1); //read the next char
+			j++;
+			sock.receiveFromSocket(&buff[j],1); //read the next char
 		}//while
 
-		results.push_back(currentField); //push the current field to the result vector
-		currentField.clear();            //clear the current field holder
+		buff[j]='\0'; //replace the SFSC with a null terminator
+		results.push_back(buff); //push the current field to the result vector
 	}//for
 
 	int content_length = atoi(results[3].c_str()); //convert the length string to an int
-	currentField.clear();
 
+	j=0;
+	int i;
 	//extract the content:
-	for (int i=0; i<content_length ;i++)
+	for (i=0; i<content_length ;i++)
 	{
-		sock.receiveFromSocket(&currentChar,1); //read the next char
-		currentField.append(""+currentChar);    //append the char to a string
+		sock.receiveFromSocket(&buff[j],1); //read the next char
+		j++;
 	}//for
 
-	results.push_back(currentField); //add to the vector
+	buff[i]='\0';
+	results.push_back(buff); //add to the vector
 
 	return results;
 
