@@ -220,7 +220,6 @@ void ServerMachine::handleClientMessage (vector<string>& incomingMsg,SocketWrapp
 void ServerMachine::recoverBond (string& userName, string& virus)
 {
 	memberElement decryptRes;
-	//todo complete
 	cout << "THE SERVER HAS DETECTED A VIRUS IN A MESSAGE FROM: " << userName << endl;
 
 	ServerMachine::User user = m_users->at(userName); //extract the user from the DB

@@ -246,6 +246,8 @@ int ClientMachine::UI_Callback_requestSM_FromServer()
 	m_SM = new StateMachine(num_of_states, 0); //create a new SM
 	m_serializer->deserializeStateMachine(*m_SM,&m_virus,parsed_reply[4]);//deserialize the received SM
 
+	m_EncHandler = new EncryptionHandler(PARAM_FILE_PATH,m_SM,true);  //create a new enc. handler
+
 	m_program_state = CLIENT_NEED_CA_APPROVAL;  //update the state
 
 	return RET_VAL_TO_UI_SERVER_SM_RECEIVED_OK;
