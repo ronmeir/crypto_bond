@@ -640,9 +640,15 @@ EncryptionHandler::CT::~CT()
 {
 	int size = (mIsPartialCT ? ALPHABET_SIZE + 1 : 2);
 
-	for (int i = 0; i < size; i++)
-		delete[] (m_Ci[i]);
+	if (m_Ci)
+	{
+		for (int i = 0; i < size; i++)
+		{
+			if (m_Ci[i])
+				delete[] (m_Ci[i]);
+		}
 
-	delete[] m_Ci;
+		delete[] m_Ci;
+	}
 }
 

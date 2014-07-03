@@ -25,7 +25,7 @@
 #define CA 	   1
 #define SERVER_IP "10.0.0.11"
 
-#define CA_IP "127.0.0.1"
+#define CA_IP "10.0.0.11"
 
 using namespace std;                      //using the 'string' library
 
