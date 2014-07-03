@@ -68,7 +68,7 @@ def FILED_SEPERATOR():
 def MSG_req_sk_from_server():
 	send= str("0"+FILED_SEPERATOR())
 	send+=send+send+send+send
-	txt="request SK from servet"
+	txt="request SK from server"
 	return ((send,txt))
 
 
@@ -190,8 +190,8 @@ def send_was_pressed():
 		
 		elif(msg==setMsg(3)):
 			msg=MSG_send_sk_and_bond_to_server()
-	print(str(msg))		
-	send(msg)				
+		print(str(msg))		
+		send(msg)				
 					
 			
 
