@@ -27,6 +27,7 @@ CA_Machine::CA_Machine(string& Server_IP_addr) : BasicMultithreadedServer(CA_TCP
 int CA_Machine::execOnWorkerThread(SocketWrapper sock, void* arg)
 {
 	vector<string> parsed_request = readAndParseMessageFromSocket(sock); //receive the request
+	string msgToSend;
 
 	 //the client has send an SK or Bond:
 	if (!parsed_request[2].compare(OPCODE_CLIENT_TO_CA_SEND_SK) ||
@@ -57,18 +58,32 @@ int CA_Machine::execOnWorkerThread(SocketWrapper sock, void* arg)
 				}
 				else //validation has failed
 				{
-					string msgToSend = createMessage(CA_NAME, parsed_request[0],
+					 msgToSend = createMessage(CA_NAME, parsed_request[0],
 						 OPCODE_CA_TO_CLIENT_REPLY_VALIDATE_BOND,
 							strlen(CONTENT_INVALID), CONTENT_INVALID); //generate a reply message
 
 					sock.sendToSocket(msgToSend.c_str(), msgToSend.length()); //send a reply to the client
 				}
 			}
-			else
+			else //we still don't have both SK and Bond
 			{
-				//todo reply with a message stating that the SK and Bond weren't received
+				 msgToSend = createMessage(CA_NAME, parsed_request[0],
+					 OPCODE_CA_TO_CLIENT_REPLY_VALIDATE_BOND,
+						strlen(CONTENT_NO_SK_AND_BOND), CONTENT_NO_SK_OR_BOND); //generate a reply message
+
+				sock.sendToSocket(msgToSend.c_str(), msgToSend.length()); //send a reply to the client
 			}
 		}
+		else //we haven't receive anything from this user before the current message
+		{
+			 msgToSend = createMessage(CA_NAME, parsed_request[0],
+				 OPCODE_CA_TO_CLIENT_REPLY_VALIDATE_BOND,
+					strlen(CONTENT_INVALID), CONTENT_NO_SK_AND_BOND); //generate a reply message
+
+				sock.sendToSocket(msgToSend.c_str(), msgToSend.length()); //send a reply to the client
+		}
+
+
 		sock.closeSocket();
 	}//validate request
 

@@ -100,10 +100,13 @@ int ClientMachine::UI_Callback_CreateSK_AndBond()
  * 				RET_VAL_TO_UI_SERVER_CA_SENT_UNKNOWN_REPLY
  * 				RET_VAL_TO_UI_SERVER_CA_APPROVED_SK_AND_BOND
  * 				RET_VAL_TO_UI_SERVER_CA_DISAPPROVED_SK_AND_BOND
+ * 				RET_VAL_TO_UI_SERVER_CA_DIDNT_RECEIVE_SK_OR_BOND
+ * 				RET_VAL_TO_UI_SERVER_CA_DIDNT_RECEIVE_BOTH_SK_AND_BOND
  *
  * 			if the message was sent to the server, the result in one of the following:
  * 			    RET_VAL_TO_UI_SERVER_SERVER_SENT_UNKNOWN_REPLY
  * 			    RET_VAL_TO_UI_SERVER_SERVER_RECEIVED_SK_AND_BOND
+ * 			    RET_VAL_TO_UI_SERVER_CA_DIDNT_RECEIVE_BOTH_SK_AND_BOND
  *
  */
 int ClientMachine::UI_Callback_SendSK_AndBond(bool isSendToCA)
@@ -197,6 +200,8 @@ int ClientMachine::UI_Callback_SendSK_AndBond(bool isSendToCA)
 	//GOT A REPLY.
 	//checking the reply:
 
+	//todo added additional invalid-validation replies in the content
+
 	//if the opcode is incorrect
 	if (parsed_reply[2].compare(OPCODE_CA_TO_CLIENT_REPLY_VALIDATE_BOND))
 		return RET_VAL_TO_UI_SERVER_CA_SENT_UNKNOWN_REPLY;
@@ -208,8 +213,21 @@ int ClientMachine::UI_Callback_SendSK_AndBond(bool isSendToCA)
 		return RET_VAL_TO_UI_SERVER_CA_APPROVED_SK_AND_BOND;
 	}
 	else
-		//the CA didn't approve
-		return RET_VAL_TO_UI_SERVER_CA_DISAPPROVED_SK_AND_BOND;
+	{
+		//the CA didn't approve, check why:
+
+		//the bond validation has failed:
+		if (!parsed_reply[4].compare(CONTENT_INVALID))
+			return RET_VAL_TO_UI_SERVER_CA_DISAPPROVED_SK_AND_BOND;
+
+		//the CA is missing the SK or the Bond
+		if (!parsed_reply[4].compare(CONTENT_NO_SK_OR_BOND))
+			return RET_VAL_TO_UI_SERVER_CA_DIDNT_RECEIVE_SK_OR_BOND;
+
+		//the CA hasn't received anything from us until now:
+		if (!parsed_reply[4].compare(CONTENT_NO_SK_AND_BOND))
+			return RET_VAL_TO_UI_SERVER_CA_DIDNT_RECEIVE_BOTH_SK_AND_BOND;
+	}
 }//end of UI_Callback_SendSK_AndBondToCA()
 
 

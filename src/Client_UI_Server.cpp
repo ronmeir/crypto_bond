@@ -175,6 +175,26 @@ void Client_UI_Server::handleRequestToSendSK_AndBondToCA (SocketWrapper& sock)
 					 CONTENT_CA_APPROVED);
 			break;
 		}
+		case RET_VAL_TO_UI_SERVER_CA_DIDNT_RECEIVE_SK_OR_BOND:
+		{
+			//create a message:
+			 reply = createMessage(UI_SERVER,
+					 UI_CLIENT,
+					 OPCODE_UI_SERVER_TO_CLIENT_SK_AND_BOND_NOT_APPROVED_BY_CA,
+					 strlen(CONTENT_CA_DIDNT_GET_SK_OR_BOND),
+					 CONTENT_CA_DIDNT_GET_SK_OR_BOND);
+			break;
+		}
+		case RET_VAL_TO_UI_SERVER_CA_DIDNT_RECEIVE_BOTH_SK_AND_BOND:
+		{
+			//create a message:
+			 reply = createMessage(UI_SERVER,
+					 UI_CLIENT,
+					 OPCODE_UI_SERVER_TO_CLIENT_SK_AND_BOND_NOT_APPROVED_BY_CA,
+					 strlen(CONTENT_CA_DIDNT_GET_SK_AND_BOND),
+					 CONTENT_CA_DIDNT_GET_SK_AND_BOND);
+			break;
+		}
 
 	}//switch
 
