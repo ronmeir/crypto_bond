@@ -193,7 +193,7 @@ int CA_Machine::updateTheServerWithClientDetails(string& clientDetails)
 	SocketWrapper sockToServer(m_Server_IP_addr,SERVER_TCP_PORT_NUM);
 	int i;
 
-	for (i=0; sockToServer == -1 && i<MAX_NUM_OF_SOCK_CONNECT_RETRIES ; i++)
+	for (i=0; sockToServer.getSocketDescriptor() == -1 && i<MAX_NUM_OF_SOCK_CONNECT_RETRIES ; i++)
 	{
 		if (sockToServer.getSocketDescriptor()==-1)
 		{
