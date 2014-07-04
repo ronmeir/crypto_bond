@@ -4,7 +4,7 @@ import ttk
 import socket  
 import easygui
 
-IP='127.0.0.1'
+IP='10.0.0.11'
 PORT= 12345
 
 ####################################################################################################################
@@ -68,10 +68,10 @@ def FILED_SEPERATOR():
 
 
 
-def MSG_req_sk_from_server():
+def MSG_req_sm_from_server():
 	send= str("0"+FILED_SEPERATOR())
 	send+=send+send+send+send
-	txt="request SK from server"
+	txt="request SM from server"
 	return ((send,txt))
 
 
@@ -217,7 +217,7 @@ def connect_was_pressed():
 	insert_text("	IP  :"+str(getIP()))
 	insert_text("	PORT:"+str(getPort())+"\n")
 	
-	msg=MSG_req_sk_from_server()	#get to relevant msg tuple (toSend,toShow)
+	msg=MSG_req_sm_from_server()	#get to relevant msg tuple (toSend,toShow)
 	send(msg)						#this is the actual MSG sent 
 	
 '''    
@@ -258,6 +258,7 @@ def send(msg):
 	#insert_text(msg,color)
 	
 	s.send(msg[0].encode())
+	#recv=str(s.recv(getReadSize()).decode('utf-8'))
 	recv=str(s.recv(getReadSize()).decode('utf-8'))
 
 	#when we get a startMSG as echo it means the server work and we have connection
@@ -266,7 +267,8 @@ def send(msg):
 		b_send.state(["!disabled"])
 
 	color='blue'
-	insert_text(MSG_parseMSG(recv)[4]+"\n",color)
+	insert_text(MSG_parseMSG(recv)[4],color)
+	insert_text("-----------------------------------------------------------------------------\n")
 	
 	
 	#print(msg)
@@ -326,6 +328,7 @@ if __name__ == "__main__":
 	textbox.tag_configure('red'		,foreground='#DF0101')
 	textbox.tag_configure('black'	,foreground='#000000')
 	textbox.tag_configure('blue'	,foreground='#0000FF')
+	textbox.tag_configure('orange'	,foreground='#DF7401')
 	
 	msgbox = tkst.ScrolledText(
 		master = master,
