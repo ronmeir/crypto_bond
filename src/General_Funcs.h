@@ -90,11 +90,11 @@ inline vector<string> readAndParseMessageFromSocket(SocketWrapper& sock)
 	int content_length = atoi(results[3].c_str()); //convert the length string to an int
 
 
-	if (content_length > BUF_SIZE)
+	if (content_length > BUF_SIZE) //protect against buffer overflows
 	{
 		cout  << "THE MESSAGE CONTENT LENGTH IS LARGER THEN THE BUFF SIZE!" << endl;
 		//todo remove later:
-		throw exception();
+		throw string("Msg content is way too big!");
 	}
 
 	j=0;
