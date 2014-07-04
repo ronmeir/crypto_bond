@@ -5,7 +5,7 @@ import socket
 import easygui
 
 ############################ IP and PORT form UI ########################################
-IP='127.0.0.1'
+IP='10.0.0.11' 
 PORT= 12345
 #########################################################################################
 
@@ -200,7 +200,7 @@ def send_was_pressed():
 		
 		elif(msg==setMsg(3)):
 			msg=MSG_send_sk_and_bond_to_server()
-		print(str(msg))		
+			
 		send(msg)				
 					
 			
