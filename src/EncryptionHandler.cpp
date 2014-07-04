@@ -521,11 +521,6 @@ EncryptionHandler::SK::~SK()
 			delete[] (m_R_end_ExpSet);
 	} //if
 
-	if (m_K_for_q_x)
-		delete[] (m_K_for_q_x);
-	if (m_K_t)
-		delete[] (m_K_t);
-
 	for (int i = 0; i < 2; i++)
 	{
 		if (m_K_for_q_x[i])

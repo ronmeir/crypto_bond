@@ -261,7 +261,17 @@ void Client_UI_Server::handleRequestToCreateSK_AndBond(SocketWrapper& sock)
 			int size = m_clientMachine->m_mapper->getElementLengthInBytes(m_clientMachine->m_theSecret,true);
 			unsigned char secret[size]; //allocate a buffer
 			m_clientMachine->m_mapper->elementToByteArray(secret,m_clientMachine->m_theSecret, true); //translate to bytes
-			string PTstring((char*)secret);   //move to a string
+			/*
+			 * Since the byte array is consisted out of bytes that can't be displayed on our python GUI,
+			 * we're performing the following manipulation:
+			 * every byte in the PT will be moved to the range between the ' ' and '~' chars (space and tilda).
+			 * That range is consisted of chars that can be displayed on screen (consult an ascii table if you don't
+			 * trust us :>).
+			 */
+
+			string PTstring;
+			createDisplayableBondPT_String (PTstring,(char*)secret,size);
+			PTstring = "The secret is: " + PTstring;
 
 			//create a message:
 			 reply = createMessage(UI_SERVER,UI_CLIENT,OPCODE_UI_SERVER_TO_CLIENT_REPLY_ON_CREATE_SK_AND_BOND_OK,

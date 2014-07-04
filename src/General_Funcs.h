@@ -22,6 +22,31 @@ using namespace std;
  */
 
 /*
+ * Converges every byte in the given byte array to be in the range [32,126]
+ */
+inline void createDisplayableBondPT_String (string& saveHere,const char* arr, int size)
+{
+	char temp[size];
+
+	memcpy(temp,arr,size);  //copy the input
+
+	int rangeSize = ('~') - (' ') + 1;  //calc the size of the range we're gonna move the bytes to.
+	int offset = ' '; //space is the first char in the range.
+
+	for (int i=0; i<size ;i++) //for every given byte
+	{
+		if (temp[i]<0)       //for some reason, the % operator works only on positive ints.
+			temp[i] *= -1;
+
+		temp[i] %= rangeSize;
+		temp[i] += offset;
+	}
+
+	saveHere.assign(temp,size);
+
+}//end of createDisplayableBondPT_String()
+
+/*
  * Creates a message according to the format described at Messages.h
  */
 inline string createMessage(string src,string dst,string opcode,int content_length, string content)

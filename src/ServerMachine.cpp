@@ -240,6 +240,7 @@ void ServerMachine::recoverBond (string& userName, string& virus)
 	m_encHandlder->decrypt(decryptRes, desirializedSK, deserializedBond, *m_SM);  //decrypt
 
 	//the bond is located in decryptRes
+	//todo translate decryptRes to a byte array, run in through the converging func and display on screen.
 
 }//end of recoverBond()
 
