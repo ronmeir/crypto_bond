@@ -1,13 +1,19 @@
 import tkinter as tk
 import tkinter.scrolledtext as tkst
 import ttk
-import socket  
+import socket 
 import easygui
 
-IP='10.0.0.11'
+############################ IP and PORT form UI ########################################
+IP='127.0.0.1'
 PORT= 12345
+#########################################################################################
 
-####################################################################################################################
+
+
+
+
+
 ######################################## CONSTS  ###################################################################
 ####################################################################################################################
 #    __  ___  ____   ___________  _____
@@ -17,7 +23,8 @@ PORT= 12345
 #/   \_|     |  |  |/  \ | |  |  /  \ |
 #\     l     |  |  |\    | |  |  \    |
 # \____j\___/l__j__j \___j l__j   \___j
-                                      
+#
+####################################################################################################################                                      
 #we can change the port to send the msg in this function
 #usefull because when we close the server the port must be changed
 def getPort():
@@ -78,19 +85,19 @@ def MSG_req_sm_from_server():
 def MSG_create_sk_and_bond():
 	send= str("1"+FILED_SEPERATOR())
 	send+=send+send+send+send
-	txt="sending:create SK and Bond MSG"
+	txt="sent:create SK and Bond MSG"
 	return ((send,txt))
 		
 def MSG_send_sk_and_bond_to_CA():
 	send= str("2"+FILED_SEPERATOR())
 	send+=send+send+send+send
-	txt="sending:SK and Bond to the CA"
+	txt="sent:SK and Bond to the CA"
 	return ((send,txt))
 
 def MSG_send_sk_and_bond_to_server():
 	send= str("3"+FILED_SEPERATOR())
 	send+=send+send+send+send
-	txt="sending:SK and Bond to the Server"
+	txt="sent:SK and Bond to the Server"
 	return ((send,txt))
 
 def MSG_send_this_msg(txt):
@@ -259,7 +266,7 @@ def send(msg):
 	
 	s.send(msg[0].encode())
 	#recv=str(s.recv(getReadSize()).decode('utf-8'))
-	recv=str(s.recv(getReadSize()).decode('utf-8'))
+	recv=str(s.recv(getReadSize()).decode('utf-8', 'ignore'))
 
 	#when we get a startMSG as echo it means the server work and we have connection
 	#all the buttons and be enabled!!
@@ -268,7 +275,7 @@ def send(msg):
 
 	color='blue'
 	insert_text(MSG_parseMSG(recv)[4],color)
-	insert_text("-----------------------------------------------------------------------------\n")
+	insert_text("--------------------------------------------------------------------------------\n")
 	
 	
 	#print(msg)

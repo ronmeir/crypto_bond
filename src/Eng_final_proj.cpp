@@ -23,8 +23,8 @@
 #define CLIENT 1
 #define SERVER 0
 #define CA 	   0
-#define SERVER_IP "127.0.0.1"
 
+#define SERVER_IP "10.0.0.11"
 #define CA_IP "10.0.0.1"
 
 using namespace std;                      //using the 'string' library
