@@ -200,7 +200,7 @@ def send_was_pressed():
 		
 		elif(msg==setMsg(3)):
 			msg=MSG_send_sk_and_bond_to_server()
-		print(str(msg))		
+			
 		send(msg)				
 					
 			
