@@ -18,7 +18,7 @@ import easygui
 #we can change the port to send the msg in this function
 #usefull because when we close the server the port must be changed
 def getPort():
-	return 12346
+	return 12345
 
 def getIP():
 	return '127.0.0.1'
@@ -214,7 +214,7 @@ def connect_was_pressed():
 	insert_text("	IP  :"+str(getIP()))
 	insert_text("	PORT:"+str(getPort())+"\n")
 	
-	msg=MSG_create_sk_and_bond()	#get to relevant msg tuple (toSend,toShow)
+	msg=MSG_req_sk_from_server()	#get to relevant msg tuple (toSend,toShow)
 	send(msg)						#this is the actual MSG sent 
 	
 '''    
@@ -236,7 +236,11 @@ def freeText():
 
 #msg to be sent via socket	
 def send(msg):
+	
 	#define host ip, port and the size of the buffer to be read from socket
+	color='green'
+	insert_text(str(msg[1]),color)
+	
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	try:
 		s.connect((getIP(), getPort()))
@@ -245,12 +249,12 @@ def send(msg):
 		return
 		
 	#a normal msg that we send should be green
-	color='green'
-		
+	
+	
+	print("printing msg:"+str(msg))	
 	#insert_text(msg,color)
+	
 	s.send(msg[0].encode())
-	print("printing msg:"+str(msg))
-	insert_text(str(msg[1]),color)
 	recv=str(s.recv(getReadSize()).decode('utf-8'))
 
 	#when we get a startMSG as echo it means the server work and we have connection
