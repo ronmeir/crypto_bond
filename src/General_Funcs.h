@@ -89,10 +89,18 @@ inline vector<string> readAndParseMessageFromSocket(SocketWrapper& sock)
 
 	int content_length = atoi(results[3].c_str()); //convert the length string to an int
 
+
+	if (content_length > BUF_SIZE)
+	{
+		cout  << "THE MESSAGE CONTENT LENGTH IS LARGER THEN THE BUFF SIZE!" << endl;
+		//todo remove later:
+		throw exception();
+	}
+
 	j=0;
 	int i;
 	//extract the content:
-	for (i=0; i<content_length ;i++)
+	for (i=0; i < content_length && i <= BUF_SIZE ;i++)
 	{
 		sock.receiveFromSocket(&buff[j],1); //read the next char
 		j++;

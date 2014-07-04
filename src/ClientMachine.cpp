@@ -35,10 +35,10 @@ ClientMachine::ClientMachine(const string userID,const string ServerIP,const str
 int ClientMachine::UI_Callback_SendMsg(string& servers_reply, string msg)
 {
 	string msgToSend = createMessage(m_ID, SERVER_NAME,OPCODE_CLIENT_TO_SERVER_SEND_MSG,
-			msg.size(), msg);
+			msg.length(), msg);
 
 	SocketWrapper sock_to_server(m_ServerIP,SERVER_TCP_PORT_NUM); //open a sock
-	sock_to_server.sendToSocket(msgToSend.c_str(), msgToSend.size()); //send the request
+	sock_to_server.sendToSocket(msgToSend.c_str(), msgToSend.length()); //send the request
 
 	vector<string> parsed_reply = readAndParseMessageFromSocket(
 			sock_to_server); //receive the reply
@@ -124,24 +124,25 @@ int ClientMachine::UI_Callback_SendSK_AndBond(bool isSendToCA)
 		m_serializer->getSerializedSecretKeyString(content): //get the serialized SK
 		m_serializer->getSerializedBondString(content);      //get the serialized Bond
 
+		int length = content.length();
 		//create a message containing the SK/Bond:
 
 		if (isSendToCA)  //if the message is to be sent to the CA
 		{
 		msgToSend = createMessage(m_ID, CA_NAME,
 				i==0? OPCODE_CLIENT_TO_CA_SEND_SK : OPCODE_CLIENT_TO_CA_SEND_BOND,
-				content.size(), content);
+				content.length(), content);
 		}
 		else //the message is to be sent to the server
 		{
 			msgToSend = createMessage(m_ID, SERVER_NAME,
 					i==0? OPCODE_CLIENT_TO_SERVER_SEND_SK : OPCODE_CLIENT_TO_SERVER_SEND_BOND,
-					content.size(), content);
+					content.length(), content);
 		}
 
 		SocketWrapper sock_to_server(isSendToCA ? m_CA_IP : m_ServerIP,
 				isSendToCA? CA_TCP_PORT_NUM : SERVER_TCP_PORT_NUM); //open a sock
-		sock_to_server.sendToSocket(msgToSend.c_str(), msgToSend.size()); //send the request
+		sock_to_server.sendToSocket(msgToSend.c_str(), msgToSend.length()); //send the request
 
 		vector<string> parsed_reply = readAndParseMessageFromSocket(
 				sock_to_server); //receive the reply
@@ -188,10 +189,10 @@ int ClientMachine::UI_Callback_SendSK_AndBond(bool isSendToCA)
 	content = CONTENT_VALIDATE;
 	//create a message asking the CA to validate the bond
 	msgToSend = createMessage(m_ID, CA_NAME,
-	OPCODE_CLIENT_TO_CA_VALIDATE_BOND, content.size(), content);
+	OPCODE_CLIENT_TO_CA_VALIDATE_BOND, content.length(), content);
 
 	SocketWrapper sock_to_server(m_CA_IP, CA_TCP_PORT_NUM); //open a sock
-	sock_to_server.sendToSocket(msgToSend.c_str(), msgToSend.size()); //send the request
+	sock_to_server.sendToSocket(msgToSend.c_str(), msgToSend.length()); //send the request
 
 	vector<string> parsed_reply = readAndParseMessageFromSocket(
 			sock_to_server); //receive the reply
@@ -228,6 +229,8 @@ int ClientMachine::UI_Callback_SendSK_AndBond(bool isSendToCA)
 		if (!parsed_reply[4].compare(CONTENT_NO_SK_AND_BOND))
 			return RET_VAL_TO_UI_SERVER_CA_DIDNT_RECEIVE_BOTH_SK_AND_BOND;
 	}
+
+	return 0;
 }//end of UI_Callback_SendSK_AndBondToCA()
 
 
@@ -242,10 +245,10 @@ int ClientMachine::UI_Callback_requestSM_FromServer()
 	string content(CONTENT_SM_REQUEST);
 
 	//create a message header:
-	sm_request = createMessage(m_ID,SERVER_NAME,OPCODE_CLIENT_TO_SERVER_REQUEST_SM,content.size(),CONTENT_SM_REQUEST);
+	sm_request = createMessage(m_ID,SERVER_NAME,OPCODE_CLIENT_TO_SERVER_REQUEST_SM,content.length(),CONTENT_SM_REQUEST);
 
 	SocketWrapper sock_to_server(m_ServerIP,SERVER_TCP_PORT_NUM); //open a sock
-	sock_to_server.sendToSocket(sm_request.c_str(),sm_request.size()); //send the request
+	sock_to_server.sendToSocket(sm_request.c_str(),sm_request.length()); //send the request
 
 	vector<string> parsed_reply = readAndParseMessageFromSocket(sock_to_server); //receive the reply
 

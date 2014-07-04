@@ -273,7 +273,7 @@ void Client_UI_Server::handleRequestToCreateSK_AndBond(SocketWrapper& sock)
 			createDisplayableBondPT_String (PTstring,(char*)secret,size);
 
 			cout << "Generated an SK and a Bond with the following secret:\n" << PTstring;
-			PTstring = "The secret is: " + PTstring;
+			PTstring = "The secret is:\n" + PTstring;
 
 			//create a message:
 			 reply = createMessage(UI_SERVER,UI_CLIENT,OPCODE_UI_SERVER_TO_CLIENT_REPLY_ON_CREATE_SK_AND_BOND_OK,
