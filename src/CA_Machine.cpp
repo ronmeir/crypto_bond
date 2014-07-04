@@ -69,7 +69,7 @@ int CA_Machine::execOnWorkerThread(SocketWrapper sock, void* arg)
 			{
 				 msgToSend = createMessage(CA_NAME, parsed_request[0],
 					 OPCODE_CA_TO_CLIENT_REPLY_VALIDATE_BOND,
-						strlen(CONTENT_NO_SK_AND_BOND), CONTENT_NO_SK_OR_BOND); //generate a reply message
+						strlen(CONTENT_NO_SK_OR_BOND), CONTENT_NO_SK_OR_BOND); //generate a reply message
 
 				sock.sendToSocket(msgToSend.c_str(), msgToSend.length()); //send a reply to the client
 			}
@@ -78,7 +78,7 @@ int CA_Machine::execOnWorkerThread(SocketWrapper sock, void* arg)
 		{
 			 msgToSend = createMessage(CA_NAME, parsed_request[0],
 				 OPCODE_CA_TO_CLIENT_REPLY_VALIDATE_BOND,
-					strlen(CONTENT_INVALID), CONTENT_NO_SK_AND_BOND); //generate a reply message
+					strlen(CONTENT_NO_SK_AND_BOND), CONTENT_NO_SK_AND_BOND); //generate a reply message
 
 				sock.sendToSocket(msgToSend.c_str(), msgToSend.length()); //send a reply to the client
 		}
@@ -161,10 +161,14 @@ bool CA_Machine::HandleSK_AndBondValidation(CA_Machine::User& user)
 
 	m_serializer->deserializeBond(deserializedBond, user.Bond); //deserialize
 
-	m_encHandlder->completePartialEncryption(deserializedBond, deserializedBond.mVirus);	//complete the enc.
+	m_encHandlder->completePartialEncryption(deserializedBond, m_virus);	//complete the enc.
 	m_encHandlder->decrypt(decryptRes, desirializedSK, deserializedBond, *m_SM);  //decrypt
 
-	m_serializer->getBondInPlainText(bondPT,true);   //get the PT bond
+	if (m_serializer->hasBondInPlainText())
+		m_serializer->getBondInPlainText(bondPT,true);   //get the PT bond
+	else
+		return false;
+
 
 	if (!m_encHandlder->getBilinearMappingHandler()->compareElements(bondPT, decryptRes))
 	{
@@ -189,7 +193,7 @@ int CA_Machine::updateTheServerWithClientDetails(string& clientDetails)
 	SocketWrapper sockToServer(m_Server_IP_addr,SERVER_TCP_PORT_NUM);
 	int i;
 
-	for (i=0; i<MAX_NUM_OF_SOCK_CONNECT_RETRIES ; i++)
+	for (i=0; sockToServer == -1 && i<MAX_NUM_OF_SOCK_CONNECT_RETRIES ; i++)
 	{
 		if (sockToServer.getSocketDescriptor()==-1)
 		{

@@ -51,34 +51,50 @@ int Client_UI_Server::execOnWorkerThread (SocketWrapper sock, void* arg)
 	//if the ui has requested to request an SM from the server
 	if (!parsed_request[2].compare(OPCODE_UI_CLIENT_TO_SERVER_REQUEST_SM_FROM_SERVER))
 	{
+		cout << "Requesting a state machine from the server!" << endl;
 		handleRequestSM_FromServer(sock);
+		cout << "DONE!" << endl;
 	}
 
 	//if the ui has requested to create SK and bond
 	if (!parsed_request[2].compare(OPCODE_UI_CLIENT_TO_SERVER_CREATE_SK_AND_BOND))
 	{
+		cout << "Creating an SK and Bond!" << endl;
 		handleRequestToCreateSK_AndBond(sock);
+		cout << "DONE!" << endl;
 	}
 
 	//if the ui has requested to send the SK and bond to the CA
 	if (!parsed_request[2].compare(OPCODE_UI_CLIENT_TO_SERVER_SEND_SK_AND_BOND_TO_CA))
 	{
 		if (m_clientMachine->m_program_state == CLIENT_NEED_CA_APPROVAL)
+		{
+			cout << "Sending the SK and Bond to the CA!" << endl;
 			handleRequestToSendSK_AndBondToCA(sock);
+			cout << "DONE!" << endl;
+		}
 	}
 
 	//if the ui has requested to send the SK and bond to the Server
 	if (!parsed_request[2].compare(OPCODE_UI_CLIENT_TO_SERVER_SEND_SK_AND_BOND_TO_SERVER))
 	{
 		if (m_clientMachine->m_program_state == CLIENT_NEED_CA_APPROVAL)
+		{
+			cout << "Sending the SK and Bond to the Server!" << endl;
 			handleRequestToSendSK_AndBondToServer(sock);
+			cout << "DONE!" << endl;
+		}
 	}
 
 	//if the ui has requested to send a message to the server
 	if (!parsed_request[2].compare(OPCODE_UI_CLIENT_TO_SERVER_SEND_MSG_TO_SERVER))
 	{
 		if (m_clientMachine->m_program_state == CLIENT_OPERATIONAL)
+		{
+			cout << "Sending a message to the Server!" << endl;
 			handleRequestToSendMsgToServer(sock,parsed_request[4]);
+			cout << "DONE!" << endl;
+		}
 	}
 
 	return 0;
