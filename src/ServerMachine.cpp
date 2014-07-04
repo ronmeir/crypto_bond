@@ -113,7 +113,7 @@ void ServerMachine::handleCA_userApproval (vector<string>& incomingMsg,SocketWra
 
 	//todo NOTE: OUR DB DOESN'T SUPPORT MULTIPLE USERS WITH THE SAME NAME.
 	//WE ASSUME THAT A NAME IS A UNIQUE ID
-	m_users->at(newUser.name) = newUser; //insert the new user into the DB
+	(*m_users)[newUser.name] = newUser; //insert the new user into the DB
 	//todo MAKE SURE THE INSERTION TO THE MAP COPIES THE ELEMENT RATHER THAN JUST KEEPS A REF TO IT.
 
 	cout << "Receive SK and Bond validation for: " << incomingMsg[4] << endl;
@@ -140,7 +140,7 @@ void ServerMachine::handleClientSK (vector<string>& incomingMsg,SocketWrapper& s
 		sock.sendToSocket(msgToSend.c_str(), msgToSend.size()); //send the response
 		sock.closeSocket(); //close the socket
 
-		ServerMachine::User user = m_users->at(incomingMsg[0]);  //get the client from the DB
+		ServerMachine::User user = (*m_users)[incomingMsg[0]];  //get the client from the DB
 		user.SK = incomingMsg[4];  //save the SK string
 
 		if (user.state == SERVER_NEED_SK_AND_BOND) //if we've needed both SK and bond
@@ -149,7 +149,7 @@ void ServerMachine::handleClientSK (vector<string>& incomingMsg,SocketWrapper& s
 		if (user.state == SERVER_NEED_SK)      //if we've needed only the SK
 			user.state = SERVER_OPERATIONAL;   //update the state
 
-		m_users->at(incomingMsg[0]) = user;  //update the user's data in the DB
+		(*m_users)[incomingMsg[0]] = user;  //update the user's data in the DB
 	}
 
 	cout << "Received SK for client: " << incomingMsg[0] << endl;
@@ -176,7 +176,7 @@ void ServerMachine::handleClientBond (vector<string>& incomingMsg,SocketWrapper&
 		sock.sendToSocket(msgToSend.c_str(), msgToSend.size()); //send the response
 		sock.closeSocket(); //close the socket
 
-		ServerMachine::User user = m_users->at(incomingMsg[0]);  //get the client from the DB
+		ServerMachine::User user = (*m_users)[incomingMsg[0]];  //get the client from the DB
 		user.Bond = incomingMsg[4];  //save the SK string
 
 		if (user.state == SERVER_NEED_SK_AND_BOND) //if we;'ve needed both SK and bond
@@ -185,7 +185,7 @@ void ServerMachine::handleClientBond (vector<string>& incomingMsg,SocketWrapper&
 		if (user.state == SERVER_NEED_BOND)      //if we've needed only the bond
 			user.state = SERVER_OPERATIONAL;   //update the state
 
-		m_users->at(incomingMsg[0]) = user;  //update the user's data in the DB
+		(*m_users)[incomingMsg[0]] = user;  //update the user's data in the DB
 	}
 
 	cout << "Received Bond for client: " << incomingMsg[0] << endl;
@@ -222,7 +222,7 @@ void ServerMachine::recoverBond (string& userName, string& virus)
 	memberElement decryptRes;
 	cout << "THE SERVER HAS DETECTED A VIRUS IN A MESSAGE FROM: " << userName << endl;
 
-	ServerMachine::User user = m_users->at(userName); //extract the user from the DB
+	ServerMachine::User user = (*m_users)[userName]; //extract the user from the DB
 
 	//construct a holder for the desirialized SK:
 	EncryptionHandler::SK desirializedSK(m_encHandlder->getBilinearMappingHandler(),

@@ -28,6 +28,11 @@ void ObjectSerializer::clearBondInPlainText ()
 		m_Bond.clear_bond_in_pt_compressed();
 }//end of clearBondInPlainText()
 
+bool ObjectSerializer::hasBondInPlainText()
+{
+	return m_Bond.has_bond_in_pt_compressed();
+}//end of hasBondInPlainText()
+
 /*
  * Used by the CA to get the bond in PT
  * @param saveHere - the decompressed element (the PT-bond) will be saved here

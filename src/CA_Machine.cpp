@@ -42,7 +42,7 @@ int CA_Machine::execOnWorkerThread(SocketWrapper sock, void* arg)
 	{
 		if (m_users->find(parsed_request[0]) != m_users->end()) //it's not a new user
 		{
-			CA_Machine::User user = m_users->at(parsed_request[0]); //get the user from the DB
+			CA_Machine::User user = (*m_users)[(parsed_request[0])]; //get the user from the DB
 
 			if (user.state == CA_NEED_APPROVAL)
 			{
@@ -74,7 +74,7 @@ int CA_Machine::execOnWorkerThread(SocketWrapper sock, void* arg)
 				sock.sendToSocket(msgToSend.c_str(), msgToSend.length()); //send a reply to the client
 			}
 		}
-		else //we haven't receive anything from this user before the current message
+		else //we haven't received anything from this user before the current message
 		{
 			 msgToSend = createMessage(CA_NAME, parsed_request[0],
 				 OPCODE_CA_TO_CLIENT_REPLY_VALIDATE_BOND,
@@ -103,14 +103,16 @@ void CA_Machine::handleClientSentSK_OrBond(vector<string>& parsed_request, Socke
 		newUser.name = parsed_request[0];
 		isSK ? newUser.SK = parsed_request[4] : newUser.Bond = parsed_request[4];
 
+		int len = isSK ? newUser.SK.length() : newUser.Bond.length();
+
 		newUser.state = isSK ? CA_NEED_BOND : CA_NEED_SK;
 		//todo NOTE: OUR DB DOESN'T SUPPORT MULTIPLE USERS WITH THE SAME NAME.
 		//WE ASSUME THAT A NAME IS A UNIQUE ID
-		m_users->at(newUser.name) = newUser; //insert the new user into the DB
+		(*m_users)[newUser.name] = newUser; //insert the new user into the DB
 	}
 	else //it isn't a new user
 	{
-		CA_Machine::User user = m_users->at(parsed_request[0]); //get the user
+		CA_Machine::User user = (*m_users)[parsed_request[0]]; //get the user
 		isSK ? user.SK = parsed_request[4] : user.Bond = parsed_request[4];
 
 		if (isSK && user.state == CA_NEED_SK) //means we've already received a bond from this user
@@ -119,7 +121,9 @@ void CA_Machine::handleClientSentSK_OrBond(vector<string>& parsed_request, Socke
 		if (!isSK && user.state == CA_NEED_BOND) //means we've already received a SK from this user
 			user.state = CA_NEED_APPROVAL;
 
-		m_users->at(user.name) = user; //insert the new user into the DB
+		int len = isSK ? user.SK.length() : user.Bond.length();
+
+		(*m_users)[user.name] = user; //insert the new user into the DB
 	}
 
 
@@ -160,10 +164,12 @@ bool CA_Machine::HandleSK_AndBondValidation(CA_Machine::User& user)
 	m_encHandlder->completePartialEncryption(deserializedBond, deserializedBond.mVirus);	//complete the enc.
 	m_encHandlder->decrypt(decryptRes, desirializedSK, deserializedBond, *m_SM);  //decrypt
 
+	m_serializer->getBondInPlainText(bondPT,true);   //get the PT bond
+
 	if (!m_encHandlder->getBilinearMappingHandler()->compareElements(bondPT, decryptRes))
 	{
 		//cout << "Elements match!\n";
-		cout << "Bond validation for user: " << user.name << " has succeded!" << endl;
+		cout << "Bond validation for user: " << user.name << " has succeeded!" << endl;
 		return true;
 	}
 	else

@@ -46,6 +46,7 @@ public:
 	void deserializeStateMachine (StateMachine& saveHere,std::string* saveVirusHere, std::string SM_string);
 	void deserializeSecretKey (EncryptionHandler::SK& saveHere,std::string SK_string);
 	void deserializeBond (EncryptionHandler::CT& saveHere, std::string bond_string);
+	bool hasBondInPlainText();
 	bool getBondInPlainText (memberElement& saveHere, bool isMemberOfGT);
 };
 
