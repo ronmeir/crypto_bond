@@ -277,24 +277,28 @@ void ClientMachine::run()
 //Destructor
 ClientMachine::~ClientMachine()
 {
-	if (m_EncHandler!=NULL)
+	if (m_EncHandler)
 		delete(m_EncHandler);
 
-	delete(m_mapper);
+	if (m_mapper)
+		delete(m_mapper);
 
-	if (m_SM != NULL)
+	if (m_Bond)
+		delete(m_Bond);
+
+	if (m_SM)
 		delete m_SM;
 
-	if (m_SK != NULL)
+	if (m_SK)
 		delete m_SK;
 
-	if (m_MSK != NULL)
+	if (m_MSK)
 		delete m_MSK;
 
-	if (m_MSK != NULL)
-		delete m_MSK;
+	if (m_serializer)
+		delete(m_serializer);
 
-	delete(m_serializer);
-	delete(m_UI_Server);
+	if (m_UI_Server)
+		delete(m_UI_Server);
 }
 

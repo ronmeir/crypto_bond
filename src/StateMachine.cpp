@@ -237,13 +237,16 @@ std::string StateMachine::toString() const
 StateMachine::~StateMachine()
 {
 	//delete all states:
-	for (int i=0; i<mTotalNumOfStates ;i++)
+	if (mStates)
 	{
-		if (mStates[i]!=NULL)
-			delete(mStates[i]);
-	}
+		for (int i = 0; i < mTotalNumOfStates; i++)
+		{
+			if (mStates[i] != NULL)
+				delete (mStates[i]);
+		}
 
-	delete[] mStates;  //delete the ptr array
+		delete[] mStates;  //delete the ptr array
+	}
 
 }//Destructor
 

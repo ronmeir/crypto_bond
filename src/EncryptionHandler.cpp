@@ -34,9 +34,12 @@ EncryptionHandler::EncryptionHandler(char* paramFilePath,
 
 EncryptionHandler::~EncryptionHandler()
 {
-	delete (mMapper);
-	delete (mMasterKey);
-	delete (mSecretKey);
+	if (mMapper)
+		delete (mMapper);
+	if (mMasterKey)
+		delete (mMasterKey);
+	if (mSecretKey)
+		delete (mSecretKey);
 
 } //end of Destructor ~EncryptionHandler()
 

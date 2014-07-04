@@ -259,5 +259,7 @@ CA_Machine::~CA_Machine()
 		delete(m_users);
 	if (m_mapper)
 		delete(m_mapper);
+	if (m_SM)
+		delete(m_SM);
 }
 
