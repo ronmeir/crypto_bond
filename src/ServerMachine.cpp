@@ -116,7 +116,7 @@ void ServerMachine::handleCA_userApproval (vector<string>& incomingMsg,SocketWra
 	(*m_users)[newUser.name] = newUser; //insert the new user into the DB
 	//todo MAKE SURE THE INSERTION TO THE MAP COPIES THE ELEMENT RATHER THAN JUST KEEPS A REF TO IT.
 
-	cout << "Receive SK and Bond validation for: " << incomingMsg[4] << endl;
+	cout << "Received SK and Bond validation for: " << incomingMsg[4] << endl;
 
 }//end of handleCA_userApproval()
 

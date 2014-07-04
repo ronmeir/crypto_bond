@@ -126,7 +126,7 @@ public:
 	void createPartialEncryption (CT& ct,const std::string& w, memberElement& m);
 	void completePartialEncryption (CT& ct,const std::string& virus);
 	void mapStringToElementFromGT (memberElement& ans, const std::string& str);
-	void decrypt(memberElement& decryptedMSG,SK& secretKey, CT& cipherText, StateMachine stateMachine);
+	void decrypt(memberElement& decryptedMSG,SK& secretKey, CT& cipherText, StateMachine& stateMachine);
 	BilinearMappingHandler* getBilinearMappingHandler();
 	EncryptionHandler(char* ParamFilePath,StateMachine* stateMachine,bool isClient);
 	virtual ~EncryptionHandler();

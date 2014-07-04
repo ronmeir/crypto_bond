@@ -179,9 +179,10 @@ void EncryptionHandler::mapStringToElementFromGT(memberElement& ans,
 
 /*
  * Performs the decryption.
+ * THIS FUNCTION IS NOT THREAD SAFE BECASUE IT CHANGES THE STATES OF THE STATE MACHINE DURING IT'S RUN.
  */
 void EncryptionHandler::decrypt(memberElement& decryptedMsgElem, SK& secretKey,
-		CT& cipherText, StateMachine stateMachine)
+		CT& cipherText, StateMachine& stateMachine)
 {
 	printf("start decrypting...\n");
 	int virusLength = 0;

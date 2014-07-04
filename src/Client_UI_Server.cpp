@@ -67,7 +67,8 @@ int Client_UI_Server::execOnWorkerThread (SocketWrapper sock, void* arg)
 	//if the ui has requested to send the SK and bond to the CA
 	if (!parsed_request[2].compare(OPCODE_UI_CLIENT_TO_SERVER_SEND_SK_AND_BOND_TO_CA))
 	{
-		if (m_clientMachine->m_program_state == CLIENT_NEED_CA_APPROVAL)
+		if (m_clientMachine->m_program_state == CLIENT_NEED_CA_APPROVAL ||
+				m_clientMachine->m_program_state == CLIENT_OPERATIONAL)
 		{
 			cout << "Sending the SK and Bond to the CA!" << endl;
 			handleRequestToSendSK_AndBondToCA(sock);

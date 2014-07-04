@@ -27,7 +27,7 @@
 #define SERVER_IP "10.0.0.11"
 #define CA_IP "10.0.0.1"
 
-using namespace std;                      //using the 'string' library
+using namespace std;
 
 void debug_initializeStateMachine(StateMachine* machine);
 void debug_mapperTest();
