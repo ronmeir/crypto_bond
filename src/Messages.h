@@ -37,6 +37,8 @@
 #define CONTENT_VALID "VALID"
 #define CONTENT_VALIDATE "VALIDATE"
 #define CONTENT_INVALID "INVALID"
+#define CONTENT_NO_SK_OR_BOND "NO SK OR BOND"
+#define CONTENT_NO_SK_AND_BOND "NO SK AND BOND"
 #define CONTENT_SM_REQUEST "SM PLZ"
 #define CONTENT_NO_CA_APPROVAL "NOT APPROVED BY THE CA YET!"
 #define CONTENT_CLIENT_WAS_BUSTED "BUSTED! the following message contained a virus: "
@@ -83,6 +85,8 @@
 
 #define CONTENT_CA_APPROVED "The SK and Bond were approved by the CA and forwarded to the Server!"
 #define CONTENT_CA_DISAPPROVED "The SK and Bond were rejected by the CA!"
+#define CONTENT_CA_DIDNT_GET_SK_OR_BOND "The CA is missing the SK or the Bond!"
+#define CONTENT_CA_DIDNT_GET_SK_AND_BOND "The CA hasn't received anything from us so far!"
 #define CONTENT_CA_SENT_UNKNOWN_REPLY "An unknown reply was received from the CA!"
 #define CONTENT_CA_SERVICE_UNAVAILABLE "The CA wasn't able to contact the Server thus far. \nService unavailable!"
 #define CONTENT_GET_SM_OK "Successfully received the state machine from the Server!"
