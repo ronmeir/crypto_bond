@@ -240,6 +240,7 @@ def send(msg):
 	#define host ip, port and the size of the buffer to be read from socket
 	color='green'
 	insert_text(str(msg[1]),color)
+	
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	try:
 		s.connect((getIP(), getPort()))
