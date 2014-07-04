@@ -4,6 +4,9 @@ import ttk
 import socket  
 import easygui
 
+IP='127.0.0.1'
+PORT= 12345
+
 ####################################################################################################################
 ######################################## CONSTS  ###################################################################
 ####################################################################################################################
@@ -18,10 +21,10 @@ import easygui
 #we can change the port to send the msg in this function
 #usefull because when we close the server the port must be changed
 def getPort():
-	return 12345
+	return PORT
 
 def getIP():
-	return '127.0.0.1'
+	return IP
 #defines the message that will be sent when pressing the "connect" button
 def startMSG():
 		return "start_msg"
