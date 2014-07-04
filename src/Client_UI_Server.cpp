@@ -271,6 +271,8 @@ void Client_UI_Server::handleRequestToCreateSK_AndBond(SocketWrapper& sock)
 
 			string PTstring;
 			createDisplayableBondPT_String (PTstring,(char*)secret,size);
+
+			cout << "Generated an SK and a Bond with the following secret:\n" << PTstring;
 			PTstring = "The secret is: " + PTstring;
 
 			//create a message:
@@ -288,6 +290,7 @@ void Client_UI_Server::handleRequestToCreateSK_AndBond(SocketWrapper& sock)
 
 	sock.sendToSocket(reply.c_str(), reply.length()); //send the reply
 	sock.closeSocket();
+
 }//end of handleRequestToCreateSK_AndBond()
 
 /*

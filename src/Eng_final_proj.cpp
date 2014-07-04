@@ -20,9 +20,9 @@
 #include "CA_Machine.h"
 #include "ObjectSerializer.h"
 #define DEBUG 0
-#define CLIENT 1
+#define CLIENT 0
 #define SERVER 0
-#define CA 	   0
+#define CA 	   1
 #define SERVER_IP "10.0.0.11"
 
 #define CA_IP "10.0.0.11"
