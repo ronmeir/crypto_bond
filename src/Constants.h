@@ -12,6 +12,8 @@
 #include "SocketWrapper.h"
 #include "Messages.h"
 
+#define DEBUG 1
+
 using namespace std;
 
 #define BUF_SIZE 5242880   //define a max buffer size of 5 mibi

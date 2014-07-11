@@ -19,13 +19,12 @@
 #include "ServerMachine.h"
 #include "CA_Machine.h"
 #include "ObjectSerializer.h"
-#define DEBUG 0
-#define CLIENT 0
-#define SERVER 1
+#define CLIENT 1
+#define SERVER 0
 #define CA 	   0
 
-#define SERVER_IP "10.0.0.11"
-#define CA_IP "10.0.0.1"
+#define SERVER_IP "127.0.0.1"
+#define CA_IP "127.0.0.1"
 
 using namespace std;
 
@@ -60,12 +59,6 @@ int main()
 	ip.assign(SERVER_IP);
 	CA_Machine ca(ip);
 	ca.run();
-#endif
-
-#if DEBUG
-
-	//debug_mapperTest();
-	debug_EncryptionTest(true);
 #endif
 
 	return 0;

@@ -136,8 +136,10 @@ void Client_UI_Server::handleRequestToSendMsgToServer (SocketWrapper& sock, stri
 
 	}//switch
 
+#if !DEBUG
 	sock.sendToSocket(reply_to_ui_client.c_str(), reply_to_ui_client.length()); //send the reply
 	sock.closeSocket();
+#endif
 }//end of handleRequestToSendMsgToServer()
 
 /*
@@ -214,9 +216,10 @@ void Client_UI_Server::handleRequestToSendSK_AndBondToCA (SocketWrapper& sock)
 		}
 
 	}//switch
-
+#if !DEBUG
 	sock.sendToSocket(reply.c_str(), reply.length()); //send the reply
 	sock.closeSocket();
+#endif
 }//end of handleRequestToSendSK_AndBondToCA()
 
 /*
@@ -254,8 +257,10 @@ void Client_UI_Server::handleRequestToSendSK_AndBondToServer (SocketWrapper& soc
 
 	}//switch
 
+#if !DEBUG
 	sock.sendToSocket(reply.c_str(), reply.length()); //send the reply
 	sock.closeSocket();
+#endif
 
 }//end of handleRequestToSendSK_AndBondToServer()
 
@@ -304,9 +309,10 @@ void Client_UI_Server::handleRequestToCreateSK_AndBond(SocketWrapper& sock)
 				strlen(CONTENT_CANT_CREATE_SK_AND_BOND),CONTENT_CANT_CREATE_SK_AND_BOND);
 		}
 	}//switch
-
+#if !DEBUG
 	sock.sendToSocket(reply.c_str(), reply.length()); //send the reply
 	sock.closeSocket();
+#endif
 
 }//end of handleRequestToCreateSK_AndBond()
 
@@ -339,8 +345,10 @@ void Client_UI_Server::handleRequestSM_FromServer(SocketWrapper& sock)
 		}
 	}//switch
 
+#if !DEBUG
 	sock.sendToSocket(reply.c_str(), reply.length()); //send the reply
 	sock.closeSocket();
+#endif
 }//end of handleRequestSM_FromServer()
 
 //vector<string> Client_UI_Server::readAndParseMessageFromUI (SocketWrapper& sock)

@@ -15,6 +15,10 @@
 
 class Client_UI_Server : public BasicMultithreadedServer
 {
+#if DEBUG
+	friend class ClientMachine;
+#endif
+
 private:
 	//members:
 	ClientMachine* m_clientMachine;
