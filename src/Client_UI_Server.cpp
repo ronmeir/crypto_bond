@@ -108,6 +108,14 @@ int Client_UI_Server::execOnWorkerThread (SocketWrapper sock, void* arg)
 void Client_UI_Server::handleRequestToSendMsgToServer (SocketWrapper& sock, string& msgToSend)
 {
 	string reply_to_ui_client, servers_reply;
+
+	//check that the message is within the max length limits:
+	if (msgToSend.length() > MAX_MSG_LENGTH)
+	{
+		//we need to shorten the message:
+		msgToSend = msgToSend.substr(0,MAX_MSG_LENGTH);
+	}
+
 	int resCode = m_clientMachine->UI_Callback_SendMsg(servers_reply,msgToSend);//send to Server
 
 	//got the operation's result. send the appropriate answer to the UI client:
@@ -294,7 +302,7 @@ void Client_UI_Server::handleRequestToCreateSK_AndBond(SocketWrapper& sock)
 			string PTstring;
 			createDisplayableBondPT_String (PTstring,(char*)secret,size);
 
-			cout << "Generated an SK and a Bond with the following secret:\n" << PTstring;
+			cout << "Generated an SK and a Bond with the following secret:\n" << PTstring << endl;
 			PTstring = "The secret is:\n" + PTstring;
 
 			//create a message:

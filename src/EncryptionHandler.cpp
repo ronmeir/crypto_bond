@@ -66,7 +66,7 @@ EncryptionHandler::SK* EncryptionHandler::keyGen()
 void EncryptionHandler::createPartialEncryption(CT& ct, const string& w,
 		memberElement& m)
 {
-	cout << "start creating partial encryption...\n";
+	cout << "Started creating the partial encryption..." << endl;
 	expElement* s;								//ptr array for  S_i
 	memberElement tempFrom_GT;
 	memberElement tempFromG_1, tempFromG_2;
@@ -112,7 +112,7 @@ void EncryptionHandler::createPartialEncryption(CT& ct, const string& w,
 	}  //end of outer for
 
 	delete[] s;
-	printf("done with partial encryption\n\n");
+	cout << "Done with the partial encryption!" << endl;
 }  //end of createPartialEncryption()
 
 /**

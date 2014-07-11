@@ -193,6 +193,13 @@ void ServerMachine::handleClientBond (vector<string>& incomingMsg,SocketWrapper&
 
 void ServerMachine::handleClientMessage (vector<string>& incomingMsg,SocketWrapper& sock)
 {
+	//check that the message is within the max length limits:
+	if (incomingMsg[4].length()>MAX_MSG_LENGTH)
+	{
+		//we need to shorten the message:
+		incomingMsg[4] = incomingMsg[4].substr(0,MAX_MSG_LENGTH);
+	}
+
 	bool isVirus = m_SM->checkStringForViruses(incomingMsg[4]); //check the msg for viruses
 	string content, msgToSend;
 
