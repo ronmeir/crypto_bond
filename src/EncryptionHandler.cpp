@@ -184,7 +184,7 @@ void EncryptionHandler::mapStringToElementFromGT(memberElement& ans,
 void EncryptionHandler::decrypt(memberElement& decryptedMsgElem, SK& secretKey,
 		CT& cipherText, StateMachine& stateMachine)
 {
-	printf("start decrypting...\n");
+	printf("Started decrypting...\n");
 	int virusLength = 0;
 	memberElement B_0, B_i, B_i_minus_1, B_end, temp0, temp1, temp2, temp3;
 
@@ -281,7 +281,7 @@ void EncryptionHandler::decrypt(memberElement& decryptedMsgElem, SK& secretKey,
 
 	mMapper->invert(temp2, B_end);             //invert
 	mMapper->mul(decryptedMsgElem, temp2, cipherText.m_Cm); //HALELUJA
-	printf("decrypting is done!\n\n");
+	printf("Decryption is done!\n");
 } //end of decrypt()
 
 /*

@@ -205,7 +205,7 @@ void ServerMachine::handleClientMessage (vector<string>& incomingMsg,SocketWrapp
 
 	if (isVirus)
 	{
-		content = CONTENT_CLIENT_WAS_BUSTED + incomingMsg[0];  //create a reply content
+		content = CONTENT_CLIENT_WAS_BUSTED + incomingMsg[4];  //create a reply content
 		msgToSend = createMessage(SERVER_NAME, incomingMsg[0],OPCODE_SERVER_TO_CLIENT_VIRUS_DETECTED_IN_MSG,
 				content.length(), content); //generate a reply message
 
@@ -213,7 +213,7 @@ void ServerMachine::handleClientMessage (vector<string>& incomingMsg,SocketWrapp
 	}
 	else
 	{
-		cout << "Echoing the message: " << incomingMsg[4] << " to client: " << incomingMsg[0];
+		cout << "Echoing the message: " << incomingMsg[4] << " to client: " << incomingMsg[0] << endl;
 		content = CONTENT_SERVER_ECHO_PREFIX + incomingMsg[4]; //create a reply content
 		msgToSend = createMessage(SERVER_NAME, incomingMsg[0],OPCODE_SERVER_TO_CLIENT_ECHO_MSG,
 				content.length(), content); //generate a reply message
@@ -247,7 +247,24 @@ void ServerMachine::recoverBond (string& userName, string& virus)
 	m_encHandlder->decrypt(decryptRes, desirializedSK, deserializedBond, *m_SM);  //decrypt
 
 	//the bond is located in decryptRes
-	//todo translate decryptRes to a byte array, run in through the converging func and display on screen.
+
+	BilinearMappingHandler* mapper = m_encHandlder->getBilinearMappingHandler();
+
+	int size = mapper->getElementLengthInBytes(decryptRes,true);
+	unsigned char secret[size]; //allocate a buffer
+	m_encHandlder->getBilinearMappingHandler()->elementToByteArray(secret,decryptRes, true); //translate to bytes
+	/*
+	 * Since the byte array is consisted out of bytes that can't be displayed on our python GUI,
+	 * we're performing the following manipulation:
+	 * every byte in the PT will be moved to the range between the ' ' and '~' chars (space and tilda).
+	 * That range is consisted of chars that can be displayed on screen (consult an ascii table if you don't
+	 * trust us :>).
+	 */
+
+	string PTstring;
+	createDisplayableBondPT_String (PTstring,(char*)secret,size);
+
+	cout << "Recovered the following secret:\n" << PTstring << endl;
 
 }//end of recoverBond()
 

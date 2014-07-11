@@ -108,6 +108,7 @@ int Client_UI_Server::execOnWorkerThread (SocketWrapper sock, void* arg)
 void Client_UI_Server::handleRequestToSendMsgToServer (SocketWrapper& sock, string& msgToSend)
 {
 	string reply_to_ui_client, servers_reply;
+	bool isBusted=false;
 
 	//check that the message is within the max length limits:
 	if (msgToSend.length() > MAX_MSG_LENGTH)
@@ -141,6 +142,19 @@ void Client_UI_Server::handleRequestToSendMsgToServer (SocketWrapper& sock, stri
 					 servers_reply);
 			break;
 		}
+		case RET_VAL_TO_UI_SERVER_SERVER_DETECTED_VIRUS:
+		{
+			isBusted=true;
+			cout << "The server has detected an attack and sent the following reply:" << endl \
+					<< servers_reply << endl;
+			//create a message:
+			reply_to_ui_client = createMessage(UI_SERVER,
+					 UI_CLIENT,
+					 OPCODE_UI_SERVER_TO_CLIENT_SERVER_REPLY,
+					 servers_reply.length(),
+					 servers_reply);
+			break;
+		}
 
 	}//switch
 
@@ -148,6 +162,10 @@ void Client_UI_Server::handleRequestToSendMsgToServer (SocketWrapper& sock, stri
 	sock.sendToSocket(reply_to_ui_client.c_str(), reply_to_ui_client.length()); //send the reply
 	sock.closeSocket();
 #endif
+
+	if (isBusted)
+		exit(0);
+
 }//end of handleRequestToSendMsgToServer()
 
 /*

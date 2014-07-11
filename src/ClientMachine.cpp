@@ -45,14 +45,24 @@ int ClientMachine::UI_Callback_SendMsg(string& servers_reply, string msg)
 
 	sock_to_server.closeSocket(); //close the socket
 
-	//if the opcode doesn't match
+	//if the server has detected a virus in our message:
+	if (!parsed_reply[2].compare(OPCODE_SERVER_TO_CLIENT_VIRUS_DETECTED_IN_MSG))
+	{
+		servers_reply = parsed_reply[4];   //set the server's message content
+		return RET_VAL_TO_UI_SERVER_SERVER_DETECTED_VIRUS;
+	}
+
+	//if the opcode is unexpected
 	if (parsed_reply[2].compare(OPCODE_SERVER_TO_CLIENT_ECHO_MSG))
 	{
 		servers_reply = "Unknown server response!";
 		return RET_VAL_TO_UI_SERVER_SERVER_SENT_UNKNOWN_REPLY;
 	}
 
+	//it's a normal reply:
+
 	servers_reply = parsed_reply[4];   //set the server's message content
+	cout << "Server sent: " << servers_reply << endl;
 	return RET_VAL_TO_UI_SERVER_SERVER_REPLY_OK;
 
 }//end of UI_Callback_SendMsg()
@@ -283,6 +293,7 @@ int ClientMachine::UI_Callback_requestSM_FromServer()
  */
 void ClientMachine::run()
 {
+#if !DEBUG
 	bool isUI_ServerUp=false;
 
 	//try to start the web server:
@@ -292,13 +303,22 @@ void ClientMachine::run()
 	if (!isUI_ServerUp)
 		cout << "UNABLE TO START THE CLIENT UI SERVER!";
 
-#if DEBUG
+#else
 	string toSend = "valid request";
 	SocketWrapper sock(0);
 	m_UI_Server->handleRequestSM_FromServer(sock);
 	m_UI_Server->handleRequestToCreateSK_AndBond(sock);
 	m_UI_Server->handleRequestToSendSK_AndBondToCA(sock);
 	m_UI_Server->handleRequestToSendSK_AndBondToServer(sock);
+	m_UI_Server->handleRequestToSendMsgToServer(sock,toSend);
+
+	toSend = "abc";
+	m_UI_Server->handleRequestToSendMsgToServer(sock,toSend);
+
+	toSend = "def";
+	m_UI_Server->handleRequestToSendMsgToServer(sock,toSend);
+
+	toSend = "virus";
 	m_UI_Server->handleRequestToSendMsgToServer(sock,toSend);
 #endif
 
