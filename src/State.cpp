@@ -1,12 +1,13 @@
-//   _____ _        _
-//  / ____| |      | |
-// | (___ | |_ __ _| |_ ___
-//  \___ \| __/ _` | __/ _ \
-//  ____) | || (_| | ||  __/
-// |_____/ \__\__,_|\__\___|
-//
-
 /*
+   _____ _        _
+  / ____| |      | |
+ | (___ | |_ __ _| |_ ___
+  \___ \| __/ _` | __/ _ \
+  ____) | || (_| | ||  __/
+ |_____/ \__\__,_|\__\___|
+
+
+
  * State.cpp
  * Describes a single state. Contains a description of all available transitions.
  */
@@ -30,7 +31,6 @@ State::Transition::Transition(unsigned char input, int nextState)
  * Generates a 3 tuple for the current transition
  * @param currentStateID - the ID of the current state
  */
-//TODO returning a non-primitive, should change it.
 Transition3Tuple State::Transition::getTransition3Tuple (int currentStateID)
 {
 	Transition3Tuple ans(currentStateID,mNextStateID,mInput);

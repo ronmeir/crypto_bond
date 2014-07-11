@@ -1,12 +1,17 @@
 /*
- * ServerMachine.cpp
- *
- *  Created on: Jun 22, 2014
- *      Author: slava
+   _____                            __  __            _     _
+  / ____|                          |  \/  |          | |   (_)
+ | (___   ___ _ ____   _____ _ __  | \  / | __ _  ___| |__  _ _ __   ___
+  \___ \ / _ \ '__\ \ / / _ \ '__| | |\/| |/ _` |/ __| '_ \| | '_ \ / _ \
+  ____) |  __/ |   \ V /  __/ |    | |  | | (_| | (__| | | | | | | |  __/
+ |_____/ \___|_|    \_/ \___|_|    |_|  |_|\__,_|\___|_| |_|_|_| |_|\___|
+
+
  */
 
 #include "ServerMachine.h"
 
+//Constructor
 ServerMachine::ServerMachine(string& CA_IP_addr) : BasicMultithreadedServer(SERVER_TCP_PORT_NUM)
 {
 	m_SM = new StateMachine(6,0);  //creating a new SM with 6 states
@@ -24,7 +29,10 @@ ServerMachine::ServerMachine(string& CA_IP_addr) : BasicMultithreadedServer(SERV
 }//end of constructor
 
 /**
+ * @override.
  * Handles all incoming connections to the server.
+ * @param sock - a socket to the client
+ * @param arg - an additional argument than can be passed by the worker thread dispatcher.
  */
 int ServerMachine::execOnWorkerThread(SocketWrapper sock, void* arg)
 {
@@ -84,7 +92,11 @@ int ServerMachine::execOnWorkerThread(SocketWrapper sock, void* arg)
 
 }//end of execOnWorkerThread()
 
-
+/*
+ * Handles a request for an SM, by a client or the CA.
+ * @param incomingMsg - the parsed request message
+ * @param sock - a socket to the client/CA
+ */
 void ServerMachine::handleSM_request (vector<string>& incomingMsg,SocketWrapper& sock)
 {
 	cout << "Sending a state machine to: " << incomingMsg[0] << endl;
@@ -97,6 +109,11 @@ void ServerMachine::handleSM_request (vector<string>& incomingMsg,SocketWrapper&
 
 }//end of handleSM_request()
 
+/*
+ * Handles a user approval message from the CA.
+ * @param incomingMsg - the parsed request message
+ * @param sock - a socket to the client/CA
+ */
 void ServerMachine::handleCA_userApproval (vector<string>& incomingMsg,SocketWrapper& sock)
 {
 	string msgToSend = createMessage(SERVER_NAME, CA_NAME,OPCODE_SERVER_TO_CA_ACK_APPROVE_CLIENT,
@@ -113,13 +130,17 @@ void ServerMachine::handleCA_userApproval (vector<string>& incomingMsg,SocketWra
 
 	//todo NOTE: OUR DB DOESN'T SUPPORT MULTIPLE USERS WITH THE SAME NAME.
 	//WE ASSUME THAT A NAME IS A UNIQUE ID
-	(*m_users)[newUser.name] = newUser; //insert the new user into the DB
-	//todo MAKE SURE THE INSERTION TO THE MAP COPIES THE ELEMENT RATHER THAN JUST KEEPS A REF TO IT.
+	(*m_users)[newUser.name] = newUser; //insert the new user into the DB (copies it)
 
 	cout << "Received SK and Bond validation for: " << incomingMsg[4] << endl;
 
 }//end of handleCA_userApproval()
 
+/*
+ * Handles an SK containing message from a client.
+ * @param incomingMsg - the parsed request message
+ * @param sock - a socket to the client/CA
+ */
 void ServerMachine::handleClientSK (vector<string>& incomingMsg,SocketWrapper& sock)
 {
 	if (m_users->find(incomingMsg[0]) == m_users->end())
@@ -155,6 +176,11 @@ void ServerMachine::handleClientSK (vector<string>& incomingMsg,SocketWrapper& s
 	cout << "Received SK for client: " << incomingMsg[0] << endl;
 }//end of handleClientSK()
 
+/*
+ * Handles a Bond containing message from a client.
+ * @param incomingMsg - the parsed request message
+ * @param sock - a socket to the client/CA
+ */
 void ServerMachine::handleClientBond (vector<string>& incomingMsg,SocketWrapper& sock)
 {
 	//if the user isn't in the DB
@@ -191,6 +217,11 @@ void ServerMachine::handleClientBond (vector<string>& incomingMsg,SocketWrapper&
 	cout << "Received Bond for client: " << incomingMsg[0] << endl;
 }//end of handleClientBond()
 
+/*
+ * Handles a client's message in the operational stage.
+ * @param incomingMsg - the parsed request message
+ * @param sock - a socket to the client/CA
+ */
 void ServerMachine::handleClientMessage (vector<string>& incomingMsg,SocketWrapper& sock)
 {
 	//check that the message is within the max length limits:
@@ -213,7 +244,7 @@ void ServerMachine::handleClientMessage (vector<string>& incomingMsg,SocketWrapp
 	}
 	else
 	{
-		cout << "Echoing the message: " << incomingMsg[4] << " to client: " << incomingMsg[0] << endl;
+		cout << "Echoing the message: " << "\"" << incomingMsg[4] <<"\"" << " to client: " << incomingMsg[0] << endl;
 		content = CONTENT_SERVER_ECHO_PREFIX + incomingMsg[4]; //create a reply content
 		msgToSend = createMessage(SERVER_NAME, incomingMsg[0],OPCODE_SERVER_TO_CLIENT_ECHO_MSG,
 				content.length(), content); //generate a reply message
@@ -224,6 +255,11 @@ void ServerMachine::handleClientMessage (vector<string>& incomingMsg,SocketWrapp
 	sock.closeSocket(); //close the socket
 }//end of handleClientMessage()
 
+/*
+ * Completes the user-Bond's partial encryption and then decrypts it.
+ * @param userName - the user's name
+ * @param virus - the virus string
+ */
 void ServerMachine::recoverBond (string& userName, string& virus)
 {
 	memberElement decryptRes;
@@ -268,11 +304,19 @@ void ServerMachine::recoverBond (string& userName, string& virus)
 
 }//end of recoverBond()
 
+/*
+ * The main entry point
+ */
 void ServerMachine::run()
 {
 	runWelcomeSocket(NULL);   //launch the welcome socket (the welcome socket doesn't run on a thread)
 }//end of run()
 
+/*
+ * Initializes the Server's SM.
+ * If you wish to set your own SM, this is the place.
+ * @param machine - the empty state machine to be initialized
+ */
 void ServerMachine::initializeStateMachine(StateMachine* machine)
 {
 	//TODO MAKE SURE THE INIT AND THE MACHINE SIZE MATCH
@@ -331,7 +375,7 @@ void ServerMachine::initializeStateMachine(StateMachine* machine)
 	//state 5:
 
 	machine->addState(5,transitions,0,true);
-printf("state machine is ready\n\n");
+printf("State machine is ready!\n");
 }//end of debug_initializeStateMachine
 
 int ServerMachine::getPort ()

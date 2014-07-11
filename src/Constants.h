@@ -1,4 +1,12 @@
-/* Constants.h
+/*
+   _____                _              _
+  / ____|              | |            | |
+ | |     ___  _ __  ___| |_ __ _ _ __ | |_ ___
+ | |    / _ \| '_ \/ __| __/ _` | '_ \| __/ __|
+ | |___| (_) | | | \__ \ || (_| | | | | |_\__ \
+  \_____\___/|_| |_|___/\__\__,_|_| |_|\__|___/
+
+
  * Contains all the constant values used in the project.
  */
 
@@ -16,16 +24,16 @@
 
 using namespace std;
 
-#define BUF_SIZE 5242880   //define a max buffer size of 5 MiBi
-#define PARAM_FILE_PATH "./param/a.param" //the relative path of the parameter file
-#define VIRUS_STRING "virus"
-#define MAX_MSG_LENGTH 5
-#define ALPHABET_SIZE 256
-#define SYN_REQUEST_QUEUE_SIZE 10         //Max num of pending syn requests
-#define SERVER_TCP_PORT_NUM 8000   //define a port number for the welcome socket on the server
-#define CA_TCP_PORT_NUM 8002   //define a port number for the welcome socket on the CA
-#define CLIENT_UI_SERVER_TCP_PORT_NUM 12345 //Client's UI port
-#define MAX_ELEMENT_LENGTH_IN_BYTES 512
+#define BUF_SIZE 5242880  					 	//define a max buffer size of 5 MiBi for all messages
+#define PARAM_FILE_PATH "./param/a.param" 		//the relative path of the parameter file
+#define VIRUS_STRING "virus"					//a string that is accepted by the SM
+#define MAX_MSG_LENGTH 5						//the maximal length of a message between a client and a server
+#define ALPHABET_SIZE 256						//one of the enc. params
+#define SYN_REQUEST_QUEUE_SIZE 10				//Max num of pending syn requests
+#define SERVER_TCP_PORT_NUM 8000   				//define a port number for the welcome socket on the server
+#define CA_TCP_PORT_NUM 8002   					//define a port number for the welcome socket on the CA
+#define CLIENT_UI_SERVER_TCP_PORT_NUM 12345 	//Client's UI port
+#define MAX_ELEMENT_LENGTH_IN_BYTES 512			//max size of a single compressed group element
 #define MAX_USER_NAME_LENGTH 25
 #define MAX_NUM_OF_SOCK_CONNECT_RETRIES 4
 

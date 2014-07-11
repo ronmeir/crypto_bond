@@ -1,8 +1,18 @@
 /*
+ *
+  ____            _        __  __       _ _   _ _   _                        _          _    _____
+ |  _ \          (_)      |  \/  |     | | | (_) | | |                      | |        | |  / ____|
+ | |_) | __ _ ___ _  ___  | \  / |_   _| | |_ _| |_| |__  _ __ ___  __ _  __| | ___  __| | | (___   ___ _ ____   _____ _ __
+ |  _ < / _` / __| |/ __| | |\/| | | | | | __| | __| '_ \| '__/ _ \/ _` |/ _` |/ _ \/ _` |  \___ \ / _ \ '__\ \ / / _ \ '__|
+ | |_) | (_| \__ \ | (__  | |  | | |_| | | |_| | |_| | | | | |  __/ (_| | (_| |  __/ (_| |  ____) |  __/ |   \ V /  __/ |
+ |____/ \__,_|___/_|\___| |_|  |_|\__,_|_|\__|_|\__|_| |_|_|  \___|\__,_|\__,_|\___|\__,_| |_____/ \___|_|    \_/ \___|_|
+
+
+ *
  * BasicMultithreadedServer.h
  * An abstract class that defines a basic multi-threaded server.
  * The server listens on a WelcomeSocket and dispatches worker threads to handle established connections.
- * The worker-thread functionality should override execOnWorkerThread().
+ * execOnWorkerThread() must be overridden and this method is the entry point for a worker thread.
  */
 
 #ifndef BASICMULTITHREADEDSERVER_H_

@@ -1,17 +1,25 @@
 /*
- * ClientWebServer.cpp
- *
- *  Created on: May 10, 2014
- *      Author: slava
+   _____ _ _            _     _    _ _____    _____
+  / ____| (_)          | |   | |  | |_   _|  / ____|
+ | |    | |_  ___ _ __ | |_  | |  | | | |   | (___   ___ _ ____   _____ _ __
+ | |    | | |/ _ \ '_ \| __| | |  | | | |    \___ \ / _ \ '__\ \ / / _ \ '__|
+ | |____| | |  __/ | | | |_  | |__| |_| |_   ____) |  __/ |   \ V /  __/ |
+  \_____|_|_|\___|_| |_|\__|  \____/|_____| |_____/ \___|_|    \_/ \___|_|
+
+
  */
 
 #include "Client_UI_Server.h"
 
+//Constructor
 Client_UI_Server::Client_UI_Server(ClientMachine* clientMachine ,int port) : BasicMultithreadedServer(port)
 {
 	m_clientMachine = clientMachine; //set a ptr to the clientMachine
 }
 
+/* The main entry point.
+ * Dispatches the welcome socket thread and returns.
+*/
 bool Client_UI_Server::run()
 {
 	pthread_t threadId;
@@ -42,10 +50,13 @@ void* Client_UI_Server::IntermediateWelcomeSocketThreadLauncher(void *obj)
 /*
  * @override
  * This method will be executed on a worker thread.
+ * Receives requests from the UI client -> calls the required callbacks from
+ * ClientMachine -> send the operation's result back to the UI client.
+ * @param sock - a socket to the client
+ * @param arg - an additional argument than can be passed by the worker thread dispatcher.
  */
 int Client_UI_Server::execOnWorkerThread (SocketWrapper sock, void* arg)
 {
-
 	vector<string> parsed_request = readAndParseMessageFromSocket(sock); //receive the request
 
 	//if the ui has requested to request an SM from the server
@@ -97,13 +108,14 @@ int Client_UI_Server::execOnWorkerThread (SocketWrapper sock, void* arg)
 			cout << "DONE!" << endl;
 		}
 	}
-
 	return 0;
 }//end of webServerWorkerThread()
 
 /*
  * Handles a UI request to send a message to the Server
  * Sends the operation's result back to the UI client
+ * @param sock - socket to the UI client
+ * @param msgToSend - the message to be sent to the server
  */
 void Client_UI_Server::handleRequestToSendMsgToServer (SocketWrapper& sock, string& msgToSend)
 {
@@ -171,6 +183,7 @@ void Client_UI_Server::handleRequestToSendMsgToServer (SocketWrapper& sock, stri
 /*
  * Handles a UI request to send the SK and Bond to the CA
  * Sends the operation's result back to the UI client
+ * @param sock - socket to the UI client
  */
 void Client_UI_Server::handleRequestToSendSK_AndBondToCA (SocketWrapper& sock)
 {
@@ -251,6 +264,7 @@ void Client_UI_Server::handleRequestToSendSK_AndBondToCA (SocketWrapper& sock)
 /*
  * Handles a UI request to send the SK and Bond to the Server
  * Sends the operation's result back to the UI client
+ * @param sock - socket to the UI client
  */
 void Client_UI_Server::handleRequestToSendSK_AndBondToServer (SocketWrapper& sock)
 {
@@ -293,6 +307,7 @@ void Client_UI_Server::handleRequestToSendSK_AndBondToServer (SocketWrapper& soc
 /*
  * Handles a UI request to create an SK and Bond
  * Sends the operation's result back to the UI client
+ * @param sock - socket to the UI client
  */
 void Client_UI_Server::handleRequestToCreateSK_AndBond(SocketWrapper& sock)
 {
@@ -313,7 +328,7 @@ void Client_UI_Server::handleRequestToCreateSK_AndBond(SocketWrapper& sock)
 			 * Since the byte array is consisted out of bytes that can't be displayed on our python GUI,
 			 * we're performing the following manipulation:
 			 * every byte in the PT will be moved to the range between the ' ' and '~' chars (space and tilda).
-			 * That range is consisted of chars that can be displayed on screen (consult an ascii table if you don't
+			 * That range is consisted out of chars that can be displayed on screen (consult an ascii table if you don't
 			 * trust us :>).
 			 */
 
@@ -345,6 +360,7 @@ void Client_UI_Server::handleRequestToCreateSK_AndBond(SocketWrapper& sock)
 /*
  * Handles a UI request to get a SM from the server.
  * Sends the operation's result back to the UI client
+ * @param sock - socket to the UI client
  */
 void Client_UI_Server::handleRequestSM_FromServer(SocketWrapper& sock)
 {

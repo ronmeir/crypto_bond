@@ -1,8 +1,12 @@
 /*
- * SocketWrapper.cpp
- *
- *  Created on: May 4, 2014
- *      Author: slava
+   _____            _        ___          __
+  / ____|          | |      | \ \        / /
+ | (___   ___   ___| | _____| |\ \  /\  / / __ __ _ _ __  _ __   ___ _ __
+  \___ \ / _ \ / __| |/ / _ \ __\ \/  \/ / '__/ _` | '_ \| '_ \ / _ \ '__|
+  ____) | (_) | (__|   <  __/ |_ \  /\  /| | | (_| | |_) | |_) |  __/ |
+ |_____/ \___/ \___|_|\_\___|\__| \/  \/ |_|  \__,_| .__/| .__/ \___|_|
+                                                   | |   | |
+                                                   |_|   |_|
  */
 
 #include "SocketWrapper.h"
@@ -43,6 +47,8 @@ void SocketWrapper::reconnect()
 SocketWrapper::SocketWrapper(int socketDiscrptr)
 {
 	m_socketDiscrptr = socketDiscrptr;
+	m_dest_port=0; //Irrelevant
+
 }//end of SocketWrapper(int)
 
 /*

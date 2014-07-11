@@ -1,16 +1,5 @@
 /*
- * EncryptionHandler.h
- * Implements all cryptography related methods: Key generations, encryption and decryption.
- */
-#include "BilinearMappingHandler.h"
-#include "StateMachine.h"
-#include "Constants.h"
-#include <string>
-#include <iostream>
-
-#ifndef ENCRYPTIONHANDLER_H_
-#define ENCRYPTIONHANDLER_H_
-
+ *
 //  ______                             _   _               _    _                 _ _
 // |  ____|                           | | (_)             | |  | |               | | |
 // | |__   _ __   ___ _ __ _   _ _ __ | |_ _  ___  _ __   | |__| | __ _ _ __   __| | | ___ _ __
@@ -21,12 +10,23 @@
 //                         |___/|_|
 
 
+ * EncryptionHandler.h
+ * Implements all cryptography related methods: Key generations, encryption and decryption.
+ * Uses a BilinearMappingHandler to performs all required low level calculations.
+ */
+#include "BilinearMappingHandler.h"
+#include "StateMachine.h"
+#include "Constants.h"
+#include <string>
+#include <iostream>
+
+#ifndef ENCRYPTIONHANDLER_H_
+#define ENCRYPTIONHANDLER_H_
+
 class EncryptionHandler
 {
 
 public:
-
-
 
 		// __  __           _              _  __
 		//|  \/  |         | |            | |/ /
@@ -36,7 +36,6 @@ public:
 		//|_|  |_|\__,_|___/\__\___|_|    |_|\_\___|\__, |
 		//                                           __/ |
 		//                                          |___/
-
 
 		class MSK
 		{
@@ -50,9 +49,6 @@ public:
 			virtual ~MSK();
 		};//end of class MSK
 
-
-
-
 		//	  _____                    _     _  __
 		//	 / ____|                  | |   | |/ /
 		//	| (___   ___  ___ _ __ ___| |_  | ' / ___ _   _
@@ -61,22 +57,18 @@ public:
 		//	|_____/ \___|\___|_|  \___|\__| |_|\_\___|\__, |
 		//											   __/ |
 		//											  |___/
-
 		class SK
 		{
 			public:
 				//fields:
 
-			//relevante for both client and server!!
+			//relevant for both client and server:
 
 				StateMachine *mM					 ;
 				memberElement m_K_start1,m_K_start2	 ; //from the article paper
 				memberElement** m_K_t				 ; //size() = [3][#transitions]
 
-
-
-
-			//relevante client only!!
+			//relevant for the client only:
 
 				BilinearMappingHandler* mMapper	;
 				EncryptionHandler::MSK* mMasterKey;

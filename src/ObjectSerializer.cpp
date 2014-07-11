@@ -1,5 +1,13 @@
 /*
- * ObjectSerializer.cpp
+   ____  _     _           _    _____           _       _ _
+  / __ \| |   (_)         | |  / ____|         (_)     | (_)
+ | |  | | |__  _  ___  ___| |_| (___   ___ _ __ _  __ _| |_ _______ _ __
+ | |  | | '_ \| |/ _ \/ __| __|\___ \ / _ \ '__| |/ _` | | |_  / _ \ '__|
+ | |__| | |_) | |  __/ (__| |_ ____) |  __/ |  | | (_| | | |/ /  __/ |
+  \____/|_.__/| |\___|\___|\__|_____/ \___|_|  |_|\__,_|_|_/___\___|_|
+             _/ |
+            |__/
+
  * Responsible for serializing and de-serializing the StateMachine, SecretKey and CipherText objects so
  * they can be easily sent and received via socket.
  */
@@ -8,6 +16,7 @@
 
 using namespace std;
 
+//Constructor
 ObjectSerializer::ObjectSerializer(BilinearMappingHandler& mapper)
 {
 	m_mapper = &mapper;   //set a ptr to an encryption handler.
@@ -72,7 +81,6 @@ void ObjectSerializer::setBondInPlainText (memberElement& bond, bool isMemberOfG
  */
 void ObjectSerializer::deserializeSecretKey (EncryptionHandler::SK& saveHere,std::string SK_string)
 {
-	//TODO MAKE SURE THIS IS RUN ONLY WITH AN SK-SHELL (Server's SK)
 
 	m_SK.ParseFromString(SK_string);  //deserialize the SK
 
@@ -421,6 +429,9 @@ void ObjectSerializer::getSerializedSecretKeyString(std::string& saveHere)
 		saveHere.assign("");
 }//end of getSerializedSecretKeyString()
 
+/*
+ * Returns a string that represents the Bond
+ */
 void ObjectSerializer::getSerializedBondString(std::string& saveHere)
 {
 	if (m_isBondSet)

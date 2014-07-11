@@ -1,5 +1,12 @@
 /*
- * UserMachine.cpp
+   _____ _ _            _     __  __            _     _
+  / ____| (_)          | |   |  \/  |          | |   (_)
+ | |    | |_  ___ _ __ | |_  | \  / | __ _  ___| |__  _ _ __   ___
+ | |    | | |/ _ \ '_ \| __| | |\/| |/ _` |/ __| '_ \| | '_ \ / _ \
+ | |____| | |  __/ | | | |_  | |  | | (_| | (__| | | | | | | |  __/
+  \_____|_|_|\___|_| |_|\__| |_|  |_|\__,_|\___|_| |_|_|_| |_|\___|
+
+
  * Describes the entire client machine.
  */
 
@@ -8,6 +15,7 @@
 
 using namespace std;
 
+//constructor
 ClientMachine::ClientMachine(const string userID,const string ServerIP,const string CA_IP)
 {
 	//init:
@@ -27,7 +35,7 @@ ClientMachine::ClientMachine(const string userID,const string ServerIP,const str
 }//end of constructor
 
 /**
- * Sends a single message to the servers and waits for a reply.
+ * Sends a single message to the server and waits for a reply.
  * @param msg- the msg to send
  * @param servers_reply - the server's reply will be save here
  * @return - the result OPCODE
@@ -69,6 +77,8 @@ int ClientMachine::UI_Callback_SendMsg(string& servers_reply, string msg)
 
 /**
  * Initializes all required parameters and creates an SK and Bond.
+ * @returns RET_VAL_TO_UI_SERVER_SK_AND_BOND_CREATED_OK if the created has succeeded,
+ * 			RET_VAL_TO_UI_SERVER_SK_AND_BOND_CREATE_FAILED otherwise.
  */
 int ClientMachine::UI_Callback_CreateSK_AndBond()
 {
@@ -128,7 +138,7 @@ int ClientMachine::UI_Callback_SendSK_AndBond(bool isSendToCA)
 	else
 		m_serializer->clearBondInPlainText();			    //make sure there's no PT in the bond
 
-	for (int i = 0; i < 2; i++) //repeat twice, once for the SK and once for the Bond
+	for (int i=0; i<2; i++) //repeat twice, once for the SK and once for the Bond
 	{
 		i==0?
 		m_serializer->getSerializedSecretKeyString(content): //get the serialized SK
@@ -284,8 +294,6 @@ int ClientMachine::UI_Callback_requestSM_FromServer()
 	return RET_VAL_TO_UI_SERVER_SM_RECEIVED_OK;
 
 }//end of UI_Callback_requestSM_FromServer()
-
-
 
 /*
  * The client's main function.

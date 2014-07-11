@@ -1,12 +1,17 @@
 /*
- * CA_Machine.cpp
- *
- *  Created on: Jul 2, 2014
- *      Author: slava
+   _____            __  __            _     _
+  / ____|   /\     |  \/  |          | |   (_)
+ | |       /  \    | \  / | __ _  ___| |__  _ _ __   ___
+ | |      / /\ \   | |\/| |/ _` |/ __| '_ \| | '_ \ / _ \
+ | |____ / ____ \  | |  | | (_| | (__| | | | | | | |  __/
+  \_____/_/    \_\ |_|  |_|\__,_|\___|_| |_|_|_| |_|\___|
+
+
  */
 
 #include "CA_Machine.h"
 
+//Constructor
 CA_Machine::CA_Machine(string& Server_IP_addr) : BasicMultithreadedServer(CA_TCP_PORT_NUM)
 {
 	m_users = new map<string,CA_Machine::User>;  //the user DB
@@ -23,13 +28,19 @@ CA_Machine::CA_Machine(string& Server_IP_addr) : BasicMultithreadedServer(CA_TCP
 	cout << "Got an SM from the Server!" << endl;
 }//end of constructor
 
-
+/*
+ * @override
+ * This method is launched to handle every incoming connection from a client that wishes to send a message
+ * to the CA.
+ * @param sock - a socket to the client
+ * @param arg - an additional argument than can be passed by the worker thread dispatcher.
+ */
 int CA_Machine::execOnWorkerThread(SocketWrapper sock, void* arg)
 {
 	vector<string> parsed_request = readAndParseMessageFromSocket(sock); //receive the request
 	string msgToSend;
 
-	 //the client has send an SK or Bond:
+	 //the client has sent an SK or Bond:
 	if (!parsed_request[2].compare(OPCODE_CLIENT_TO_CA_SEND_SK) ||
 			!parsed_request[2].compare(OPCODE_CLIENT_TO_CA_SEND_BOND))
 	{
@@ -37,7 +48,7 @@ int CA_Machine::execOnWorkerThread(SocketWrapper sock, void* arg)
 	}//if we've received an SK or a Bond
 
 
-	// the user asked us to validate it's bond and SK
+	// the client asked us to validate it's bond and SK
 	if (!parsed_request[2].compare(OPCODE_CLIENT_TO_CA_VALIDATE_BOND))
 	{
 		if (m_users->find(parsed_request[0]) != m_users->end()) //it's not a new user
@@ -90,6 +101,11 @@ int CA_Machine::execOnWorkerThread(SocketWrapper sock, void* arg)
 	return 0;
 }//end of execOnWorkerThread()
 
+/*
+ * Handles the reception and storage of a message containing an SK or Bond
+ * @param parsed_request - a string vector of all the message fields
+ * @param sock - a socket to the client
+ */
 void CA_Machine::handleClientSentSK_OrBond(vector<string>& parsed_request, SocketWrapper sock)
 {
 	bool isSK = (!parsed_request[2].compare(OPCODE_CLIENT_TO_CA_SEND_SK)); //check if it's an SK or Bond
@@ -187,6 +203,7 @@ bool CA_Machine::HandleSK_AndBondValidation(CA_Machine::User& user)
 
 /*
  * Updates the Server with the details of an approved client (who's SK and Bond and valid)
+ * @param clientDetails - we chose the pass the username
  */
 int CA_Machine::updateTheServerWithClientDetails(string& clientDetails)
 {
@@ -220,6 +237,9 @@ int CA_Machine::updateTheServerWithClientDetails(string& clientDetails)
 	return 0;
 }//end of updateTheServerWithClientDetails()
 
+/*
+ * The main entry point for this object
+ */
 void CA_Machine::run()
 {
 	runWelcomeSocket(NULL);   //start the welcome socket
@@ -227,7 +247,7 @@ void CA_Machine::run()
 
 /*
  * Blocks the program until it receives an SM string from the server.
- * @return 0 we've received a valid SM, -1 otherwise.
+ * @returns 0 if we've received a valid SM, -1 otherwise.
  */
 int CA_Machine::getSM_FromServer()
 {

@@ -1,14 +1,3 @@
-/*
- * EncryptionHandler.cpp
- *
- *  Created on: Mar 28, 2014
- *      Author: slava
- */
-
-#include "EncryptionHandler.h"
-
-using namespace std;
-
 //  ______                             _   _               _    _                 _ _
 // |  ____|                           | | (_)             | |  | |               | | |
 // | |__   _ __   ___ _ __ _   _ _ __ | |_ _  ___  _ __   | |__| | __ _ _ __   __| | | ___ _ __
@@ -18,10 +7,17 @@ using namespace std;
 //                          __/ | |
 //                         |___/|_|
 
+#include "EncryptionHandler.h"
+
+using namespace std;
+
 /**
  * this constructor get a paramFilePath , a state-machine and builds everything it needs
  * in order to get a MasterKey, use the function setup()
- * in order to get a SecretKeym use the function keyGen()
+ * in order to get a SecretKey use the function keyGen()
+ * @param paramFilePath - the path to the parameter file (that comes with the PBC lib)
+ * @param stateMachine - a valid state machine
+ * @param isClient - should be true if initialized by a client, false otherwise.
  */
 EncryptionHandler::EncryptionHandler(char* paramFilePath,
 		StateMachine* stateMachine, bool isClient)
@@ -43,6 +39,9 @@ EncryptionHandler::~EncryptionHandler()
 
 } //end of Destructor ~EncryptionHandler()
 
+/*
+ * Returns a pointer to the Master Key
+ */
 EncryptionHandler::MSK* EncryptionHandler::setup()
 {
 	return mMasterKey;
@@ -117,6 +116,8 @@ void EncryptionHandler::createPartialEncryption(CT& ct, const string& w,
 
 /**
  * Completes a partial encryption, resulting in a complete encryption.
+ * IMPORTANT: Deletes the given Ci array and creates a new one, containing only the Ci
+ * elements that correlate with the given virus string.
  * @param partial_ct - A partial encryption that'll be updated to be a full encryption
  * @param virus - the virus string
  */
@@ -300,8 +301,6 @@ BilinearMappingHandler* EncryptionHandler::getBilinearMappingHandler()
 //	|_____/ \___|\___|_|  \___|\__| |_|\_\___|\__, |
 //											   __/ |
 //											  |___/
-
-//TODO create a constructor for an SK shell that contains only allocated space of the right size.
 
 /**
  * the SK Constructor
@@ -648,6 +647,7 @@ void EncryptionHandler::CT::get_C_i_2(memberElement& ans, int i,
  */
 EncryptionHandler::CT::~CT()
 {
+	//figure out the number of Ci that are currently stored in this CT:
 	int size = (mIsPartialCT ? ALPHABET_SIZE + 1 : 2);
 
 	if (m_Ci)

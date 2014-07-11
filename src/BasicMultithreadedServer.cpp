@@ -1,8 +1,12 @@
 /*
- * BasicMultithreadedServer.cpp
- *
- *  Created on: May 6, 2014
- *      Author: slava
+  ____            _        __  __       _ _   _ _   _                        _          _    _____
+ |  _ \          (_)      |  \/  |     | | | (_) | | |                      | |        | |  / ____|
+ | |_) | __ _ ___ _  ___  | \  / |_   _| | |_ _| |_| |__  _ __ ___  __ _  __| | ___  __| | | (___   ___ _ ____   _____ _ __
+ |  _ < / _` / __| |/ __| | |\/| | | | | | __| | __| '_ \| '__/ _ \/ _` |/ _` |/ _ \/ _` |  \___ \ / _ \ '__\ \ / / _ \ '__|
+ | |_) | (_| \__ \ | (__  | |  | | |_| | | |_| | |_| | | | | |  __/ (_| | (_| |  __/ (_| |  ____) |  __/ |   \ V /  __/ |
+ |____/ \__,_|___/_|\___| |_|  |_|\__,_|_|\__|_|\__|_| |_|_|  \___|\__,_|\__,_|\___|\__,_| |_____/ \___|_|    \_/ \___|_|
+
+
  */
 
 #include "BasicMultithreadedServer.h"
@@ -11,6 +15,7 @@
 BasicMultithreadedServer::BasicMultithreadedServer(int tcp_port)
 {
 	m_TCP_PortNum = tcp_port;
+	m_welcomeSock = NULL;
 }
 
 /*
@@ -33,11 +38,6 @@ void BasicMultithreadedServer::runWelcomeSocket(void* argForWorkerThread)
 			printf("Welcome socket accept failed!\n");
 			continue;
 		}
-
-		//debug:
-
-//		execOnWorkerThread(sa);
-		//end of debug
 
 		arg_struct argz;
 		argz.obj=static_cast<void*>(this);
@@ -69,6 +69,7 @@ void* BasicMultithreadedServer::IntermediateWorkerThreadLauncher(void* argz)
 	  BasicMultithreadedServer *thisObj = static_cast<BasicMultithreadedServer*>(args->obj);
 	  thisObj->execOnWorkerThread(SocketWrapper(args->sockDescrptr),args->arg);   //exec the abstract func
 
+	  return (void*)0;
 }//end of IntermediateWorkerThreadLauncher()
 
 WelcomeSocket* BasicMultithreadedServer::getWelcomeSocketDescrptr()

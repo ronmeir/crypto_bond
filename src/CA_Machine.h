@@ -1,8 +1,18 @@
 /*
- * CA_Machine.h
  *
- *  Created on: Jul 2, 2014
- *      Author: slava
+   _____            __  __            _     _
+  / ____|   /\     |  \/  |          | |   (_)
+ | |       /  \    | \  / | __ _  ___| |__  _ _ __   ___
+ | |      / /\ \   | |\/| |/ _` |/ __| '_ \| | '_ \ / _ \
+ | |____ / ____ \  | |  | | (_| | (__| | | | | | | |  __/
+  \_____/_/    \_\ |_|  |_|\__,_|\___|_| |_|_|_| |_|\___|
+
+
+ * CA_Machine.h
+ * Extends the BasicMultithreadedServer class.
+ * Contains the entire CA functionality:
+ * Receives SK and Bond form clients, verifies them and notifies the server.
+ * The entry point is run().
  */
 
 #ifndef CA_MACHINE_H_

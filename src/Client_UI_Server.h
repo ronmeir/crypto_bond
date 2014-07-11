@@ -1,7 +1,17 @@
 /*
+ *
+   _____ _ _            _     _    _ _____    _____
+  / ____| (_)          | |   | |  | |_   _|  / ____|
+ | |    | |_  ___ _ __ | |_  | |  | | | |   | (___   ___ _ ____   _____ _ __
+ | |    | | |/ _ \ '_ \| __| | |  | | | |    \___ \ / _ \ '__\ \ / / _ \ '__|
+ | |____| | |  __/ | | | |_  | |__| |_| |_   ____) |  __/ |   \ V /  __/ |
+  \_____|_|_|\___|_| |_|\__|  \____/|_____| |_____/ \___|_|    \_/ \___|_|
+
+
  * Client_UI_Server.h
- * Defines a web server that is run by the client.
- * Provides the web-based UI for the project.
+ * The main entry point is run().
+ * A part of the ClientMachine. The UI server is the one that handles all the
+ * UI program's requests.
  */
 
 #ifndef CLIENT_UI_SERVER_H_

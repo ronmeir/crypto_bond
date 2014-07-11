@@ -1,8 +1,21 @@
 /*
- * ObjectSerializer.h
+   ____  _     _           _    _____           _       _ _
+  / __ \| |   (_)         | |  / ____|         (_)     | (_)
+ | |  | | |__  _  ___  ___| |_| (___   ___ _ __ _  __ _| |_ _______ _ __
+ | |  | | '_ \| |/ _ \/ __| __|\___ \ / _ \ '__| |/ _` | | |_  / _ \ '__|
+ | |__| | |_) | |  __/ (__| |_ ____) |  __/ |  | | (_| | | |/ /  __/ |
+  \____/|_.__/| |\___|\___|\__|_____/ \___|_|  |_|\__,_|_|_/___\___|_|
+             _/ |
+            |__/
  *
- *  Created on: May 6, 2014
- *      Author: ron
+ * Since we have to send various objects over an IP connection, they had to be serialized
+ * by the sender and de-serialized by the receiver.
+ * This class performs serialization and de-serialization of objects of the following classes:
+ * 1. SK
+ * 2. BOND
+ * 3. State Machine
+ * It uses the StateMachineAndKey class (which is generated using google's protobuff lib)
+ * to perform the low level serialization and de-serialization.
  */
 
 #ifndef OBJECTSERIALIZER_H_

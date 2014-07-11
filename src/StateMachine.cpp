@@ -76,7 +76,7 @@ bool StateMachine::checkStringForViruses (std::string& str)
 		return -1;
 	}
 
-	for (int i=0; i<str.length() ;i++) //running on all the string's chars
+	for (int i=0; i<(int)str.length() ;i++) //running on all the string's chars
 	{
 		//state is defined. retrieving the next state:
 		current_state = mStates[current_state]->getNextStateID(str.at(i));
@@ -196,7 +196,7 @@ int StateMachine::getIndexOfAcceptanceStateInTheAcceptanceStatesVector(int state
 {
 	int ans=-1;
 	//run over the entire vector
-	for (int i=0; i< mIDsOfAcceptanceStates.size() ;i++)
+	for (int i=0; i< (int)mIDsOfAcceptanceStates.size() ;i++)
 	{
 		if (mIDsOfAcceptanceStates.at(i)==stateID)
 			ans=i;

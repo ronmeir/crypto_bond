@@ -144,11 +144,9 @@ void BilinearMappingHandler::power_Zn(memberElement& result, memberElement& base
  * @param b - a memberElement of G
  * param result - the result will be saved here. this is also member in G
  */
-//TODO check if this really does the multiply operation as expected
 void BilinearMappingHandler::mul(memberElement& result,memberElement& a,memberElement& b){
 	 element_mul(result, a,b);
 }
-
 
 /*
  * Calculates the bilinear mapping e(a,b)

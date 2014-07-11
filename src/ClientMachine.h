@@ -1,6 +1,16 @@
 /*
- * ClientMachine.h
- * Defines the entire client machine: Web server + crypto_bond client
+   _____ _ _            _     __  __            _     _
+  / ____| (_)          | |   |  \/  |          | |   (_)
+ | |    | |_  ___ _ __ | |_  | \  / | __ _  ___| |__  _ _ __   ___
+ | |    | | |/ _ \ '_ \| __| | |\/| |/ _` |/ __| '_ \| | '_ \ / _ \
+ | |____| | |  __/ | | | |_  | |  | | (_| | (__| | | | | | | |  __/
+  \_____|_|_|\___|_| |_|\__| |_|  |_|\__,_|\___|_| |_|_|_| |_|\___|
+
+
+ * Defines the entire client machine: UI server + crypto_bond client.
+ * The main entry point is run().
+ * Receives requests from the user's UI client via the Client_UI_Server and performs the required
+ * operations.
  */
 #include "Constants.h"
 #include "EncryptionHandler.h"
