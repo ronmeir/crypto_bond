@@ -123,7 +123,7 @@ void EncryptionHandler::createPartialEncryption(CT& ct, const string& w,
 void EncryptionHandler::completePartialEncryption(CT& partial_ct,
 		const std::string& user_virus)
 {
-	printf("Completing encryption...\n");
+	printf("Completing the encryption...\n");
 	memberElement** new_m_Ci = new memberElement*[2]; //will be used to hold an array of [2][virus.length()]
 
 	int virus_length = MAX_MSG_LENGTH;
@@ -164,7 +164,7 @@ void EncryptionHandler::completePartialEncryption(CT& partial_ct,
 	partial_ct.mVirus = virus;  //set the virus
 
 	partial_ct.mIsPartialCT = false; //note that this encryption is no longer partial
-	printf("encryption is done!\n\n");
+	printf("Encryption is complete!\n");
 }       //end of completePartialEncryption()
 
 /**
@@ -281,7 +281,7 @@ void EncryptionHandler::decrypt(memberElement& decryptedMsgElem, SK& secretKey,
 
 	mMapper->invert(temp2, B_end);             //invert
 	mMapper->mul(decryptedMsgElem, temp2, cipherText.m_Cm); //HALELUJA
-	printf("Decryption is done!\n");
+	printf("Decryption is done\n");
 } //end of decrypt()
 
 /*
