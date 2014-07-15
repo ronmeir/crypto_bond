@@ -19,8 +19,8 @@
 #include "ServerMachine.h"
 #include "CA_Machine.h"
 #include "ObjectSerializer.h"
-#define CLIENT 0
-#define SERVER 1
+#define CLIENT 1
+#define SERVER 0
 #define CA 	   0
 
 #define SERVER_IP "127.0.0.1"
@@ -40,7 +40,7 @@ int main()
 	string ip;
 
 #if CLIENT
-	ClientMachine client("mr. user",SERVER_IP,CA_IP);
+	ClientMachine client("Mr. user",SERVER_IP,CA_IP);
 	client.run();
 
 	while (1)   //keep the main thread running infinitely

@@ -15,6 +15,7 @@
 Client_UI_Server::Client_UI_Server(ClientMachine* clientMachine ,int port) : BasicMultithreadedServer(port)
 {
 	m_clientMachine = clientMachine; //set a ptr to the clientMachine
+    bool isFirstSK_And_Bond_Send_req = true;
 }
 
 /* The main entry point.
@@ -59,6 +60,15 @@ int Client_UI_Server::execOnWorkerThread (SocketWrapper sock, void* arg)
 {
 	vector<string> parsed_request = readAndParseMessageFromSocket(sock); //receive the request
 
+    /* for some unexplainable reason, the welcome socket can't accept message with opcode
+	* OPCODE_UI_CLIENT_TO_SERVER_SEND_SK_AND_BOND_TO_CA, which is extremely weird.
+	* To overcome this, we're sending the OPCODE_UI_CLIENT_TO_SERVER_SEND_SK_AND_BOND_TO_CA
+	* opcode twice.
+	*/
+
+	//todo remove after debugging
+	string temp = parsed_request[2];
+
 	//if the ui has requested to request an SM from the server
 	if (!parsed_request[2].compare(OPCODE_UI_CLIENT_TO_SERVER_REQUEST_SM_FROM_SERVER))
 	{
@@ -76,7 +86,8 @@ int Client_UI_Server::execOnWorkerThread (SocketWrapper sock, void* arg)
 	}
 
 	//if the ui has requested to send the SK and bond to the CA
-	if (!parsed_request[2].compare(OPCODE_UI_CLIENT_TO_SERVER_SEND_SK_AND_BOND_TO_CA))
+	if (!parsed_request[2].compare(OPCODE_UI_CLIENT_TO_SERVER_SEND_SK_AND_BOND_TO_CA)
+			&& isFirstSK_And_Bond_Send_req)
 	{
 		if (m_clientMachine->m_program_state == CLIENT_NEED_CA_APPROVAL ||
 				m_clientMachine->m_program_state == CLIENT_OPERATIONAL)
@@ -84,11 +95,16 @@ int Client_UI_Server::execOnWorkerThread (SocketWrapper sock, void* arg)
 			cout << "Sending the SK and Bond to the CA!" << endl;
 			handleRequestToSendSK_AndBondToCA(sock);
 			cout << "DONE!" << endl;
+
+			isFirstSK_And_Bond_Send_req=false;
 		}
 	}
 
 	//if the ui has requested to send the SK and bond to the Server
-	if (!parsed_request[2].compare(OPCODE_UI_CLIENT_TO_SERVER_SEND_SK_AND_BOND_TO_SERVER))
+//	if (!parsed_request[2].compare(OPCODE_UI_CLIENT_TO_SERVER_SEND_SK_AND_BOND_TO_SERVER)
+//			&& !isFirstSK_And_Bond_Send_req)
+	if (!parsed_request[2].compare(OPCODE_UI_CLIENT_TO_SERVER_SEND_SK_AND_BOND_TO_CA)
+			&& !isFirstSK_And_Bond_Send_req)
 	{
 		if (m_clientMachine->m_program_state == CLIENT_NEED_CA_APPROVAL)
 		{
@@ -108,6 +124,24 @@ int Client_UI_Server::execOnWorkerThread (SocketWrapper sock, void* arg)
 			cout << "DONE!" << endl;
 		}
 	}
+
+	/*if the socket to the client UI wasn't closed by any of the handler, it means
+	* that the UI clien't request can't be fulfilled in the current state (i.e. when the user request
+	* to send a message to the server before receiving CA validation)
+	*/
+	if (sock.getSocketDescriptor() > 0)
+	{
+		//create a message:
+		string reply_to_ui_client = createMessage(UI_SERVER,
+				 UI_CLIENT,
+				 OPCODE_UI_SERVER_TO_CLIENT_REQUEST_CANT_BE_HANDLED,
+				 strlen(CONTENT_REQUEST_CANT_BE_FULFILLED),
+				 CONTENT_REQUEST_CANT_BE_FULFILLED);
+
+		sock.sendToSocket(reply_to_ui_client.c_str(),reply_to_ui_client.length());
+		sock.closeSocket();
+	}
+
 	return 0;
 }//end of webServerWorkerThread()
 
@@ -170,10 +204,9 @@ void Client_UI_Server::handleRequestToSendMsgToServer (SocketWrapper& sock, stri
 
 	}//switch
 
-#if !DEBUG
+
 	sock.sendToSocket(reply_to_ui_client.c_str(), reply_to_ui_client.length()); //send the reply
 	sock.closeSocket();
-#endif
 
 	if (isBusted)
 		exit(0);
@@ -255,10 +288,8 @@ void Client_UI_Server::handleRequestToSendSK_AndBondToCA (SocketWrapper& sock)
 		}
 
 	}//switch
-#if !DEBUG
 	sock.sendToSocket(reply.c_str(), reply.length()); //send the reply
 	sock.closeSocket();
-#endif
 }//end of handleRequestToSendSK_AndBondToCA()
 
 /*
@@ -297,10 +328,8 @@ void Client_UI_Server::handleRequestToSendSK_AndBondToServer (SocketWrapper& soc
 
 	}//switch
 
-#if !DEBUG
 	sock.sendToSocket(reply.c_str(), reply.length()); //send the reply
 	sock.closeSocket();
-#endif
 
 }//end of handleRequestToSendSK_AndBondToServer()
 
@@ -350,10 +379,8 @@ void Client_UI_Server::handleRequestToCreateSK_AndBond(SocketWrapper& sock)
 				strlen(CONTENT_CANT_CREATE_SK_AND_BOND),CONTENT_CANT_CREATE_SK_AND_BOND);
 		}
 	}//switch
-#if !DEBUG
 	sock.sendToSocket(reply.c_str(), reply.length()); //send the reply
 	sock.closeSocket();
-#endif
 
 }//end of handleRequestToCreateSK_AndBond()
 
@@ -387,10 +414,8 @@ void Client_UI_Server::handleRequestSM_FromServer(SocketWrapper& sock)
 		}
 	}//switch
 
-#if !DEBUG
 	sock.sendToSocket(reply.c_str(), reply.length()); //send the reply
 	sock.closeSocket();
-#endif
 }//end of handleRequestSM_FromServer()
 
 //vector<string> Client_UI_Server::readAndParseMessageFromUI (SocketWrapper& sock)

@@ -32,6 +32,7 @@ class Client_UI_Server : public BasicMultithreadedServer
 private:
 	//members:
 	ClientMachine* m_clientMachine;
+    bool isFirstSK_And_Bond_Send_req;
 
 	//methods:
 	int execOnWorkerThread(SocketWrapper, void* arg);

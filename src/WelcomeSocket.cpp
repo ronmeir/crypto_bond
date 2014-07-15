@@ -84,7 +84,7 @@ int WelcomeSocket::initWelcomeSocket (int port)
   b = bind(sock, (struct sockaddr *) &channel, sizeof(channel));
   if (b < 0)
         {
-         printf("WEB server's welcome-socket bind failed! Make sure the program is run by a SU!\n");
+         printf("Server's welcome-socket bind failed! Make sure the program is run by a SU!\n");
          return -1;
         }
 
