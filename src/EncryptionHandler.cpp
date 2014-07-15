@@ -132,8 +132,17 @@ void EncryptionHandler::completePartialEncryption(CT& partial_ct,
 	//Since our state machine should remain in an acceptance state if such was reach, the decryption alg. should work.
 	string virus(user_virus);			//create a copy of the received virus
 	int pad = MAX_MSG_LENGTH - virus.length(); //calc the padding length
-	string padStr(pad, 0);                     //create a padding string
-	virus += padStr;                          //pad the virus string
+
+	if (pad > 0)
+	{
+		string padStr(pad, 0);                     //create a padding string
+		virus += padStr;                          //pad the virus string
+	}
+	else
+	{
+		//we need to shorten the message:
+		virus = virus.substr(0,MAX_MSG_LENGTH);
+	}
 
 	//creating a new C_i array that'll replace the current, eliminating all irrelevant h_wi
 	new_m_Ci[0] = new memberElement[virus_length];

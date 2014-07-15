@@ -42,6 +42,8 @@ ClientMachine::ClientMachine(const string userID,const string ServerIP,const str
  */
 int ClientMachine::UI_Callback_SendMsg(string& servers_reply, string msg)
 {
+	//ASSERT(msg.length() <= MAX_MSG_LENGTH)
+
 	string msgToSend = createMessage(m_ID, SERVER_NAME,OPCODE_CLIENT_TO_SERVER_SEND_MSG,
 			msg.length(), msg);
 
