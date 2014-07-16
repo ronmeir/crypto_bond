@@ -5,8 +5,8 @@ import socket
 import easygui
 
 ############################ IP and PORT form UI ########################################
-IP='10.0.0.1' 
-PORT= 12345
+IP='10.0.0.11' 
+PORT= 60000
 #########################################################################################
 
 
@@ -81,24 +81,30 @@ def MSG_req_sm_from_server():
 	txt="request SM from server"
 	return ((send,txt))
 
-
+def MSG_send_sk_and_bond_to_server():
+	send= str("3"+FILED_SEPERATOR())
+	send+=send+send+send+send
+	txt="sent:SK and Bond are sending to the server"
+	return ((send,txt))
+	
 def MSG_create_sk_and_bond():
 	send= str("1"+FILED_SEPERATOR())
 	send+=send+send+send+send
 	txt="sent:create SK and Bond MSG"
 	return ((send,txt))
 		
-def MSG_send_sk_and_bond_to_CA():
+def MSG_send_sk_and_bond():
 	send= str("2"+FILED_SEPERATOR())
 	send+=send+send+send+send
-	txt="sent:SK and Bond to the CA"
+	txt="sent:SK and Bond"
 	return ((send,txt))
 
-def MSG_send_sk_and_bond_to_server():
+def MSG_send_to_server_sk_and_bond():
 	send= str("3"+FILED_SEPERATOR())
 	send+=send+send+send+send
-	txt="sent:SK and Bond to the Server"
-	return ((send,txt))
+	txt="bllllllz"
+	#txt="sent:SK and Bond to the Server"
+	return ((send,txt))	
 
 def MSG_send_this_msg(txt):
 	send= str("4"+FILED_SEPERATOR())
@@ -110,19 +116,19 @@ def MSG_send_this_msg(txt):
 #this function returns the msg that should be shown in the i'th place of the menu - we use it  is addOptionsToOptionList
 def setMsg(i):
 	if(i==0):
-		return 'MSG0'		
+		return 'req_SM     (0)'		
 	if(i==1):
-		return 'MSG1'
+		return 'crt_SK&B   (1)'
 	if(i==2):
-		return 'MSG2'
+		return 'snd_SK&B_CA(2)'
 	if(i==3):
-		return 'MSG3'
+		return 'snd_SK&B_SV(3)'
 	if(i==4):
 		return freeText()
 		
 
 ########## end of MSGs to SERVER#############################################################################
-#############################################################################################################
+############################# ################################################################################
 #-----------------------------------------------------------------------------------------------------------#
 
 
@@ -190,17 +196,18 @@ def send_was_pressed():
 	#if it's a built-in MSG		
 	else:
 		if(msg==setMsg(0)):
-			msg=MSG_req_sk_from_server()
+			msg=MSG_req_sm_from_server()
 			
 		elif(msg==setMsg(1)):
 			msg=MSG_create_sk_and_bond()
 			
 		elif(msg==setMsg(2)):
-			msg=MSG_send_sk_and_bond_to_CA()
+			msg=MSG_send_sk_and_bond()
 		
 		elif(msg==setMsg(3)):
-			msg=MSG_send_sk_and_bond_to_server()
-			
+			#msg=MSG_send_to_server_sk_and_bond()
+			#msg=MSG_send_sk_and_bond_to_server()
+			msg=MSG_send_sk_and_bond()
 		send(msg)				
 					
 			
