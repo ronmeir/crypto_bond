@@ -6,7 +6,7 @@ import easygui
 
 ############################ IP and PORT form UI ########################################
 IP='10.0.0.11' 
-PORT= 60000
+PORT= 60001
 #########################################################################################
 
 
@@ -81,21 +81,21 @@ def MSG_req_sm_from_server():
 	send=buildMSG(0,0,0,1,1)
 	#send= str("0"+FILED_SEPERATOR())
 	#send+=send+send+1+1
-	txt="request SM from server"
+	txt="(0) request SM from server"
 	return ((send,txt))
 	
 def MSG_create_sk_and_bond():
 	#send= str("1"+FILED_SEPERATOR())
 	#send+=send+send+1+1
 	send=buildMSG(1,1,1,1,1)
-	txt="sent:create SK and Bond MSG"
+	txt="(1) sent:create SK and Bond MSG"
 	return ((send,txt))
 		
 def MSG_send_sk_and_bond_ca():
 	#send= str("2"+FILED_SEPERATOR())
 	#send+=send+send+1+1
 	send=buildMSG(2,2,2,1,1)
-	txt="sent:SK and Bond to CA"
+	txt="(2) sent:SK and Bond to CA"
 	return ((send,txt))
 	
 	
@@ -104,7 +104,7 @@ def MSG_send_sk_and_bond_to_server():
 	#send= str("3"+FILED_SEPERATOR())
 	#send+=send+send+"1+1
 	send=buildMSG(3,3,3,1,1)
-	txt="sent:SK and Bond are sending to Server"
+	txt="(3) sent:SK and Bond are sending to Server"
 	return ((send,txt))
 	
 
@@ -120,13 +120,13 @@ def MSG_send_this_msg(txt):
 #this function returns the msg that should be shown in the i'th place of the menu - we use it  is addOptionsToOptionList
 def setMsg(i):
 	if(i==0):
-		return '(0) req_SM'		
+		return '(0) request SM from Server      '		
 	if(i==1):
-		return '(1) cr_SK&B'
+		return '(1) create SK and Bond           '
 	if(i==2):
-		return '(2)SK&B_CA'
+		return '(2) send SK and Bond to CA     '
 	if(i==3):
-		return '(3)SK&B_SV'
+		return '(3) send SK and Bond to Server'
 	if(i==4):
 		return freeText()
 		
@@ -256,7 +256,7 @@ def insert_text(txt,color='black'):
 #when we choose it we can sent a free text to the other side sever 
 '''
 def freeText():
-	return '(4)Text  '			
+	return '(4) type and send free text  '			
 
 #msg to be sent via socket	
 def send(msg):
@@ -304,13 +304,15 @@ def keyPress(event):
 	#Enter sends MSG
 	elif event.keysym == 'Return':
 			send_was_pressed()
+			msgbox.delete('1.0', 'end')
 		
 	
 if __name__ == "__main__":
 	global var1, optionList, om_selected_var, om,isConnected
 	master = tk.Tk()
-	master.geometry('720x210')
-	master.title("Client GUI") # the title of the window
+	master.geometry('680x233')
+	master.title("Client GUI") 	# the title of the window
+	master.resizable(0,0)		# disable maximize
 	isConnected="F"
 	
 	
@@ -319,7 +321,7 @@ if __name__ == "__main__":
 	om = ttk.OptionMenu(master,om_selected_var,*optionList)
 	om_selected_var.set(optionList[0])
 	
-	om.grid(row=11,column=0)#,columnspan = 2
+	om.grid(row=20,column=1,pady=2)#,columnspan = 2
 	
 	addOptionsToOptionList([setMsg(i) for i in range(0,numOfMSGs())])
 	
@@ -335,9 +337,9 @@ if __name__ == "__main__":
 	b_connect.grid(	row=2,column=0, pady=1)	#padx=1,
 	
 	titleLabel = ttk.Label(master,text="choose MSG:")
-	titleLabel.grid(row=10,column=0)
+	titleLabel.grid(row=20,column=0)
 	
-	b_send.grid(row=12,column=0, pady=5, padx=5)#,columnspan = 2
+	b_send.grid(row=12,column=0, pady=0, padx=5)#,columnspan = 2
 	
 	textbox = tkst.ScrolledText(
 		master = master,
