@@ -10,6 +10,8 @@
 #include <cstdio>
 #include <pbc.h>
 #include <string>
+#include <sstream>
+#include <stdio.h>
 #include "StateMachineAndKey.pb.h"
 #include "BilinearMappingHandler.h"
 #include "StateMachine.h"
@@ -32,37 +34,182 @@ void debug_initializeStateMachine(StateMachine* machine);
 void debug_mapperTest();
 void debug_EncryptionTest(bool);
 void compareCTs(EncryptionHandler::CT& ct1, EncryptionHandler::CT& ct2, BilinearMappingHandler* mapper);
-
-//program parameters: machine type (user/server/ca), user id, server and CA IP (relevant for the user only)
+void checkArgsForServerOrCA(char** argv);
+bool checkIfPortIsValid(char* portString);
+bool checkIfIPisValid(char* ipString);
+int stringToInt (char* string);
+/*
+ * Terminal launching instructions:
+ * To run as a Client: 	client [Server IP]:[Server port] [CA IP]:[CA port] <User Name>
+ * To run as a Server: 	server [CA IP]:[CA port]
+ * To run as a CA: 		ca [Server IP]:[Server port]
+ */
 
 int main(int argc, char** argv)
 {
 	string ip;
 
-#if CLIENT
-	ClientMachine client("Mr. user",SERVER_IP,CA_IP);
-	client.run();
-
-	while (1)   //keep the main thread running infinitely
+	switch (argc)
 	{
-		sleep(1000); //done because sched_yield() simply won't work.
-	}
+		case 1:
+		{
+			//program was called with no additional arguments. Let case 2 handle things.
+		}//case 1
+		case 2:
+		{
+			//A single argument, still invalid.
+			//todo print the help menu and quit.
+			exit(1);
+			break;
+		}//case 2
+		case 3:
+		{
+			//Two arguments, has to be a Server or CA
 
-	google::protobuf::ShutdownProtobufLibrary();
-#endif
-#if SERVER
-	ip.assign(CA_IP);
-	ServerMachine server (ip);
-	server.run();
-#endif
-#if CA
-	ip.assign(SERVER_IP);
-	CA_Machine ca(ip);
-	ca.run();
-#endif
+			break;
+		}//case 3
+		case 4:
+		{
+			//Three arguments, has to be a Client
+
+			break;
+		}//case 3
+		default:
+		{
+			//unsupported number of arguments
+			//todo print the help menu and quit.
+			exit(1);
+		}
+
+	}//end of switch
+
+
+
+
+
+
+//#if CLIENT
+//	ClientMachine client("Mr. user",SERVER_IP,CA_IP);
+//	client.run();
+//
+//	while (1)   //keep the main thread running infinitely
+//	{
+//		sleep(1000); //done because sched_yield() simply won't work.
+//	}
+//
+//	google::protobuf::ShutdownProtobufLibrary();
+//#endif
+//#if SERVER
+//	ip.assign(CA_IP);
+//	ServerMachine server (ip);
+//	server.run();
+//#endif
+//#if CA
+//	ip.assign(SERVER_IP);
+//	CA_Machine ca(ip);
+//	ca.run();
+//#endif
 
 	return 0;
 }//end of main()
+
+/**
+ * Checks the user's arguments to see if they're compatible with a Server or CA requirements.
+ * If the args are good, launches a CA or Server machine.
+ * @param argv - the user's arguments.
+ */
+void checkArgsForServerOrCA(char** argv)
+{
+
+}//end of checkArgsForServerOrCA()
+
+/*
+ * Checks if two string are equal, case insensitive.
+ */
+bool strCmpCaseInsensitive(char* a, char* b)
+{
+	for (;a && b; a++,b++)
+	{
+		if (tolower(*a) != tolower(*b) )
+			return false;
+	}
+
+	if (a || b)			//if the string were of different lengths
+		return false;
+
+	return true;
+}//end of strCmpCaseInsensitive()
+
+/*
+ * Checks for the theoretical validity of an IP address
+ * @param ipString - the IP address in string form
+ * @return true of the IP address appears to be OK, false otherwise
+ */
+bool checkIfIPisValid(char* ipString)
+{
+	const char delim[2] = ".";  //breaking the string down, using the decimal point as a delimiter
+	int numOfSegments = 0;
+	char *token;
+
+   /* get the first token */
+   token = strtok(ipString, delim);
+
+   /* walk through other tokens */
+   while( token != NULL )
+   {
+	  numOfSegments++; //count the number of segments
+
+	  int num = stringToInt(token); //convert the string to a number
+
+	  if (num < 0 || num > 255)
+	  {
+			cout << "Invalid IP address!" << endl;
+			return false;
+	  }
+
+	  token = strtok(NULL, delim); //get the next token
+   }
+   //so far, all the read segments were valid.
+
+   if (numOfSegments!=4)  //if the IP address doesn't contain 4 decimal-seperated values
+   {
+	   cout << "Invalid IP address!" << endl;
+	   return false;
+   }
+
+   return true;
+}//end of checkIfIPisValid()
+
+/*
+ * Checks a string contains a valid port number
+ * @param portString - a string containing a port number
+ * @return true if the port is within the legal range, false otherwise
+ */
+bool checkIfPortIsValid(char* portString)
+{
+	int port = stringToInt(portString);
+
+	if (port < 0 || port > 65536)
+	{
+		cout << "Invalid port number!" << endl;
+		return false;
+	}
+
+	return true;
+}//end of checkIfPortIsValid()
+
+
+/*
+ * Converts a string to an int
+ * @param string - the string to be converted
+ * @return - the conversion of the string to an int
+ */
+int stringToInt (char* string)
+{
+	int numb;
+	istringstream ( string ) >> numb;
+	return numb;
+}//end of stringToInt()
 
 void debug_EncryptionTest(bool isClient)
 {
