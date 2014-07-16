@@ -72,43 +72,47 @@ def numOfMSGs():
 
 def FILED_SEPERATOR():
 	return chr(7)
+def buildMSG(src,dst,op,leng,cont):
+	return str(src)+FILED_SEPERATOR()+str(dst)+FILED_SEPERATOR()+str(op)+FILED_SEPERATOR()+ str(leng)+FILED_SEPERATOR()+str(cont)+FILED_SEPERATOR()
 
 
 
 def MSG_req_sm_from_server():
-	send= str("0"+FILED_SEPERATOR())
-	send+=send+send+send+send
+	send=buildMSG(0,0,0,1,1)
+	#send= str("0"+FILED_SEPERATOR())
+	#send+=send+send+1+1
 	txt="request SM from server"
-	return ((send,txt))
-
-def MSG_send_sk_and_bond_to_server():
-	send= str("3"+FILED_SEPERATOR())
-	send+=send+send+send+send
-	txt="sent:SK and Bond are sending to the server"
 	return ((send,txt))
 	
 def MSG_create_sk_and_bond():
-	send= str("1"+FILED_SEPERATOR())
-	send+=send+send+send+send
+	#send= str("1"+FILED_SEPERATOR())
+	#send+=send+send+1+1
+	send=buildMSG(1,1,1,1,1)
 	txt="sent:create SK and Bond MSG"
 	return ((send,txt))
 		
-def MSG_send_sk_and_bond():
-	send= str("2"+FILED_SEPERATOR())
-	send+=send+send+send+send
-	txt="sent:SK and Bond"
+def MSG_send_sk_and_bond_ca():
+	#send= str("2"+FILED_SEPERATOR())
+	#send+=send+send+1+1
+	send=buildMSG(2,2,2,1,1)
+	txt="sent:SK and Bond to CA"
 	return ((send,txt))
+	
+	
+	
+def MSG_send_sk_and_bond_to_server():
+	#send= str("3"+FILED_SEPERATOR())
+	#send+=send+send+"1+1
+	send=buildMSG(3,3,3,1,1)
+	txt="sent:SK and Bond are sending to Server"
+	return ((send,txt))
+	
 
-def MSG_send_to_server_sk_and_bond():
-	send= str("3"+FILED_SEPERATOR())
-	send+=send+send+send+send
-	txt="bllllllz"
-	#txt="sent:SK and Bond to the Server"
-	return ((send,txt))	
 
 def MSG_send_this_msg(txt):
-	send= str("4"+FILED_SEPERATOR())
-	send+=send+send+send+txt
+	#send= str("4"+FILED_SEPERATOR())
+	#send+=send+send+str(len(txt))+txt
+	send=buildMSG(4,4,4,len(txt),txt)
 	return ((send,txt))
 	
 
@@ -116,13 +120,13 @@ def MSG_send_this_msg(txt):
 #this function returns the msg that should be shown in the i'th place of the menu - we use it  is addOptionsToOptionList
 def setMsg(i):
 	if(i==0):
-		return 'req_SM     (0)'		
+		return '(0) req_SM'		
 	if(i==1):
-		return 'crt_SK&B   (1)'
+		return '(1) cr_SK&B'
 	if(i==2):
-		return 'snd_SK&B_CA(2)'
+		return '(2)SK&B_CA'
 	if(i==3):
-		return 'snd_SK&B_SV(3)'
+		return '(3)SK&B_SV'
 	if(i==4):
 		return freeText()
 		
@@ -202,12 +206,12 @@ def send_was_pressed():
 			msg=MSG_create_sk_and_bond()
 			
 		elif(msg==setMsg(2)):
-			msg=MSG_send_sk_and_bond()
+			msg=MSG_send_sk_and_bond_ca()
 		
 		elif(msg==setMsg(3)):
 			#msg=MSG_send_to_server_sk_and_bond()
 			#msg=MSG_send_sk_and_bond_to_server()
-			msg=MSG_send_sk_and_bond()
+			msg=MSG_send_sk_and_bond_to_server()
 		send(msg)				
 					
 			
@@ -252,7 +256,7 @@ def insert_text(txt,color='black'):
 #when we choose it we can sent a free text to the other side sever 
 '''
 def freeText():
-	return 'Text  '			
+	return '(4)Text  '			
 
 #msg to be sent via socket	
 def send(msg):
@@ -305,7 +309,7 @@ def keyPress(event):
 if __name__ == "__main__":
 	global var1, optionList, om_selected_var, om,isConnected
 	master = tk.Tk()
-	master.geometry('680x210')
+	master.geometry('720x210')
 	master.title("Client GUI") # the title of the window
 	isConnected="F"
 	
