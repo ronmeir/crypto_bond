@@ -19,9 +19,10 @@
 #include "ServerMachine.h"
 #include "CA_Machine.h"
 #include "ObjectSerializer.h"
-#define CLIENT 1
-#define SERVER 0
-#define CA 	   0
+#define CLIENT	0
+#define SERVER	0
+#define CA		0
+#define HELP	1
 
 #define SERVER_IP "127.0.0.1"
 #define CA_IP "127.0.0.1"
@@ -32,11 +33,16 @@ void debug_initializeStateMachine(StateMachine* machine);
 void debug_mapperTest();
 void debug_EncryptionTest(bool);
 void compareCTs(EncryptionHandler::CT& ct1, EncryptionHandler::CT& ct2, BilinearMappingHandler* mapper);
-
+void helpMenu();
 //program parameters: machine type (user/server/ca), user id, server and CA IP (relevant for the user only)
 
 int main()
 {
+#if HELP
+	helpMenu();
+#endif
+
+
 	string ip;
 
 #if CLIENT
@@ -318,4 +324,33 @@ void compareCTs(EncryptionHandler::CT& ct1, EncryptionHandler::CT& ct2, Bilinear
 	}
 
 }
+
+void helpMenu(){
+	cout<<"==========================================================================="<<endl;
+	cout<<"\t\t\t**************************\n\t\t\t**welcome to CryptoBond!**\n\t\t\t**************************"<<endl;
+	cout<<"---------------------------------------------------------------------------"<<endl;
+	cout<<"\tthis is the program instruction:"<<endl;
+	cout<<"----------------------------------------------------------------"<<endl;
+
+	cout<<"\t to run as Client:"<<endl;
+	cout<<"\t\tclient [Server IP]:[Server PORT] [CA IP]:[CA PORT] <Name>"<<endl;
+	cout<<"\t\t\tex: client 10.0.0.1:12345 10.0.0.2:12346 mr.user"<<endl;
+	cout<<"\t---------------------------------------------------------"<<endl;
+
+
+	cout<<"\t to run as Server:"<<endl;
+	cout<<"\t\tserver [CA IP]:[CA PORT]"<<endl;
+	cout<<"\t\t\tex: server 10.0.0.2:12346"<<endl;
+	cout<<"\t---------------------------------------------------------"<<endl;
+
+
+	cout<<"\t to run as CA:"<<endl;
+	cout<<"\t\tca [Server IP]:[Server PORT]"<<endl;
+	cout<<"\t\t\tex: ca 10.0.0.1:12345"<<endl;
+	cout<<"\t---------------------------------------------------------"<<endl;
+
+
+	cout<<"\t-h help\t\tshow the help menu"<<endl;
+	cout<<"==========================================================================="<<endl;
+}//end of helpMenu
 
