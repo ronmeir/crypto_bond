@@ -32,7 +32,7 @@ using namespace std;
 #define SYN_REQUEST_QUEUE_SIZE 10				//Max num of pending syn requests
 #define SERVER_TCP_PORT_NUM 8000   				//define a port number for the welcome socket on the server
 #define CA_TCP_PORT_NUM 8002   					//define a port number for the welcome socket on the CA
-#define CLIENT_UI_SERVER_TCP_PORT_NUM 60001	//Client's UI port
+#define CLIENT_UI_SERVER_TCP_PORT_NUM 60001  	//Client's UI port
 #define MAX_ELEMENT_LENGTH_IN_BYTES 512			//max size of a single compressed group element
 #define MAX_USER_NAME_LENGTH 25
 #define MAX_NUM_OF_SOCK_CONNECT_RETRIES 4

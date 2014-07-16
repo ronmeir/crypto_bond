@@ -125,7 +125,7 @@ switch (argc)
  */
 void checkArgsForServerOrCA(char** argv)
 {
-
+	if ()
 }//end of checkArgsForServerOrCA()
 
 /*
@@ -155,6 +155,8 @@ bool checkIfIPisValid(char* ipString)
 	const char delim[2] = ".";  //breaking the string down, using the decimal point as a delimiter
 	int numOfSegments = 0;
 	char *token;
+
+	//todo add a function that breaks down a given string into a vector by given delimiters
 
    /* get the first token */
    token = strtok(ipString, delim);
