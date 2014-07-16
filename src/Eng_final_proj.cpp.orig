@@ -35,12 +35,11 @@ void debug_initializeStateMachine(StateMachine* machine);
 void debug_mapperTest();
 void debug_EncryptionTest(bool);
 void compareCTs(EncryptionHandler::CT& ct1, EncryptionHandler::CT& ct2, BilinearMappingHandler* mapper);
+<<<<<<< HEAD
 void checkArgsForServerOrCA(char** argv);
 bool checkIfPortIsValid(char* portString);
 bool checkIfIPisValid(char* ipString);
 int stringToInt (char* string);
-void helpMenu();
-
 /*
  * Terminal launching instructions:
  * To run as a Client: 	client [Server IP]:[Server port] [CA IP]:[CA port] <User Name>
@@ -50,11 +49,9 @@ void helpMenu();
 
 int main(int argc, char** argv)
 {
-#if HELP
-	helpMenu();
-#endif
+	string ip;
 
-switch (argc)
+	switch (argc)
 	{
 		case 1:
 		{
@@ -76,6 +73,10 @@ switch (argc)
 		case 4:
 		{
 			//Three arguments, has to be a Client
+=======
+void helpMenu();
+//program parameters: machine type (user/server/ca), user id, server and CA IP (relevant for the user only)
+>>>>>>> fa24d59e35990dd5a48a56f81c78dfb7a625ae98
 
 			break;
 		}//case 3
@@ -125,6 +126,15 @@ switch (argc)
  */
 void checkArgsForServerOrCA(char** argv)
 {
+<<<<<<< HEAD
+=======
+#if HELP
+	helpMenu();
+#endif
+
+
+	string ip;
+>>>>>>> fa24d59e35990dd5a48a56f81c78dfb7a625ae98
 
 }//end of checkArgsForServerOrCA()
 
