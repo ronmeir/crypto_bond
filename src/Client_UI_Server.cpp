@@ -15,7 +15,6 @@
 Client_UI_Server::Client_UI_Server(ClientMachine* clientMachine ,int port) : BasicMultithreadedServer(port)
 {
 	m_clientMachine = clientMachine; //set a ptr to the clientMachine
-    bool isFirstSK_And_Bond_Send_req = true;
 }
 
 /* The main entry point.
@@ -86,8 +85,7 @@ int Client_UI_Server::execOnWorkerThread (SocketWrapper sock, void* arg)
 	}
 
 	//if the ui has requested to send the SK and bond to the CA
-	if (!parsed_request[2].compare(OPCODE_UI_CLIENT_TO_SERVER_SEND_SK_AND_BOND_TO_CA)
-			&& isFirstSK_And_Bond_Send_req)
+	if (!parsed_request[2].compare(OPCODE_UI_CLIENT_TO_SERVER_SEND_SK_AND_BOND_TO_CA))
 	{
 		if (m_clientMachine->m_program_state == CLIENT_NEED_CA_APPROVAL ||
 				m_clientMachine->m_program_state == CLIENT_OPERATIONAL)
@@ -95,18 +93,14 @@ int Client_UI_Server::execOnWorkerThread (SocketWrapper sock, void* arg)
 			cout << "Sending the SK and Bond to the CA!" << endl;
 			handleRequestToSendSK_AndBondToCA(sock);
 			cout << "DONE!" << endl;
-
-			isFirstSK_And_Bond_Send_req=false;
 		}
 	}
 
 	//if the ui has requested to send the SK and bond to the Server
-//	if (!parsed_request[2].compare(OPCODE_UI_CLIENT_TO_SERVER_SEND_SK_AND_BOND_TO_SERVER)
-//			&& !isFirstSK_And_Bond_Send_req)
-	if (!parsed_request[2].compare(OPCODE_UI_CLIENT_TO_SERVER_SEND_SK_AND_BOND_TO_CA)
-			&& !isFirstSK_And_Bond_Send_req)
+	if (!parsed_request[2].compare(OPCODE_UI_CLIENT_TO_SERVER_SEND_SK_AND_BOND_TO_SERVER))
 	{
-		if (m_clientMachine->m_program_state == CLIENT_NEED_CA_APPROVAL)
+		if (m_clientMachine->m_program_state == CLIENT_NEED_CA_APPROVAL ||
+				m_clientMachine->m_program_state == CLIENT_OPERATIONAL)
 		{
 			cout << "Sending the SK and Bond to the Server!" << endl;
 			handleRequestToSendSK_AndBondToServer(sock);
