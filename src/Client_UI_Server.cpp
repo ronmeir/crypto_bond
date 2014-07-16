@@ -315,8 +315,8 @@ void Client_UI_Server::handleRequestToSendSK_AndBondToServer (SocketWrapper& soc
 			 reply = createMessage(UI_SERVER,
 					 UI_CLIENT,
 					 OPCODE_UI_SERVER_TO_CLIENT_SK_AND_BOND_RECEIVED_BY_SERVER,
-					 strlen(CONTENT_GET_SM_OK),
-					 CONTENT_GET_SM_OK);
+					 strlen(CONTENT_SERVER_ACK),
+					 CONTENT_SERVER_ACK);
 			break;
 		}
 
