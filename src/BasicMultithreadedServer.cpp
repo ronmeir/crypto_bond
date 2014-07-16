@@ -28,14 +28,21 @@ void BasicMultithreadedServer::runWelcomeSocket(void* argForWorkerThread)
 	m_welcomeSock = &temp;
 	SocketWrapper sa(-1);
 	pthread_t threadId;
+	int failCtr=0;
 
 	  /* Welcome socket is now set up and bound. Wait for connection and process it. */
 	while (1)
 	{
+		if (failCtr == 5)
+		{
+			exit(1);  //shut down.
+		}
+
 		sa = m_welcomeSock->acceptNewConnection(); /* block for connection request */
 		if (sa.getSocketDescriptor() < 0)
 		{
 			printf("Welcome socket accept failed!\n");
+			failCtr++;
 			continue;
 		}
 

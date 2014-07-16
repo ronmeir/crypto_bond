@@ -59,6 +59,7 @@ private:
 	void handleClientBond (vector<string>& incomingMsg,SocketWrapper& sock);
 	void handleClientMessage (vector<string>& incomingMsg,SocketWrapper& sock);
 	void recoverBond (string& userName, string& virus);
+	void printSplash();
 
 
 public:

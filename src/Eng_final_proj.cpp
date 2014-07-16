@@ -19,9 +19,9 @@
 #include "ServerMachine.h"
 #include "CA_Machine.h"
 #include "ObjectSerializer.h"
-#define CLIENT 1
+#define CLIENT 0
 #define SERVER 0
-#define CA 	   0
+#define CA 	   1
 
 #define SERVER_IP "127.0.0.1"
 #define CA_IP "127.0.0.1"

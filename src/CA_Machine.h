@@ -62,6 +62,7 @@ private:
 	int updateTheServerWithClientDetails(string& clientDetails);
 	bool HandleSK_AndBondValidation(CA_Machine::User& user);
 	void handleClientSentSK_OrBond(vector<string>& parsed_request, SocketWrapper sock);
+	void printSplash();
 
 public:
 	CA_Machine(string& Server_IP_addr);
