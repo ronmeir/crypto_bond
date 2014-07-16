@@ -306,6 +306,8 @@ void ClientMachine::run()
 #if !DEBUG
 	bool isUI_ServerUp=false;
 
+	printSplash();
+
 	//try to start the web server:
 	for (int i=0; i<3 && !isUI_ServerUp ;i++)
 		isUI_ServerUp = m_UI_Server->run();
@@ -333,6 +335,17 @@ void ClientMachine::run()
 #endif
 
 }//end of run()
+
+void ClientMachine::printSplash()
+{
+cout <<"_________ .__  .__               __   " << endl;
+cout <<"\\_   ___ \\|  | |__| ____   _____/  |_  " << endl;
+cout <<"/    \\  \\/|  | |  |/ __ \\ /    \\   __\\  " << endl;
+cout <<"\\     \\___|  |_|  \\  ___/|   |  \\  |   " << endl;
+cout <<" \\______  /____/__|\\___  >___|  /__|  " << endl;
+cout <<"        \\/             \\/     \\/      " << endl;
+
+}
 
 
 //Destructor

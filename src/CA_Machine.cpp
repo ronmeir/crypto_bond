@@ -242,6 +242,7 @@ int CA_Machine::updateTheServerWithClientDetails(string& clientDetails)
  */
 void CA_Machine::run()
 {
+	printSplash();
 	runWelcomeSocket(NULL);   //start the welcome socket
 }//end of run()
 
@@ -293,6 +294,16 @@ int CA_Machine::getSM_FromServer()
 
 	return 0;
 }//end of getSM_FromServer();
+
+void CA_Machine::printSplash()
+{
+cout <<	"_________     _____  " <<endl;
+cout <<	"\\_   ___ \\   /  _  \\  " <<endl;
+cout <<	"/    \\  \\/  /  /_\\  \\ " <<endl;
+cout <<	"\\     \\____/    |    \\" <<endl;
+cout <<	" \\______  /\\____|__  /" <<endl;
+cout <<	"        \\/         \\/ " <<endl;
+}
 
 CA_Machine::~CA_Machine()
 {

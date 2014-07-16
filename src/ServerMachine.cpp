@@ -309,6 +309,7 @@ void ServerMachine::recoverBond (string& userName, string& virus)
  */
 void ServerMachine::run()
 {
+	printSplash();
 	runWelcomeSocket(NULL);   //launch the welcome socket (the welcome socket doesn't run on a thread)
 }//end of run()
 
@@ -377,6 +378,16 @@ void ServerMachine::initializeStateMachine(StateMachine* machine)
 	machine->addState(5,transitions,0,true);
 printf("State machine is ready!\n");
 }//end of debug_initializeStateMachine
+
+void ServerMachine::printSplash ()
+{
+	cout << 		"  _________                                " << endl;
+	cout <<			" /   _____/ ______________  __ ___________ "	<< endl;
+	cout <<			" \\_____  \\_/ __ \\_  __ \\  \\/ // __ \\_  __ \\ "<< endl;
+	cout <<			" /        \\  ___/|  | \\/\\   /\\  ___/|  | \\/"	<< endl;
+	cout <<			"/_______  /\\___  >__|    \\_/  \\___  >__|  "	<< endl;
+	cout <<			"        \\/     \\/                 \\/       " 		<< endl;
+}
 
 int ServerMachine::getPort ()
 {

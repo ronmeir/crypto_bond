@@ -58,6 +58,7 @@ private:
 	int UI_Callback_CreateSK_AndBond();
 	int UI_Callback_SendSK_AndBond(bool isSendToCA);
 	int UI_Callback_SendMsg(std::string& servers_reply, std::string msg);
+	void printSplash();
 
 public:
 	ClientMachine(const std::string,const std::string,const std::string);
