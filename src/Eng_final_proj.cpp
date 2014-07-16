@@ -35,7 +35,7 @@ void compareCTs(EncryptionHandler::CT& ct1, EncryptionHandler::CT& ct2, Bilinear
 
 //program parameters: machine type (user/server/ca), user id, server and CA IP (relevant for the user only)
 
-int main()
+int main(int argc, char** argv)
 {
 	string ip;
 
