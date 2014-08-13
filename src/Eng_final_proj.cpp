@@ -161,7 +161,6 @@ bool checkIfIPisValid(char* ipString)
    /* get the first token */
    token = strtok(ipString, delim);
 
-   /* walk through other tokens */
    while( token != NULL )
    {
 	  numOfSegments++; //count the number of segments
