@@ -49,6 +49,7 @@ void helpMenu();
 
 int main(int argc, char** argv)
 {
+string ip;
 
 #if CLIENT
 	ClientMachine client("Mr. user",SERVER_IP,CA_IP);
