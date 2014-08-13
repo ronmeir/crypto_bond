@@ -19,6 +19,8 @@ CA_Machine::CA_Machine(string& Server_IP_addr) : BasicMultithreadedServer(g_self
 	m_mapper = new BilinearMappingHandler(PARAM_FILE_PATH); //we require a mapper to deserialize the SM string
 	m_serializer = new ObjectSerializer(*m_mapper);
 
+	printSplash();
+
 	cout << "Trying to get an SM from the server." << endl;
 	while (getSM_FromServer()==-1) //keep looping while the CA didn't receive a valid SM
 	{
@@ -242,7 +244,7 @@ int CA_Machine::updateTheServerWithClientDetails(string& clientDetails)
  */
 void CA_Machine::run()
 {
-	printSplash();
+
 	runWelcomeSocket(NULL);   //start the welcome socket
 }//end of run()
 

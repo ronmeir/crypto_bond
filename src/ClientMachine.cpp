@@ -32,6 +32,8 @@ ClientMachine::ClientMachine(const string userID,const string ServerIP,const str
 	m_UI_Server = new Client_UI_Server (this,CLIENT_UI_SERVER_TCP_PORT_NUM);
 	m_program_state = CLIENT_NEED_STATE_MACHINE;  //init the program's state
 
+	cout << g_serverPort << "  " << g_CA_Port << endl;
+
 }//end of constructor
 
 /**
@@ -303,7 +305,7 @@ int ClientMachine::UI_Callback_requestSM_FromServer()
  */
 void ClientMachine::run()
 {
-#if !DEBUG
+
 	bool isUI_ServerUp=false;
 
 	printSplash();
@@ -315,24 +317,7 @@ void ClientMachine::run()
 	if (!isUI_ServerUp)
 		cout << "UNABLE TO START THE CLIENT UI SERVER!";
 
-#else
-	string toSend = "valid request";
-	SocketWrapper sock(0);
-	m_UI_Server->handleRequestSM_FromServer(sock);
-	m_UI_Server->handleRequestToCreateSK_AndBond(sock);
-	m_UI_Server->handleRequestToSendSK_AndBondToCA(sock);
-	m_UI_Server->handleRequestToSendSK_AndBondToServer(sock);
-	m_UI_Server->handleRequestToSendMsgToServer(sock,toSend);
-
-	toSend = "abc";
-	m_UI_Server->handleRequestToSendMsgToServer(sock,toSend);
-
-	toSend = "def";
-	m_UI_Server->handleRequestToSendMsgToServer(sock,toSend);
-
-	toSend = "virus";
-	m_UI_Server->handleRequestToSendMsgToServer(sock,toSend);
-#endif
+	while(1); //loop forever
 
 }//end of run()
 

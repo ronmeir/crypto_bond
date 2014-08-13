@@ -97,6 +97,7 @@ switch (argc)
 			//5 arguments, has to be a Client
 			if ( checkArgsForClient(argv) ) //if the args are good
 			{
+				cout << g_serverPort << "  " << g_CA_Port << endl;
 				ClientMachine client(g_userName,g_serverIP, g_CA_IP);
 				client.run();
 			}
@@ -129,22 +130,30 @@ bool checkArgsForClient(char** argv)
 	if (strCmpCaseInsensitive(argv[1], CLIENT)) //if this should be a client machine
 	{
 
-		//check the 2nd arg (ca addr):
-		if (!checkAndParseIPandPortString(argv[2],g_CA_IP, &g_CA_Port))//if the addr. is invalid
+		//check the 2nd arg (server addr):
+		if (!checkAndParseIPandPortString(argv[2],g_serverIP, &g_serverPort))//if the addr. is invalid
 		{
-			cout << "Invalid CA address! Please verify the IP and port." << endl;
+			cout << "Invalid Server address! Please verify the IP and port." << endl;
 				return false;
 		}
 
 		//check the 3rd arg (ca addr):
-		if (!checkAndParseIPandPortString(argv[3],g_serverIP, &g_serverPort))//if the addr. is invalid
+		if (!checkAndParseIPandPortString(argv[3],g_CA_IP, &g_CA_Port))//if the addr. is invalid
 		{
 			cout << "Invalid CA address! Please verify the IP and port." << endl;
 				return false;
 		}
 
 		//save the 4th arg (name):
-		strncpy(g_userName,argv[4],MAX_ELEMENT_LENGTH_IN_BYTES);
+		if (strlen(argv[4]) > MAX_ELEMENT_LENGTH_IN_BYTES) //if the username is longer then supported
+		{
+			strncpy(g_userName,argv[4],MAX_ELEMENT_LENGTH_IN_BYTES);
+		}
+		else
+		{
+			strcpy(g_userName,argv[4]);
+		}
+
 		return true;
 	}
 	else
@@ -208,8 +217,7 @@ bool checkArgsForServerOrCA(char** argv, bool* saveIsServerHere)
 			}
 
 			//check the 3rd arg:
-			if (checkAndParseIPandPortString(argv[3], g_serverIP,
-					&g_serverPort))
+			if (checkAndParseIPandPortString(argv[3], g_serverIP, &g_serverPort))
 			{
 				return true;
 			}
@@ -284,7 +292,7 @@ bool checkAndParseIPandPortString(char* input, char* saveIPhere, int* savePortHe
    token = strtok( inputCpy+strlen(token)+1, delim); //get the port string
    if (checkIfPortIsValid(token)) //if the port string is valid
    {
-	   *savePortHere = stringToInt(token); //save
+	  *savePortHere = stringToInt(token); //save
    }
    else
    {
