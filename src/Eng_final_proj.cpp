@@ -24,7 +24,6 @@
 #define CLIENT	0
 #define SERVER	0
 #define CA		0
-#define HELP	1
 
 #define SERVER_IP "127.0.0.1"
 #define CA_IP "127.0.0.1"
@@ -50,70 +49,28 @@ void helpMenu();
 
 int main(int argc, char** argv)
 {
-#if HELP
-	helpMenu();
-#endif
 
-switch (argc)
+#if CLIENT
+	ClientMachine client("Mr. user",SERVER_IP,CA_IP);
+	client.run();
+
+	while (1)   //keep the main thread running infinitely
 	{
-		case 1:
-		{
-			//program was called with no additional arguments. Let case 2 handle things.
-		}//case 1
-		case 2:
-		{
-			//A single argument, still invalid.
-			//todo print the help menu and quit.
-			exit(1);
-			break;
-		}//case 2
-		case 3:
-		{
-			//Two arguments, has to be a Server or CA
+		sleep(1000); //done because sched_yield() simply won't work.
+	}
 
-			break;
-		}//case 3
-		case 4:
-		{
-			//Three arguments, has to be a Client
-
-			break;
-		}//case 3
-		default:
-		{
-			//unsupported number of arguments
-			//todo print the help menu and quit.
-			exit(1);
-		}
-
-	}//end of switch
-
-
-
-
-
-
-//#if CLIENT
-//	ClientMachine client("Mr. user",SERVER_IP,CA_IP);
-//	client.run();
-//
-//	while (1)   //keep the main thread running infinitely
-//	{
-//		sleep(1000); //done because sched_yield() simply won't work.
-//	}
-//
-//	google::protobuf::ShutdownProtobufLibrary();
-//#endif
-//#if SERVER
-//	ip.assign(CA_IP);
-//	ServerMachine server (ip);
-//	server.run();
-//#endif
-//#if CA
-//	ip.assign(SERVER_IP);
-//	CA_Machine ca(ip);
-//	ca.run();
-//#endif
+	google::protobuf::ShutdownProtobufLibrary();
+#endif
+#if SERVER
+	ip.assign(CA_IP);
+	ServerMachine server (ip);
+	server.run();
+#endif
+#if CA
+	ip.assign(SERVER_IP);
+	CA_Machine ca(ip);
+	ca.run();
+#endif
 
 	return 0;
 }//end of main()
