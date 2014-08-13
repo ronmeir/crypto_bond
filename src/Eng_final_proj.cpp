@@ -21,7 +21,7 @@
 #include "ServerMachine.h"
 #include "CA_Machine.h"
 #include "ObjectSerializer.h"
-#define CLIENT	0
+#define CLIENT	1
 #define SERVER	0
 #define CA		0
 
@@ -75,15 +75,6 @@ int main(int argc, char** argv)
 	return 0;
 }//end of main()
 
-/**
- * Checks the user's arguments to see if they're compatible with a Server or CA requirements.
- * If the args are good, launches a CA or Server machine.
- * @param argv - the user's arguments.
- */
-void checkArgsForServerOrCA(char** argv)
-{
-	if ()
-}//end of checkArgsForServerOrCA()
 
 /*
  * Checks if two string are equal, case insensitive.
