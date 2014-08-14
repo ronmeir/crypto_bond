@@ -225,7 +225,7 @@ bool checkArgsForServerOrCA(char** argv, bool* saveIsServerHere)
 
 	//the machine type is invalid.
 
-	cout << "Invalid machine type!"<<endl;
+	cout << "Invalid machine type or a wrong amount of arguments!"<<endl;
 	helpMenu();
 	return false; //should never be reached
 }//end of checkArgsForServerOrCA()
