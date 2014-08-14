@@ -3,11 +3,11 @@ import tkinter.scrolledtext as tkst
 import ttk
 import socket 
 import easygui
-import os
-
+import os,time,sys
+from threading import Thread
 
 ############################ IP and PORT form UI ########################################
-IP='127.0.0.1' 
+IP='10.0.0.11' 
 PORT= 60001
 #########################################################################################
 
@@ -231,7 +231,7 @@ def send_was_pressed():
 #called when the "clear" button is preesed	
 def clear_was_pressed():
 	textbox.delete('1.0', 'end')
-	#print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nscreen was cleared!!!")
+	print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nscreen was cleared!!!")
 
 
 #called when the "connect" button is preesed   
@@ -240,7 +240,7 @@ def connect_was_pressed():
 	insert_text("	IP  :"+str(getIP()))
 	insert_text("	PORT:"+str(getPort())+"\n")
 	
-	#print("GUI server info:	IP:"+str(getIP())+"	PORT:"+str(getPort()))
+	print("GUI server info:	IP:"+str(getIP())+"	PORT:"+str(getPort()))
 	msg=MSG_req_sm_from_server()	#get to relevant msg tuple (toSend,toShow)
 	send(msg)						#this is the actual MSG sent 
 	
@@ -278,7 +278,7 @@ def send(msg):
 	#a normal msg that we send should be green
 	
 	
-	#print("printing msg:"+str(msg))	
+	print("printing msg:"+str(msg))	
 	#insert_text(msg,color) 
 	
 	s.send(msg[0].encode())
@@ -298,6 +298,8 @@ def send(msg):
 	#print(msg)
 	
 	s.close
+
+
 	
 def keyPress(event):
 
@@ -308,16 +310,43 @@ def keyPress(event):
 	elif event.keysym == 'Return':
 			send_was_pressed()
 			msgbox.delete('1.0', 'end')
-		
+
+
+def background_stuff():
+	flag=True
+	while True:
+		msg=om_selected_var.get()
+		if(msg!=setMsg(4)):
+			msgbox.config(state='normal')
+			msgbox.delete('1.0', 'end')
+			msgbox.insert(tk.INSERT, msg)
+			msgbox.config(state='disabled')
+			if(flag==False):
+				flag=True
+
+		elif(flag==True):
+			flag=False
+			msgbox.config(state='normal')
+			msgbox.delete('1.0', 'end')
+
+
+		time.sleep(0.5)
+    		
+def kill():
+	threadPolling._stop()
+	sys.exit(0)
+
 	
 if __name__ == "__main__":
-	
-	global var1, optionList, om_selected_var, om,isConnected
+	global var1, optionList, om_selected_var, om,isConnected,threadPolling
 	master = tk.Tk()
 	master.geometry('680x233')
 	master.title("Client GUI") 	# the title of the window
 	master.resizable(0,0)		# disable maximize
+	master.protocol('WM_DELETE_WINDOW', kill)
 	isConnected="F"
+
+
 
 	
 	
@@ -339,7 +368,7 @@ if __name__ == "__main__":
 	b_clear	= 	ttk.Button(master,text="Clear(Esc)"	,command=clear_was_pressed)    
 	
 	b_clear.grid(	row=1,column=1, pady=5)	#, padx=5
-	b_connect.grid(	row=2,column=0, pady=1)	#padx=1,
+	#b_connect.grid(	row=2,column=0, pady=1)	#padx=1,
 	
 	titleLabel = ttk.Label(master,text="choose MSG:")
 	titleLabel.grid(row=20,column=0)
@@ -368,6 +397,14 @@ if __name__ == "__main__":
 	
 
 	master.bind_all('<KeyRelease>', keyPress)
+
+
+	threadPolling = Thread(target=background_stuff)
+	threadPolling.start()
+
+
+
+
 	master.mainloop()
 ###################################################################################################################
 #######################    END Of User Interface     ##############################################################
