@@ -35,7 +35,7 @@ void BasicMultithreadedServer::runWelcomeSocket(void* argForWorkerThread)
 	{
 		if (failCtr == 5)
 		{
-			exit(1);  //shut down.
+			Quit(1);
 		}
 
 		sa = m_welcomeSock->acceptNewConnection(); /* block for connection request */

@@ -89,9 +89,9 @@ int SocketWrapper::receiveFromSocket(char* buffer, int numOfBytesToRead)
  */
 int SocketWrapper::sendToSocket (const char* buffer, int numOfBytesToSend)
 {
-	if (m_socketDiscrptr==-1)
+	if (m_socketDiscrptr < 1)
 	{
-		cout << "Invalid socket descriptor!";
+		cout << "Invalid socket descriptor!" << endl;
 		return -1;
 	}
 

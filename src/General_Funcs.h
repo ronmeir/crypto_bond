@@ -10,8 +10,8 @@
  * Contains a few general usage functions that we use across the project.
  */
 
-#ifndef STATIC_FUNCS_H_
-#define STATIC_FUNCS_H_
+#ifndef GENERAL_FUNCS_H_
+#define GENERAL_FUNCS_H_
 
 #include <string.h>
 #include <cstring>
@@ -26,30 +26,78 @@ using namespace std;
  * increase the size of the program, but it's relatively negligible.
  */
 
+inline void Quit(int value)
+{
+	if (g_GUI_threadId)
+	{
+		pthread_cancel(g_GUI_threadId);
+	}
+	exit(value);  //shut down.
+}
+
+//the number of bytes that'll be printed in a single row:
+#define NUM_OF_BYTES_IN_A_SINGLE_ROW 16
+
 /*
- * Converges every byte in the given byte array to be in the range [32,126]
+ * Converges every byte in the given byte array to it's hex representation
+ * i.e. 30 82 02 5e 02 01 00 02
+ *		0f ea 59 6f 1d 32 bf 26
+ *		38 ee db ec 91 89 45 01
+ *		1d 5d 3a df d8 93 4c 46
+ *		1a b9 bb eb 95 de 93 24
+ *		d7 6c 2d 43 35 af cf 15
  */
 inline void createDisplayableBondPT_String (string& saveHere,const char* arr, int size)
 {
-	char temp[size];
+	char current_byte[3];
+	int currentRowLen = 0;
 
-	memcpy(temp,arr,size);  //copy the input
-
-	int rangeSize = ('~') - (' ') + 1;  //calc the size of the range we're gonna move the bytes to.
-	int offset = ' '; //space is the first char in the range.
+	current_byte[2]='\0';
+	saveHere.clear();
 
 	for (int i=0; i<size ;i++) //for every given byte
 	{
-		if (temp[i]<0)       //for some reason, the % operator works only on positive ints.
-			temp[i] *= -1;
+		sprintf(current_byte, "%02X", arr[i]); //convert to Hex format
 
-		temp[i] %= rangeSize;
-		temp[i] += offset;
+		string temp (current_byte,2); //create a string with current_byte's first 2 bytes
+
+		saveHere += temp + " ";   //append the byte's hex representation
+
+		currentRowLen++;
+		currentRowLen %= NUM_OF_BYTES_IN_A_SINGLE_ROW;
+
+		if (currentRowLen==0) //if it's the end of a line
+		{
+			saveHere += "\n";
+		}
 	}
 
-	saveHere.assign(temp,size);
-
 }//end of createDisplayableBondPT_String()
+
+///*
+// * Converges every byte in the given byte array to be in the range [32,126]
+// */
+//inline void createDisplayableBondPT_String (string& saveHere,const char* arr, int size)
+//{
+//	char temp[size];
+//
+//	memcpy(temp,arr,size);  //copy the input
+//
+//	int rangeSize = ('~') - (' ') + 1;  //calc the size of the range we're gonna move the bytes to.
+//	int offset = ' '; //space is the first char in the range.
+//
+//	for (int i=0; i<size ;i++) //for every given byte
+//	{
+//		if (temp[i]<0)       //for some reason, the % operator works only on positive ints.
+//			temp[i] *= -1;
+//
+//		temp[i] %= rangeSize;
+//		temp[i] += offset;
+//	}
+//
+//	saveHere.assign(temp,size);
+//
+//}//end of createDisplayableBondPT_String()
 
 /*
  * Creates a message according to the format described at Messages.h
@@ -85,7 +133,12 @@ inline vector<string> readAndParseMessageFromSocket(SocketWrapper& sock)
 		while (buff[j] != SFSC) //in the current message field
 		{
 			j++;
-			sock.receiveFromSocket(&buff[j],1); //read the next char
+			int retVal = sock.receiveFromSocket(&buff[j],1); //read the next char
+
+			if (retVal < 1)
+			{
+				return results;
+			}
 		}//while
 
 		buff[j]='\0'; //replace the SFSC with a null terminator

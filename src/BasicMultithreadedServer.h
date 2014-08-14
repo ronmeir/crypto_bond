@@ -21,6 +21,7 @@
 #include "SocketWrapper.h"
 #include "WelcomeSocket.h"
 #include "Constants.h"
+#include "General_Funcs.h"
 #include <string>
 #include <pthread.h>
 

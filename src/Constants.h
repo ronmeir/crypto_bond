@@ -17,6 +17,7 @@
 #include <cstdlib>
 #include <sstream>
 #include <vector>
+#include <pthread.h>
 #include "SocketWrapper.h"
 #include "Messages.h"
 
@@ -56,7 +57,7 @@ using namespace std;
 
 #define RET_VAL_TO_UI_SERVER_SERVER_REPLY_OK 0
 
-#define RET_VAL_TO_UI_SERVER
+#define RET_VAL_TO_UI_SERVER_FAILED_TO_OPEN_A_SOCKET 10
 
 //These vars are defined at Constants.cpp:
 extern char g_serverIP[];
@@ -64,6 +65,7 @@ extern char g_CA_IP[];
 extern char g_userName[];
 extern int g_serverPort, g_CA_Port;
 extern int g_selfPort;
+extern pthread_t g_GUI_threadId;
 
 
 
