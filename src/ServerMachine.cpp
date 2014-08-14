@@ -237,7 +237,7 @@ void ServerMachine::handleClientMessage (vector<string>& incomingMsg,SocketWrapp
 
 	if (isVirus)
 	{
-		content = CONTENT_CLIENT_WAS_BUSTED + incomingMsg[4];  //create a reply content
+		content = CONTENT_CLIENT_WAS_BUSTED + incomingMsg[4] + "\n";  //create a reply content
 		msgToSend = createMessage(SERVER_NAME, incomingMsg[0],OPCODE_SERVER_TO_CLIENT_VIRUS_DETECTED_IN_MSG,
 				content.length(), content); //generate a reply message
 
