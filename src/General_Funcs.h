@@ -33,7 +33,67 @@ inline void Quit(int value)
 		pthread_cancel(g_GUI_threadId);
 	}
 	exit(value);  //shut down.
-}
+}//end of Quit()
+
+/*
+ * Prints the global params.
+ * Should be called after the params were read from the global_param_file
+ */
+inline void printFileGlobalParams()
+{
+	cout << endl << endl << "### Global program parameters: ###" << endl;
+	cout << "The global parameters that were read from the global_param_file:" << endl << endl;
+	cout << PARAM_FROM_FILE_MAX_MSG_LEN << ": " << g_maxMessageLength << endl;
+	cout << PARAM_FROM_FILE_SM_SIZE << ": " << g_stateMachineSize << endl;
+	cout << PARAM_FROM_FILE_VIRUS_STRING << ": " << g_virus_string << endl << endl;
+	cout << "#######################################################" << endl << endl;
+
+}//end of printFileGlobalParams()
+
+/*
+ * Checks if two strings are equal, case insensitive.
+ * returns true if the strings are equal, false otherwise
+ */
+inline bool strCmpCaseInsensitive(const char* a,const char* b)
+{
+	for (;*a && *b; a++,b++)
+	{
+		if (tolower(*a) != tolower(*b) )
+			return false;
+	}
+
+	if (*a || *b)			//if the string were of different lengths
+	{
+		return false;
+	}
+
+	return true;
+}//end of strCmpCaseInsensitive()
+
+/*
+ * Converts a string to an int
+ * @param string - the string to be converted
+ * @return - the conversion of the string to an int
+ */
+inline int stringToInt (const char* string)
+{
+	int numb;
+	istringstream ( string ) >> numb;
+	return numb;
+}//end of stringToInt()
+
+inline bool CheckIfStringContainsDigitsOnly(const char* str)
+{
+	for (; *str ; str++) //making sure the string contains digits only
+	{
+		if (*str > 57 || *str < 48)
+		{
+			return false;
+		}
+	}
+
+	return true;
+}//end of CheckIfStringContainingDigitsOnly()
 
 //the number of bytes that'll be printed in a single row:
 #define NUM_OF_BYTES_IN_A_SINGLE_ROW 16

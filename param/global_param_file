@@ -7,7 +7,8 @@ virus_string = virus
 # State machine description:
 # An SM is a collection of states, when every state should be described according to the following pattern:
 #
-#  State [state number]
+#  *SM Start*
+#  State [state number] [isAcceptance]
 #  [input value] [next state number]
 #  [input value] [next state number]
 #  [input value] [next state number]
@@ -15,8 +16,16 @@ virus_string = virus
 #  .
 #  .
 #  .
+#
+#  *SM End*
+#
 # Note that unmentioned input possibilities will be treated as self-loops by default (meaning these inputs
 # will keep the machine in it's current state). 
 
-State 0
+*SM Start*
+State 0 false
  
+
+
+
+*SM End*

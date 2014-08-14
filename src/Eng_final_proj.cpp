@@ -21,6 +21,7 @@
 #include "ServerMachine.h"
 #include "CA_Machine.h"
 #include "ObjectSerializer.h"
+#include "ParamFileHandler.h"
 #define CLIENT	"Client"
 #define SERVER	"Server"
 #define CA		"Ca"
@@ -32,13 +33,8 @@ bool checkArgsForClient(char**);
 bool checkIfPortIsValid(char*);
 bool checkIfIPisValid(char* ipString);
 bool checkAndParseIPandPortString(char*,char*,int*);
-bool strCmpCaseInsensitive(char*, char*);
-bool loadGlobalParamsFromFile(char*);
-int stringToInt (const char*);
 void launchGuiThread();
 void* GuiLauncher(void* argz);
-bool CheckIfStringContainsDigitsOnly(const char*);
-void printFileGlobalParams();
 void helpMenu();
 
 /*
@@ -50,8 +46,9 @@ void helpMenu();
 
 int main(int argc, char** argv)
 {
+	ParamFileHandler fh(GLOBAL_PARAM_FILE_PATH);
 
-	if (!loadGlobalParamsFromFile(GLOBAL_PARAM_FILE_PATH))
+	if (!fh.loadGlobalParamsFromFile())
 	{
 		//failed to read the global params from the file.
 		cout << "Failed to read global_param_file!" << endl << \
@@ -124,94 +121,6 @@ switch (argc)
 
 	return 0;
 }//end of main()
-
-bool loadGlobalParamsFromFile(char* filePath)
-{
-	FILE* fp;
-	char * line = NULL;
-	size_t len = 0;
-	ssize_t read;
-	vector<string> singleLine;
-	bool wereAllParamsRead = false;
-
-	fp = fopen(GLOBAL_PARAM_FILE_PATH, "r"); //open the global_param_file
-	if (fp == NULL)
-	{
-		return false;
-	}
-
-	while ((read = getline(&line, &len, fp)) != -1) //read a single line
-	{
-		if (line[0] == '#' || line[0] == ' ' || line[0] == '\r' || line[0] == '\n') //this line should be ignored
-		{
-			continue;
-		}
-
-		singleLine = tokenizeSingleBuffer(line," "); //tokenize the current line
-
-		//checking to see what parameter we've just read:
-
-		if (!singleLine.at(0).compare(PARAM_FROM_FILE_MAX_MSG_LEN))
-		{
-			int len = singleLine.at(2).size();
-			singleLine.at(2).erase(len-1,1); //erase the last char, which is '\n'
-			if (!CheckIfStringContainsDigitsOnly(singleLine.at(2).c_str())) //making sure the string contains digits only
-			{
-				break;
-			}
-
-			g_maxMessageLength = stringToInt(singleLine.at(2).c_str());
-		}//if PARAM_FROM_FILE_MAX_MSG_LEN
-
-		if (!singleLine.at(0).compare(PARAM_FROM_FILE_SM_SIZE))
-		{
-			int len = singleLine.at(2).size();
-			singleLine.at(2).erase(len-1,1); //erase the last char, which is '\n'
-			if (!CheckIfStringContainsDigitsOnly(singleLine.at(2).c_str())) //making sure the string contains digits only
-			{
-				break;
-			}
-
-			g_stateMachineSize = stringToInt(singleLine.at(2).c_str());
-		}//if PARAM_FROM_FILE_SM_SIZE
-
-		if (!singleLine.at(0).compare(PARAM_FROM_FILE_VIRUS_STRING))
-		{
-			int len = singleLine.at(2).size();
-			g_virus_string.assign(singleLine.at(2).erase(len-1,1));
-		}//if PARAM_FROM_FILE_VIRUS_STRING
-
-		//check if we've finished:
-
-		//if we've read all the expected global params
-		if (g_maxMessageLength > 0 && g_stateMachineSize > 0 && g_virus_string.size() != 0)
-		{
-			wereAllParamsRead = true;
-			break;
-		}
-	}//while
-
-	if (line)
-		free(line);
-
-	return wereAllParamsRead;
-}//end loadGlobalParamsFromFile()
-
-/*
- * Prints the global params.
- * Should be called after the params were read from the global_param_file
- */
-void printFileGlobalParams()
-{
-
-	cout << endl << endl << "### Global program parameters: ###" << endl;
-	cout << "The global params that were read from the global_param_file:" << endl;
-	cout << PARAM_FROM_FILE_MAX_MSG_LEN << ": " << g_maxMessageLength << endl;
-	cout << PARAM_FROM_FILE_SM_SIZE << ": " << g_stateMachineSize << endl;
-	cout << PARAM_FROM_FILE_VIRUS_STRING << ": " << g_virus_string << endl;
-	cout << "#######################################################" << endl << endl;
-
-}//end of printFileGlobalParams()
 
 void launchGuiThread()
 {
@@ -350,24 +259,6 @@ bool checkArgsForServerOrCA(char** argv, bool* saveIsServerHere)
 	return false; //should never be reached
 }//end of checkArgsForServerOrCA()
 
-/*
- * Checks if two strings are equal, case insensitive.
- */
-bool strCmpCaseInsensitive(char* a, char* b)
-{
-	for (;*a && *b; a++,b++)
-	{
-		if (tolower(*a) != tolower(*b) )
-			return false;
-	}
-
-	if (*a || *b)			//if the string were of different lengths
-	{
-		return false;
-	}
-
-	return true;
-}//end of strCmpCaseInsensitive()
 
 /*
  * Receives an IP and port string (as was entered by the user via the cmd line), checks it and
@@ -494,32 +385,6 @@ bool checkIfPortIsValid(char* portString)
 
 	return true;
 }//end of checkIfPortIsValid()
-
-bool CheckIfStringContainsDigitsOnly(const char* str)
-{
-	for (; *str ; str++) //making sure the string contains digits only
-	{
-		if (*str > 57 || *str < 48)
-		{
-			return false;
-		}
-	}
-
-	return true;
-}//end of CheckIfStringContainingDigitsOnly()
-
-/*
- * Converts a string to an int
- * @param string - the string to be converted
- * @return - the conversion of the string to an int
- */
-int stringToInt (const char* string)
-{
-	int numb;
-	istringstream ( string ) >> numb;
-	return numb;
-}//end of stringToInt()
-
 
 void helpMenu(){
 	cout<<"==========================================================================="<<endl;

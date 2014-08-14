@@ -21,6 +21,7 @@
 #include "Constants.h"
 #include "Messages.h"
 #include "General_Funcs.h"
+#include "ParamFileHandler.h"
 
 using namespace std;
 
@@ -52,7 +53,7 @@ private:
 
 	//methods:
 	int execOnWorkerThread(SocketWrapper, void* arg);
-	void initializeStateMachine(StateMachine* machine);
+	bool initializeStateMachine(StateMachine* machine);
 	void handleSM_request (vector<string>& incomingMsg,SocketWrapper& sock);
 	void handleCA_userApproval (vector<string>& incomingMsg,SocketWrapper& sock);
 	void handleClientSK (vector<string>& incomingMsg,SocketWrapper& sock);
