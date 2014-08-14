@@ -14,7 +14,7 @@ int g_selfPort;        //the port that the welcome socket will listen to (releva
 int g_maxMessageLength = 0;	      //the maximal length of a message that can be send from a client to the server
 							  //in the operational stage
 int g_stateMachineSize = 0;       //the number of states in the state machine
-string g_virus_string = 0;		  //a single string that is recognized by the state machine as a virus
+string g_virus_string;		  //a single string that is recognized by the state machine as a virus
 
 // #### misc:
 pthread_t g_GUI_threadId=0;   //relevant to a client only

@@ -34,9 +34,11 @@ bool checkIfIPisValid(char* ipString);
 bool checkAndParseIPandPortString(char*,char*,int*);
 bool strCmpCaseInsensitive(char*, char*);
 bool loadGlobalParamsFromFile(char*);
-int stringToInt (char*);
+int stringToInt (const char*);
 void launchGuiThread();
 void* GuiLauncher(void* argz);
+bool CheckIfStringContainsDigitsOnly(const char*);
+void printFileGlobalParams();
 void helpMenu();
 
 /*
@@ -48,6 +50,16 @@ void helpMenu();
 
 int main(int argc, char** argv)
 {
+
+	if (!loadGlobalParamsFromFile(GLOBAL_PARAM_FILE_PATH))
+	{
+		//failed to read the global params from the file.
+		cout << "Failed to read global_param_file!" << endl << \
+			"Make sure the file exists in the \"param\" folder and is according to the required format.";
+		Quit(1);
+	}
+
+	printFileGlobalParams();  //print the values that were read from the file
 
 switch (argc)
 	{
@@ -119,8 +131,8 @@ bool loadGlobalParamsFromFile(char* filePath)
 	char * line = NULL;
 	size_t len = 0;
 	ssize_t read;
-	int numOfReadParams = 0;       //will be used to ensure that we read to expected amount of params
 	vector<string> singleLine;
+	bool wereAllParamsRead = false;
 
 	fp = fopen(GLOBAL_PARAM_FILE_PATH, "r"); //open the global_param_file
 	if (fp == NULL)
@@ -137,14 +149,65 @@ bool loadGlobalParamsFromFile(char* filePath)
 
 		singleLine = tokenizeSingleBuffer(line," "); //tokenize the current line
 
+		//checking to see what parameter we've just read:
+
+		if (!singleLine.at(0).compare(PARAM_FROM_FILE_MAX_MSG_LEN))
+		{
+			int len = singleLine.at(2).size();
+			singleLine.at(2).erase(len-1,1); //erase the last char, which is '\n'
+			if (!CheckIfStringContainsDigitsOnly(singleLine.at(2).c_str())) //making sure the string contains digits only
+			{
+				break;
+			}
+
+			g_maxMessageLength = stringToInt(singleLine.at(2).c_str());
+		}//if PARAM_FROM_FILE_MAX_MSG_LEN
+
+		if (!singleLine.at(0).compare(PARAM_FROM_FILE_SM_SIZE))
+		{
+			int len = singleLine.at(2).size();
+			singleLine.at(2).erase(len-1,1); //erase the last char, which is '\n'
+			if (!CheckIfStringContainsDigitsOnly(singleLine.at(2).c_str())) //making sure the string contains digits only
+			{
+				break;
+			}
+
+			g_stateMachineSize = stringToInt(singleLine.at(2).c_str());
+		}//if PARAM_FROM_FILE_SM_SIZE
+
+		if (!singleLine.at(0).compare(PARAM_FROM_FILE_VIRUS_STRING))
+		{
+			int len = singleLine.at(2).size();
+			g_virus_string.assign(singleLine.at(2).erase(len-1,1));
+		}//if PARAM_FROM_FILE_VIRUS_STRING
+
+		//check if we've finished:
+
+		//if we've read all the expected global params
+		if (g_maxMessageLength > 0 && g_stateMachineSize > 0 && g_virus_string.size() != 0)
+		{
+			wereAllParamsRead = true;
+			break;
+		}
 	}//while
 
 	if (line)
 		free(line);
 
-	return true;
+	return wereAllParamsRead;
 }//end loadGlobalParamsFromFile()
 
+/*
+ * Prints the global params.
+ * Should be called after the params were read from the global_param_file
+ */
+void printFileGlobalParams()
+{
+	cout << "The global params that were read from the global_param_file:" << endl;
+	cout << PARAM_FROM_FILE_MAX_MSG_LEN << ": " << g_maxMessageLength << endl;
+	cout << PARAM_FROM_FILE_SM_SIZE << ": " << g_stateMachineSize << endl;
+	cout << PARAM_FROM_FILE_VIRUS_STRING << ": " << g_virus_string << endl;
+}//end of printFileGlobalParams()
 
 void launchGuiThread()
 {
@@ -412,13 +475,9 @@ bool checkIfPortIsValid(char* portString)
 		return false;
 	}
 
-	char* ptr = portString;
-	for (; *ptr ; ptr++) //making sure the string contains digits only
+	if (!CheckIfStringContainsDigitsOnly(portString)) //making sure the string contains digits only
 	{
-		if (*ptr > 57 || *ptr < 48)
-		{
-			return false;
-		}
+		return false;
 	}
 
 	int port = stringToInt(portString);
@@ -432,13 +491,25 @@ bool checkIfPortIsValid(char* portString)
 	return true;
 }//end of checkIfPortIsValid()
 
+bool CheckIfStringContainsDigitsOnly(const char* str)
+{
+	for (; *str ; str++) //making sure the string contains digits only
+	{
+		if (*str > 57 || *str < 48)
+		{
+			return false;
+		}
+	}
+
+	return true;
+}//end of CheckIfStringContainingDigitsOnly()
 
 /*
  * Converts a string to an int
  * @param string - the string to be converted
  * @return - the conversion of the string to an int
  */
-int stringToInt (char* string)
+int stringToInt (const char* string)
 {
 	int numb;
 	istringstream ( string ) >> numb;
