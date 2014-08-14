@@ -22,7 +22,7 @@ ClientMachine::ClientMachine(const string userID,const string ServerIP,const str
 	m_ID.assign(userID);
 	m_ServerIP.assign(ServerIP);
 	m_CA_IP.assign(CA_IP);
-	m_mapper = new BilinearMappingHandler(PARAM_FILE_PATH); //we require a mapper to deserialize the SM string
+	m_mapper = new BilinearMappingHandler(PBC_PARAM_FILE_PATH); //we require a mapper to deserialize the SM string
 	m_EncHandler = NULL;   //can't be initialized yet because it requires an SM
 	m_SM = NULL;
 	m_SK = NULL;
@@ -97,7 +97,7 @@ int ClientMachine::UI_Callback_CreateSK_AndBond()
 	if (m_EncHandler!=NULL) //if an enc_handler already exists
 		delete(m_EncHandler);
 
-	m_EncHandler = new EncryptionHandler(PARAM_FILE_PATH,m_SM,true);
+	m_EncHandler = new EncryptionHandler(PBC_PARAM_FILE_PATH,m_SM,true);
 
 	m_MSK = m_EncHandler->setup(); //gen. master key
 	m_SK = m_EncHandler->keyGen();	//gen. secret key
@@ -311,7 +311,7 @@ int ClientMachine::UI_Callback_requestSM_FromServer()
 	m_SM = new StateMachine(num_of_states, 0); //create a new SM
 	m_serializer->deserializeStateMachine(*m_SM,&m_virus,parsed_reply[4]);//deserialize the received SM
 
-	m_EncHandler = new EncryptionHandler(PARAM_FILE_PATH,m_SM,true);  //create a new enc. handler
+	m_EncHandler = new EncryptionHandler(PBC_PARAM_FILE_PATH,m_SM,true);  //create a new enc. handler
 
 	m_program_state = CLIENT_NEED_CA_APPROVAL;  //update the state
 

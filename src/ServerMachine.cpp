@@ -14,10 +14,11 @@
 //Constructor
 ServerMachine::ServerMachine(string& CA_IP_addr) : BasicMultithreadedServer(g_selfPort)
 {
+	//todo machine size should depend on a global var
 	m_SM = new StateMachine(6,0);  //creating a new SM with 6 states
 	initializeStateMachine(m_SM); //init
 
-	m_encHandlder = new EncryptionHandler(PARAM_FILE_PATH,m_SM,false);
+	m_encHandlder = new EncryptionHandler(PBC_PARAM_FILE_PATH,m_SM,false);
 	m_serializer = new ObjectSerializer(*m_encHandlder->getBilinearMappingHandler());
 
 	m_serializer->setStateMachine(*m_SM,VIRUS_STRING); //set the SM in the serializer
@@ -320,8 +321,8 @@ void ServerMachine::run()
  */
 void ServerMachine::initializeStateMachine(StateMachine* machine)
 {
-	//TODO MAKE SURE THE INIT AND THE MACHINE SIZE MATCH
-	int transitions[10][2];
+	//TODO MAKE SURE THE INIT AND THE MACHINE SIZE MATCH. transitions should be read from a file
+	int transitions[ALPHABET_SIZE][2];
 
 	//state 0:
 	transitions[0][0]='a';
@@ -378,6 +379,67 @@ void ServerMachine::initializeStateMachine(StateMachine* machine)
 	machine->addState(5,transitions,0,true);
 printf("State machine is ready!\n");
 }//end of debug_initializeStateMachine
+
+
+//void ServerMachine::initializeStateMachine(StateMachine* machine)
+//{
+//	int transitions[10][2];
+//
+//	//state 0:
+//	transitions[0][0]='a';
+//	transitions[0][1]=0;
+//	transitions[1][0]='b';
+//	transitions[1][1]=0;
+//	transitions[2][0]='v';
+//	transitions[2][1]=1;
+//
+//	machine->addState(0,transitions,3,false);
+//
+//	//state 1:
+//	transitions[0][0]='a';
+//	transitions[0][1]=1;
+//	transitions[1][0]='b';
+//	transitions[1][1]=1;
+//	transitions[2][0]='i';
+//	transitions[2][1]=2;
+//
+//	machine->addState(1,transitions,3,false);
+//
+//	//state 2:
+//	transitions[0][0]='a';
+//	transitions[0][1]=2;
+//	transitions[1][0]='b';
+//	transitions[1][1]=2;
+//	transitions[2][0]='r';
+//	transitions[2][1]=3;
+//
+//	machine->addState(2,transitions,3,false);
+//
+//	//state 3:
+//	transitions[0][0]='a';
+//	transitions[0][1]=3;
+//	transitions[1][0]='b';
+//	transitions[1][1]=3;
+//	transitions[2][0]='u';
+//	transitions[2][1]=4;
+//
+//	machine->addState(3,transitions,3,false);
+//
+//	//state 4:
+//	transitions[0][0]='a';
+//	transitions[0][1]=4;
+//	transitions[1][0]='b';
+//	transitions[1][1]=4;
+//	transitions[2][0]='s';
+//	transitions[2][1]=5;
+//
+//	machine->addState(4,transitions,3,false);
+//
+//	//state 5:
+//
+//	machine->addState(5,transitions,0,true);
+//printf("State machine is ready!\n");
+//}//end of debug_initializeStateMachine
 
 void ServerMachine::printSplash ()
 {

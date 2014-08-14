@@ -33,6 +33,7 @@ bool checkIfPortIsValid(char*);
 bool checkIfIPisValid(char* ipString);
 bool checkAndParseIPandPortString(char*,char*,int*);
 bool strCmpCaseInsensitive(char*, char*);
+bool loadGlobalParamsFromFile(char*);
 int stringToInt (char*);
 void launchGuiThread();
 void* GuiLauncher(void* argz);
@@ -111,6 +112,39 @@ switch (argc)
 
 	return 0;
 }//end of main()
+
+bool loadGlobalParamsFromFile(char* filePath)
+{
+	FILE* fp;
+	char * line = NULL;
+	size_t len = 0;
+	ssize_t read;
+	int numOfReadParams = 0;       //will be used to ensure that we read to expected amount of params
+	vector<string> singleLine;
+
+	fp = fopen(GLOBAL_PARAM_FILE_PATH, "r"); //open the global_param_file
+	if (fp == NULL)
+	{
+		return false;
+	}
+
+	while ((read = getline(&line, &len, fp)) != -1) //read a single line
+	{
+		if (line[0] == '#' || line[0] == ' ' || line[0] == '\r' || line[0] == '\n') //this line should be ignored
+		{
+			continue;
+		}
+
+		singleLine = tokenizeSingleBuffer(line," "); //tokenize the current line
+
+	}//while
+
+	if (line)
+		free(line);
+
+	return true;
+}//end loadGlobalParamsFromFile()
+
 
 void launchGuiThread()
 {
@@ -440,6 +474,6 @@ void helpMenu(){
 
 //	cout<<"\t-h help\t\tshow the help menu"<<endl;
 	cout<<"==========================================================================="<<endl;
-}//end of helpMenu
+}//end of helpMenu()
 
 

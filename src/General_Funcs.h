@@ -14,7 +14,7 @@
 #define GENERAL_FUNCS_H_
 
 #include <string.h>
-#include <cstring>
+#include <string>
 #include "SocketWrapper.h"
 #include "Constants.h"
 
@@ -111,6 +111,34 @@ inline string createMessage(string src,string dst,string opcode,int content_leng
 
 	return res;
 }//end of createMessage()
+
+/*
+ * Breaks the given buffer according to the given delimiters.
+ * @param buff - the buffer to be tokenized
+ * @param delims - the delimiters
+ * @return - a vector with all the tokens
+ */
+inline vector<string> tokenizeSingleBuffer(const char* buff,const char* delims)
+{
+	vector<string> results;
+	char* token;
+	char copy[strlen(buff)+1];
+
+	strcpy(copy,buff);   //make a copy
+
+	/* get the first token */
+	token = strtok(copy, delims);
+
+	while (token != NULL)
+	{
+		string temp(token);  //convert to a string
+		results.push_back(temp); //push to the vector
+
+		token = strtok(NULL, delims); //get the next token
+	}
+
+	return results;
+}//end of tokenizeSingleBuffer()
 
 /*
  * Reads a single message from a socket and parses it by fields.

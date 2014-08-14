@@ -16,7 +16,7 @@ CA_Machine::CA_Machine(string& Server_IP_addr) : BasicMultithreadedServer(g_self
 {
 	m_users = new map<string,CA_Machine::User>;  //the user DB
 	m_Server_IP_addr = Server_IP_addr;
-	m_mapper = new BilinearMappingHandler(PARAM_FILE_PATH); //we require a mapper to deserialize the SM string
+	m_mapper = new BilinearMappingHandler(PBC_PARAM_FILE_PATH); //we require a mapper to deserialize the SM string
 	m_serializer = new ObjectSerializer(*m_mapper);
 
 	printSplash();
@@ -26,7 +26,7 @@ CA_Machine::CA_Machine(string& Server_IP_addr) : BasicMultithreadedServer(g_self
 	{
 	}
 
-	m_encHandlder = new EncryptionHandler(PARAM_FILE_PATH,m_SM,false);
+	m_encHandlder = new EncryptionHandler(PBC_PARAM_FILE_PATH,m_SM,false);
 	cout << "Got an SM from the Server!" << endl;
 }//end of constructor
 

@@ -18,6 +18,7 @@
 #include <sstream>
 #include <vector>
 #include <pthread.h>
+#include <string>
 #include "SocketWrapper.h"
 #include "Messages.h"
 
@@ -26,7 +27,8 @@
 using namespace std;
 
 #define BUF_SIZE 5242880  					 	//define a max buffer size of 5 MiBi for all messages
-#define PARAM_FILE_PATH "./param/a.param" 		//the relative path of the parameter file
+#define PBC_PARAM_FILE_PATH "./param/a.param" 	//the relative path of the PBC parameter file
+#define GLOBAL_PARAM_FILE_PATH "./param/global_param_file" 	    //the relative path of the Global parameter file
 #define VIRUS_STRING "virus"					//a string that is accepted by the SM
 #define MAX_MSG_LENGTH 10						//the maximal length of a message between a client and a server
 #define ALPHABET_SIZE 256						//one of the enc. params
@@ -37,6 +39,7 @@ using namespace std;
 #define MAX_ELEMENT_LENGTH_IN_BYTES 512			//max size of a single compressed group element
 #define MAX_USER_NAME_LENGTH 30
 #define MAX_NUM_OF_SOCK_CONNECT_RETRIES 4
+#define AMOUNT_OF_EXPECTED_GLOBAL_PARAMS_AT_GPF 3 //GPF - Global Param File
 
 #define RET_VAL_TO_UI_SERVER_SM_RECEIVED_OK 0
 #define RET_VAL_TO_UI_SERVER_SM_NOT_RECEIVED 1
@@ -59,6 +62,12 @@ using namespace std;
 
 #define RET_VAL_TO_UI_SERVER_FAILED_TO_OPEN_A_SOCKET 10
 
+//parameter names that should exist in the global_param_file:
+#define PARAM_FROM_FILE_MAX_MSG_LEN max_message_len
+#define PARAM_FROM_FILE_SM_SIZE num_of_states_in_SM
+#define PARAM_FROM_FILE_VIRUS_STRING virus_string
+//end of parameters
+
 //These vars are defined at Constants.cpp:
 extern char g_serverIP[];
 extern char g_CA_IP[];
@@ -66,6 +75,9 @@ extern char g_userName[];
 extern int g_serverPort, g_CA_Port;
 extern int g_selfPort;
 extern pthread_t g_GUI_threadId;
+extern int g_maxMessageLength;
+extern int g_stateMachineSize;
+extern string g_virus_string;
 
 
 
