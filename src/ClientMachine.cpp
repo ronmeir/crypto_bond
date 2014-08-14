@@ -106,7 +106,7 @@ int ClientMachine::UI_Callback_CreateSK_AndBond()
 	m_EncHandler->mapStringToElementFromGT(m_theSecret, "BOND STRING");
 
 	m_Bond = new EncryptionHandler::CT(m_EncHandler->getBilinearMappingHandler(),
-			MAX_MSG_LENGTH, true);  //creating a new empty CT
+			g_maxMessageLength, true);  //creating a new empty CT
 	m_EncHandler->createPartialEncryption(*m_Bond,m_virus, m_theSecret); //generate a partial CT
 
 	m_serializer->setSecretKey(*m_SK,*m_SM);  //set the SK into the serializer

@@ -1,6 +1,6 @@
 # comments. ignored
 # Global params:
-max_message_len = 15
+max_message_len = 50
 num_of_states_in_SM = 6
 virus_string = virus
 

@@ -150,10 +150,10 @@ void Client_UI_Server::handleRequestToSendMsgToServer (SocketWrapper& sock, stri
 	bool isBusted=false;
 
 	//check that the message is within the max length limits:
-	if (msgToSend.length() > MAX_MSG_LENGTH)
+	if (msgToSend.length() > g_maxMessageLength)
 	{
 		//we need to shorten the message:
-		msgToSend = msgToSend.substr(0,MAX_MSG_LENGTH);
+		msgToSend = msgToSend.substr(0,g_maxMessageLength);
 	}
 
 	int resCode = m_clientMachine->UI_Callback_SendMsg(servers_reply,msgToSend);//send to Server
@@ -185,8 +185,9 @@ void Client_UI_Server::handleRequestToSendMsgToServer (SocketWrapper& sock, stri
 		{
 			isBusted=true;
 			cout << "The server has detected an attack and sent the following reply:" << endl \
-					<< servers_reply << \
-					".\n The client program has terminated.\n Close this window before relaunching." << endl;
+					<< servers_reply;
+
+			servers_reply += "\n The client program has terminated.\n Close this window before relaunching.\n";
 			//create a message:
 			reply_to_ui_client = createMessage(UI_SERVER,
 					 UI_CLIENT,

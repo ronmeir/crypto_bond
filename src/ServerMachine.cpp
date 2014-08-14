@@ -15,13 +15,13 @@
 ServerMachine::ServerMachine(string& CA_IP_addr) : BasicMultithreadedServer(g_selfPort)
 {
 	//todo machine size should depend on a global var
-	m_SM = new StateMachine(6,0);  //creating a new SM with 6 states
+	m_SM = new StateMachine(g_stateMachineSize,0);  //creating a new SM with 6 states
 	initializeStateMachine(m_SM); //init
 
 	m_encHandlder = new EncryptionHandler(PBC_PARAM_FILE_PATH,m_SM,false);
 	m_serializer = new ObjectSerializer(*m_encHandlder->getBilinearMappingHandler());
 
-	m_serializer->setStateMachine(*m_SM,VIRUS_STRING); //set the SM in the serializer
+	m_serializer->setStateMachine(*m_SM,g_virus_string); //set the SM in the serializer
     m_serializer->getSerializedStateMachineString(m_SM_string); //serialize the SM
 
 	m_users = new map<string,ServerMachine::User>;  //the user DB
@@ -226,10 +226,10 @@ void ServerMachine::handleClientBond (vector<string>& incomingMsg,SocketWrapper&
 void ServerMachine::handleClientMessage (vector<string>& incomingMsg,SocketWrapper& sock)
 {
 	//check that the message is within the max length limits:
-	if (incomingMsg[4].length()>MAX_MSG_LENGTH)
+	if (incomingMsg[4].length()>g_maxMessageLength)
 	{
 		//we need to shorten the message:
-		incomingMsg[4] = incomingMsg[4].substr(0,MAX_MSG_LENGTH);
+		incomingMsg[4] = incomingMsg[4].substr(0,g_maxMessageLength);
 	}
 
 	bool isVirus = m_SM->checkStringForViruses(incomingMsg[4]); //check the msg for viruses
@@ -276,7 +276,7 @@ void ServerMachine::recoverBond (string& userName, string& virus)
 
 	//creating a new empty CT:
 	EncryptionHandler::CT deserializedBond(m_encHandlder->getBilinearMappingHandler(),
-			MAX_MSG_LENGTH, false);
+			g_maxMessageLength, false);
 
 	m_serializer->deserializeBond(deserializedBond, user.Bond); //deserialize
 

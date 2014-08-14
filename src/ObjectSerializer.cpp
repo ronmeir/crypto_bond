@@ -324,7 +324,7 @@ void ObjectSerializer::setBond (EncryptionHandler::CT& CT)
 
 	//Ci,1 and Ci,2:
 	//i is the current column
-	for (int i=0; i<MAX_MSG_LENGTH ;i++)
+	for (int i=0; i<g_maxMessageLength ;i++)
 	{
 		//adding Ci,1:
 		n = m_mapper->getElementLengthInBytes(CT.m_Ci[0][i],false);  //get the num of bytes needed to represent Ci,1

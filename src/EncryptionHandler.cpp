@@ -74,7 +74,7 @@ void EncryptionHandler::createPartialEncryption(CT& ct, const string& w,
 	mMapper->initEmptyMemberElementFromG1(tempFromG_1); //init as a member of G
 	mMapper->initEmptyMemberElementFromG1(tempFromG_2); //init as a member of G
 
-	int virus_length = MAX_MSG_LENGTH; //our implementation defines a constant maximal length
+	int virus_length = g_maxMessageLength; //our implementation defines a constant maximal length
 	//Initializing the S_i array:
 	s = new expElement[virus_length + 1]; //create a new exp_element array (virus_length+1) elements
 
@@ -127,11 +127,11 @@ void EncryptionHandler::completePartialEncryption(CT& partial_ct,
 	printf("Completing the encryption...\n");
 	memberElement** new_m_Ci = new memberElement*[2]; //will be used to hold an array of [2][virus.length()]
 
-	int virus_length = MAX_MSG_LENGTH;
+	int virus_length = g_maxMessageLength;
 	//now we have to pad the received virus to the length of MAX_MSG_LENGTH
 	//Since our state machine should remain in an acceptance state if such was reach, the decryption alg. should work.
 	string virus(user_virus);			//create a copy of the received virus
-	int pad = MAX_MSG_LENGTH - virus.length(); //calc the padding length
+	int pad = g_maxMessageLength - virus.length(); //calc the padding length
 
 	if (pad > 0)
 	{
@@ -141,7 +141,7 @@ void EncryptionHandler::completePartialEncryption(CT& partial_ct,
 	else
 	{
 		//we need to shorten the message:
-		virus = virus.substr(0,MAX_MSG_LENGTH);
+		virus = virus.substr(0,g_maxMessageLength);
 	}
 
 	//creating a new C_i array that'll replace the current, eliminating all irrelevant h_wi
