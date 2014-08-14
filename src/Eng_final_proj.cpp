@@ -140,7 +140,7 @@ bool checkArgsForClient(char** argv)
 		//save the 4th arg (name):
 		if (strlen(argv[4]) > MAX_ELEMENT_LENGTH_IN_BYTES) //if the username is longer then supported
 		{
-			strncpy(g_userName,argv[4],MAX_ELEMENT_LENGTH_IN_BYTES);
+			strncpy(g_userName,argv[4],MAX_USER_NAME_LENGTH);
 		}
 		else
 		{
