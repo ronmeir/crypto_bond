@@ -7,7 +7,7 @@ import os
 
 
 ############################ IP and PORT form UI ########################################
-IP='10.0.0.11' 
+IP='127.0.0.1' 
 PORT= 60001
 #########################################################################################
 
@@ -231,7 +231,7 @@ def send_was_pressed():
 #called when the "clear" button is preesed	
 def clear_was_pressed():
 	textbox.delete('1.0', 'end')
-	print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nscreen was cleared!!!")
+	#print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nscreen was cleared!!!")
 
 
 #called when the "connect" button is preesed   
@@ -240,7 +240,7 @@ def connect_was_pressed():
 	insert_text("	IP  :"+str(getIP()))
 	insert_text("	PORT:"+str(getPort())+"\n")
 	
-	print("GUI server info:	IP:"+str(getIP())+"	PORT:"+str(getPort()))
+	#print("GUI server info:	IP:"+str(getIP())+"	PORT:"+str(getPort()))
 	msg=MSG_req_sm_from_server()	#get to relevant msg tuple (toSend,toShow)
 	send(msg)						#this is the actual MSG sent 
 	
@@ -278,7 +278,7 @@ def send(msg):
 	#a normal msg that we send should be green
 	
 	
-	print("printing msg:"+str(msg))	
+	#print("printing msg:"+str(msg))	
 	#insert_text(msg,color) 
 	
 	s.send(msg[0].encode())

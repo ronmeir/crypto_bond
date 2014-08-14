@@ -90,6 +90,8 @@ switch (argc)
 			//5 arguments, has to be a Client
 			if ( checkArgsForClient(argv) ) //if the args are good
 			{
+				const char cmd[] = "python3 gui.py &";
+				system(cmd);
 				cout << g_serverPort << "  " << g_CA_Port << endl;
 				ClientMachine client(g_userName,g_serverIP, g_CA_IP);
 				client.run();
