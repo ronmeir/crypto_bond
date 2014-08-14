@@ -39,7 +39,7 @@ using namespace std;
 #define MAX_ELEMENT_LENGTH_IN_BYTES 512			//max size of a single compressed group element
 #define MAX_USER_NAME_LENGTH 30
 #define MAX_NUM_OF_SOCK_CONNECT_RETRIES 4
-#define AMOUNT_OF_EXPECTED_GLOBAL_PARAMS_AT_GPF 3 //GPF - Global Param File
+
 
 #define RET_VAL_TO_UI_SERVER_SM_RECEIVED_OK 0
 #define RET_VAL_TO_UI_SERVER_SM_NOT_RECEIVED 1
@@ -63,9 +63,9 @@ using namespace std;
 #define RET_VAL_TO_UI_SERVER_FAILED_TO_OPEN_A_SOCKET 10
 
 //parameter names that should exist in the global_param_file:
-#define PARAM_FROM_FILE_MAX_MSG_LEN max_message_len
-#define PARAM_FROM_FILE_SM_SIZE num_of_states_in_SM
-#define PARAM_FROM_FILE_VIRUS_STRING virus_string
+#define PARAM_FROM_FILE_MAX_MSG_LEN "max_message_len"
+#define PARAM_FROM_FILE_SM_SIZE "num_of_states_in_SM"
+#define PARAM_FROM_FILE_VIRUS_STRING "virus_string"
 //end of parameters
 
 //These vars are defined at Constants.cpp:
