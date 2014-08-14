@@ -51,6 +51,32 @@ def getReadSize():
 def numOfMSGs():
 	return 5	
 
+def getMaxMsgSize():
+	f = open('./param/global_param_file','r')
+	maxMsgSize=-1
+	while 1:
+		line = f.readline()
+		if not line:break
+		string= str(line)
+		if(string.find("max_message_len")>=0):
+			#print string
+			loc= 2+string.find(" = ")
+			if(loc>(-1+3)):
+				maxMsgSize= string.strip()[loc+1:]
+				if(len(maxMsgSize)>0):
+					maxMsgSize=int(maxMsgSize)
+				else:
+					maxMsgSize=-1	
+					
+			
+				
+	f.close()
+	if(maxMsgSize==-1):
+		raise Exception ("Error in global_param_file at param: 'value max_message_len'")
+	
+	#print (maxMsgSize)
+	return maxMsgSize	
+
 
 ####################################################################################################################
 
@@ -191,10 +217,20 @@ def send_was_pressed():
 	
 	#if it's a free text MSG:
 	if(msg==freeText()):
+
 		msg=(msgbox.get('1.0', 'end')).strip()	#remove emptySpaces
-		if(msg==""):
-			#we must send some MSG - otherwise we'll get error
-			easygui.msgbox("You cannot send an empty MSG!!!", title="Error")		
+
+		# a msg is legal iff it's size: (0<size<=maxMsgSize)
+		if(len(msg)<=0 or len(msg)>maxMsgSize):
+			if(len(msg)<=0):
+				#we must send some MSG - otherwise we'll get error
+				easygui.msgbox("You cannot send an empty MSG!!!", title="Error")
+			elif(len(msg)>maxMsgSize):
+				easygui.msgbox("You cannot send a MSG larger then "+str(maxMsgSize)+" chars!!!", title="Error")	
+				msgbox.delete('1.0', 'end')				# clear the msgbox		
+
+		
+		#if reached here the msg is legal and may be sent!!			
 		else:
 			msg=MSG_send_this_msg(msg) #create a msg tuple (msg,txt)
 			send(msg)
@@ -338,13 +374,14 @@ def kill():
 
 	
 if __name__ == "__main__":
-	global var1, optionList, om_selected_var, om,isConnected,threadPolling
+	global var1, optionList, om_selected_var, om,isConnected,threadPolling,maxMsgSize
 	master = tk.Tk()
 	master.geometry('680x233')
 	master.title("Client GUI") 	# the title of the window
 	master.resizable(0,0)		# disable maximize
 	master.protocol('WM_DELETE_WINDOW', kill)
 	isConnected="F"
+	maxMsgSize=getMaxMsgSize()
 
 
 
