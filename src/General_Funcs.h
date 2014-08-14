@@ -10,8 +10,8 @@
  * Contains a few general usage functions that we use across the project.
  */
 
-#ifndef STATIC_FUNCS_H_
-#define STATIC_FUNCS_H_
+#ifndef GENERAL_FUNCS_H_
+#define GENERAL_FUNCS_H_
 
 #include <string.h>
 #include <cstring>
@@ -26,8 +26,17 @@ using namespace std;
  * increase the size of the program, but it's relatively negligible.
  */
 
+inline void Quit(int value)
+{
+	if (g_GUI_threadId)
+	{
+		pthread_cancel(g_GUI_threadId);
+	}
+	exit(value);  //shut down.
+}
+
 //the number of bytes that'll be printed in a single row:
-#define NUM_OF_BYTES_IN_A_SINGLE_ROW 8
+#define NUM_OF_BYTES_IN_A_SINGLE_ROW 16
 
 /*
  * Converges every byte in the given byte array to it's hex representation
@@ -49,14 +58,17 @@ inline void createDisplayableBondPT_String (string& saveHere,const char* arr, in
 	for (int i=0; i<size ;i++) //for every given byte
 	{
 		sprintf(current_byte, "%02X", arr[i]); //convert to Hex format
-		saveHere += current_byte + " "; //append a space
+
+		string temp (current_byte,2); //create a string with current_byte's first 2 bytes
+
+		saveHere += temp + " ";   //append the byte's hex representation
 
 		currentRowLen++;
 		currentRowLen %= NUM_OF_BYTES_IN_A_SINGLE_ROW;
 
 		if (currentRowLen==0) //if it's the end of a line
 		{
-			saveHere += "\r\n";
+			saveHere += "\n";
 		}
 	}
 
@@ -121,7 +133,12 @@ inline vector<string> readAndParseMessageFromSocket(SocketWrapper& sock)
 		while (buff[j] != SFSC) //in the current message field
 		{
 			j++;
-			sock.receiveFromSocket(&buff[j],1); //read the next char
+			int retVal = sock.receiveFromSocket(&buff[j],1); //read the next char
+
+			if (retVal < 1)
+			{
+				return results;
+			}
 		}//while
 
 		buff[j]='\0'; //replace the SFSC with a null terminator

@@ -50,7 +50,12 @@ int ClientMachine::UI_Callback_SendMsg(string& servers_reply, string msg)
 			msg.length(), msg);
 
 	SocketWrapper sock_to_server(m_ServerIP,g_serverPort); //open a sock
-	sock_to_server.sendToSocket(msgToSend.c_str(), msgToSend.length()); //send the request
+	int retVal = sock_to_server.sendToSocket(msgToSend.c_str(), msgToSend.length()); //send the request
+
+	if (retVal == -1) //failed to open a socket
+	{
+		return RET_VAL_TO_UI_SERVER_FAILED_TO_OPEN_A_SOCKET;
+	}
 
 	vector<string> parsed_reply = readAndParseMessageFromSocket(
 			sock_to_server); //receive the reply
@@ -166,7 +171,12 @@ int ClientMachine::UI_Callback_SendSK_AndBond(bool isSendToCA)
 
 		SocketWrapper sock_to_server(isSendToCA ? m_CA_IP : m_ServerIP,
 				isSendToCA? g_CA_Port : g_serverPort); //open a sock
-		sock_to_server.sendToSocket(msgToSend.c_str(), msgToSend.length()); //send the request
+		int retVal = sock_to_server.sendToSocket(msgToSend.c_str(), msgToSend.length()); //send the request
+
+		if (retVal == -1) //failed to open a socket
+		{
+			return RET_VAL_TO_UI_SERVER_FAILED_TO_OPEN_A_SOCKET;
+		}
 
 		vector<string> parsed_reply = readAndParseMessageFromSocket(
 				sock_to_server); //receive the reply
@@ -207,7 +217,7 @@ int ClientMachine::UI_Callback_SendSK_AndBond(bool isSendToCA)
 		return RET_VAL_TO_UI_SERVER_SERVER_RECEIVED_SK_AND_BOND;
 	}
 
-    //THIS POINT IS REACHED ONLY IF WE'VE SEND DATA TO THE CA:
+    //THIS POINT IS REACHED ONLY IF WE'VE SENT DATA TO THE CA:
 
 	//asking the CA to validate the SK and Bond:
 	content = CONTENT_VALIDATE;
@@ -216,7 +226,12 @@ int ClientMachine::UI_Callback_SendSK_AndBond(bool isSendToCA)
 	OPCODE_CLIENT_TO_CA_VALIDATE_BOND, content.length(), content);
 
 	SocketWrapper sock_to_server(m_CA_IP, g_CA_Port); //open a sock
-	sock_to_server.sendToSocket(msgToSend.c_str(), msgToSend.length()); //send the request
+	int retVal = sock_to_server.sendToSocket(msgToSend.c_str(), msgToSend.length()); //send the request
+
+	if (retVal == -1) //failed to open a socket
+	{
+		return RET_VAL_TO_UI_SERVER_FAILED_TO_OPEN_A_SOCKET;
+	}
 
 	vector<string> parsed_reply = readAndParseMessageFromSocket(
 			sock_to_server); //receive the reply
@@ -272,7 +287,12 @@ int ClientMachine::UI_Callback_requestSM_FromServer()
 	sm_request = createMessage(m_ID,SERVER_NAME,OPCODE_CLIENT_TO_SERVER_REQUEST_SM,content.length(),CONTENT_SM_REQUEST);
 
 	SocketWrapper sock_to_server(m_ServerIP,g_serverPort); //open a sock
-	sock_to_server.sendToSocket(sm_request.c_str(),sm_request.length()); //send the request
+	int retVal = sock_to_server.sendToSocket(sm_request.c_str(),sm_request.length()); //send the request
+
+	if (retVal == -1) //failed to open a socket
+	{
+		return RET_VAL_TO_UI_SERVER_FAILED_TO_OPEN_A_SOCKET;
+	}
 
 	vector<string> parsed_reply = readAndParseMessageFromSocket(sock_to_server); //receive the reply
 

@@ -14,6 +14,7 @@
 
 #include <pbc.h>
 #include "Constants.h"
+#include "General_Funcs.h"
 
 #ifndef BilinearMappingHandler_H_
 #define BilinearMappingHandler_H_

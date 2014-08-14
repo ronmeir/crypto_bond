@@ -96,6 +96,7 @@
 #define CONTENT_SERVER_ACK "The SK and Bond were received by the Server!"
 #define CONTENT_SERVER_SENT_UNKNOWN_REPLY "An unknown reply was received from the Server!"
 #define CONTENT_REQUEST_CANT_BE_FULFILLED "The requested operation is not supported in the current state!"
+#define CONTENT_SOCKET_OPEN_FAILED "Failed to open a socket to the target address!"
 
 #define OPCODE_UI_CLIENT_TO_SERVER_REQUEST_SM_FROM_SERVER "0"
 #define OPCODE_UI_CLIENT_TO_SERVER_CREATE_SK_AND_BOND "1"
@@ -113,5 +114,6 @@
 #define OPCODE_UI_SERVER_TO_CLIENT_SK_AND_BOND_NOT_RECEIVED_BY_SERVER "31"
 #define OPCODE_UI_SERVER_TO_CLIENT_SERVER_REPLY "4"
 #define OPCODE_UI_SERVER_TO_CLIENT_REQUEST_CANT_BE_HANDLED "5"
+#define OPCODE_UI_SERVER_TO_CLIENT_SOCKET_OPEN_FAILED "6"
 
 #endif

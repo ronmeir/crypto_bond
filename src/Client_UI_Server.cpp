@@ -186,13 +186,25 @@ void Client_UI_Server::handleRequestToSendMsgToServer (SocketWrapper& sock, stri
 		{
 			isBusted=true;
 			cout << "The server has detected an attack and sent the following reply:" << endl \
-					<< servers_reply << endl;
+					<< servers_reply << \
+					".\n The client program has terminated.\n Close this window before relaunching." << endl;
 			//create a message:
 			reply_to_ui_client = createMessage(UI_SERVER,
 					 UI_CLIENT,
 					 OPCODE_UI_SERVER_TO_CLIENT_SERVER_REPLY,
 					 servers_reply.length(),
 					 servers_reply);
+			break;
+		}
+		case RET_VAL_TO_UI_SERVER_FAILED_TO_OPEN_A_SOCKET:
+		{
+			cout << "Failed to open a socket!" << endl;
+			//create a message:
+			reply_to_ui_client = createMessage(UI_SERVER,
+					 UI_CLIENT,
+					 OPCODE_UI_SERVER_TO_CLIENT_SOCKET_OPEN_FAILED,
+					 strlen(CONTENT_SOCKET_OPEN_FAILED),
+					 CONTENT_SOCKET_OPEN_FAILED);
 			break;
 		}
 
@@ -203,7 +215,7 @@ void Client_UI_Server::handleRequestToSendMsgToServer (SocketWrapper& sock, stri
 	sock.closeSocket();
 
 	if (isBusted)
-		exit(0);
+		Quit(1);
 
 }//end of handleRequestToSendMsgToServer()
 
@@ -280,6 +292,17 @@ void Client_UI_Server::handleRequestToSendSK_AndBondToCA (SocketWrapper& sock)
 					 CONTENT_CA_DIDNT_GET_SK_AND_BOND);
 			break;
 		}
+		case RET_VAL_TO_UI_SERVER_FAILED_TO_OPEN_A_SOCKET:
+		{
+			cout << "Failed to open a socket!" << endl;
+			//create a message:
+			reply = createMessage(UI_SERVER,
+					 UI_CLIENT,
+					 OPCODE_UI_SERVER_TO_CLIENT_SOCKET_OPEN_FAILED,
+					 strlen(CONTENT_SOCKET_OPEN_FAILED),
+					 CONTENT_SOCKET_OPEN_FAILED);
+			break;
+		}
 
 	}//switch
 	sock.sendToSocket(reply.c_str(), reply.length()); //send the reply
@@ -317,6 +340,17 @@ void Client_UI_Server::handleRequestToSendSK_AndBondToServer (SocketWrapper& soc
 					 OPCODE_UI_SERVER_TO_CLIENT_SK_AND_BOND_RECEIVED_BY_SERVER,
 					 strlen(CONTENT_SERVER_ACK),
 					 CONTENT_SERVER_ACK);
+			break;
+		}
+		case RET_VAL_TO_UI_SERVER_FAILED_TO_OPEN_A_SOCKET:
+		{
+			cout << "Failed to open a socket!" << endl;
+			//create a message:
+			reply = createMessage(UI_SERVER,
+					 UI_CLIENT,
+					 OPCODE_UI_SERVER_TO_CLIENT_SOCKET_OPEN_FAILED,
+					 strlen(CONTENT_SOCKET_OPEN_FAILED),
+					 CONTENT_SOCKET_OPEN_FAILED);
 			break;
 		}
 
@@ -406,103 +440,23 @@ void Client_UI_Server::handleRequestSM_FromServer(SocketWrapper& sock)
 				strlen(CONTENT_GET_SM_OK),CONTENT_GET_SM_OK);
 			break;
 		}
+		case RET_VAL_TO_UI_SERVER_FAILED_TO_OPEN_A_SOCKET:
+		{
+			cout << "Failed to open a socket!" << endl;
+			//create a message:
+			reply = createMessage(UI_SERVER,
+					 UI_CLIENT,
+					 OPCODE_UI_SERVER_TO_CLIENT_SOCKET_OPEN_FAILED,
+					 strlen(CONTENT_SOCKET_OPEN_FAILED),
+					 CONTENT_SOCKET_OPEN_FAILED);
+			break;
+		}
 	}//switch
 
 	sock.sendToSocket(reply.c_str(), reply.length()); //send the reply
 	sock.closeSocket();
 }//end of handleRequestSM_FromServer()
 
-//vector<string> Client_UI_Server::readAndParseMessageFromUI (SocketWrapper& sock)
-//{
-//	char buff[BUF_SIZE];
-//	int readBytes, i;
-//	string temp;
-//	vector<string> res;
-//
-//	char* ptr_to_next_empty_byte_at_buff = buff;
-//
-//	//read the 2 first bytes from socket:
-//	for (i = 0; i < 2; i++)
-//	{
-//		readBytes = sock.receiveFromSocket(ptr_to_next_empty_byte_at_buff, 1);
-//		ptr_to_next_empty_byte_at_buff++;
-//
-//		if (readBytes < 1) //failed to receive data
-//		{
-//			sock.closeSocket();
-//			pthread_exit(NULL);
-//		}
-//	}
-//
-//	//got the first 2 bytes: OPCODE+SFSC
-//
-//	buff[1] = '\0';  //make it a cstring
-//	temp.assign(buff);
-//	res.push_back(temp); //push the 1st fields to the vector
-//
-//	if (  //if this is a request to create / send the SK and bond
-//			!temp.compare(OPCODE_UI_CLIENT_TO_SERVER_CREATE_SK_AND_BOND) ||
-//			!temp.compare(OPCODE_UI_CLIENT_TO_SERVER_SEND_SK_AND_BOND_TO_CA) ||
-//			!temp.compare(OPCODE_UI_CLIENT_TO_SERVER_SEND_SK_AND_BOND_TO_SERVER)
-//	   )
-//	{
-//		//no further reading from the buffer is needed. we have the opcode.
-//		return res;
-//	}
-//
-//	/* At this point, the client wishes to send a message to the server.
-//	 * Further parsing of the incoming request is required:
-//	 */
-//	ptr_to_next_empty_byte_at_buff=buff; //reset
-//
-//	//now we need to read the content-length field
-//    while (readBytes != 0 && readBytes != -1 && *buff != SFSC)
-//    {
-//    	//read the next byte:
-//    	readBytes = sock.receiveFromSocket(ptr_to_next_empty_byte_at_buff,1);
-//    	ptr_to_next_empty_byte_at_buff++;
-//    }
-//
-//	if (readBytes < 1) //failed to receive data
-//	{
-//		sock.closeSocket();
-//		pthread_exit(NULL);
-//	}
-//
-//	//at this point, buff contains the content length
-//	*(ptr_to_next_empty_byte_at_buff-1) = '\0'; //replace the SFSC with '\0'
-//	temp.assign(buff);   //set to the string
-//	res.push_back(temp);  //push the string to the vec
-//
-//	int contentLength = atoi(buff);  //get the length
-//
-//	contentLength = std::min(contentLength,MAX_MSG_LENGTH);  //making sure the message is smaller then the max length
-//
-//	ptr_to_next_empty_byte_at_buff=buff; //reset
-//	i=0;
-//
-//	//reading the message itself:
-//    while (readBytes != 0 && readBytes != -1 && i < contentLength)
-//    {
-//    	//read the next byte:
-//    	readBytes = sock.receiveFromSocket(ptr_to_next_empty_byte_at_buff,1);
-//    	ptr_to_next_empty_byte_at_buff++;
-//    	i++;
-//    }
-//
-//	if (readBytes < 1) //failed to receive data
-//	{
-//		sock.closeSocket();
-//		pthread_exit(NULL);
-//	}
-//
-//	buff[i]='\0';
-//	temp.assign(buff);
-//	res.push_back(temp);
-//
-//	return res;
-//
-//}//end of readAndParseMessageFromUI();
 
 /*
  * Returns the tcp port number the UI server listens to.

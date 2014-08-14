@@ -23,7 +23,10 @@ BilinearMappingHandler::BilinearMappingHandler(char* ParamFilePath)
 
 	//open the group-param file:
 	paramFile = fopen ( ParamFilePath , "rb" );
-	if (paramFile==NULL) {fputs ("File error",stderr); exit (1);}
+	if (paramFile==NULL)
+	{
+		Quit(1);
+	}
 
 	//read the file:
 	size_t count = fread(param, 1, 1024, paramFile);

@@ -34,6 +34,8 @@ bool checkIfIPisValid(char* ipString);
 bool checkAndParseIPandPortString(char*,char*,int*);
 bool strCmpCaseInsensitive(char*, char*);
 int stringToInt (char*);
+void launchGuiThread();
+void* GuiLauncher(void* argz);
 void helpMenu();
 
 /*
@@ -60,7 +62,7 @@ switch (argc)
 		{
 			//3 arguments, invalid.
 			helpMenu(); //print the help menu
-			exit(1);
+			Quit(1);
 			break;
 		}//case 3
 		case 4:
@@ -90,8 +92,7 @@ switch (argc)
 			//5 arguments, has to be a Client
 			if ( checkArgsForClient(argv) ) //if the args are good
 			{
-				const char cmd[] = "python3 gui.py &";
-				system(cmd);
+				launchGuiThread();  //launch the gui in a thread
 				cout << g_serverPort << "  " << g_CA_Port << endl;
 				ClientMachine client(g_userName,g_serverIP, g_CA_IP);
 				client.run();
@@ -103,15 +104,31 @@ switch (argc)
 		{
 			//unsupported number of arguments
 			helpMenu(); //print the help menu
-			exit(1);
+			Quit(1);
 		}
 
 	}//end of switch
 
-
 	return 0;
 }//end of main()
 
+void launchGuiThread()
+{
+
+	if (pthread_create(&g_GUI_threadId, NULL,GuiLauncher, NULL)) //create a new thread.
+	{
+		printf("Error while creating the GUI thread!");
+		return;
+	}
+}//end of launchGuiThread()
+
+void* GuiLauncher(void* argz)
+{
+	const char cmd[] = "python3 gui.py"; //the terminal cmd for launching the gui
+	system(cmd);  						   //launch the gui
+
+	return 0;
+}//end of GuiLauncher();
 
 /**
  * Checks the user's arguments to see if they're compatible with the Client's requirements.
