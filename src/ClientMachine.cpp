@@ -32,6 +32,8 @@ ClientMachine::ClientMachine(const string userID,const string ServerIP,const str
 	m_UI_Server = new Client_UI_Server (this,CLIENT_UI_SERVER_TCP_PORT_NUM);
 	m_program_state = CLIENT_NEED_STATE_MACHINE;  //init the program's state
 
+	cout << g_serverPort << "  " << g_CA_Port << endl;
+
 }//end of constructor
 
 /**
@@ -47,7 +49,7 @@ int ClientMachine::UI_Callback_SendMsg(string& servers_reply, string msg)
 	string msgToSend = createMessage(m_ID, SERVER_NAME,OPCODE_CLIENT_TO_SERVER_SEND_MSG,
 			msg.length(), msg);
 
-	SocketWrapper sock_to_server(m_ServerIP,SERVER_TCP_PORT_NUM); //open a sock
+	SocketWrapper sock_to_server(m_ServerIP,g_serverPort); //open a sock
 	sock_to_server.sendToSocket(msgToSend.c_str(), msgToSend.length()); //send the request
 
 	vector<string> parsed_reply = readAndParseMessageFromSocket(
@@ -163,7 +165,7 @@ int ClientMachine::UI_Callback_SendSK_AndBond(bool isSendToCA)
 		}
 
 		SocketWrapper sock_to_server(isSendToCA ? m_CA_IP : m_ServerIP,
-				isSendToCA? CA_TCP_PORT_NUM : SERVER_TCP_PORT_NUM); //open a sock
+				isSendToCA? g_CA_Port : g_serverPort); //open a sock
 		sock_to_server.sendToSocket(msgToSend.c_str(), msgToSend.length()); //send the request
 
 		vector<string> parsed_reply = readAndParseMessageFromSocket(
@@ -213,7 +215,7 @@ int ClientMachine::UI_Callback_SendSK_AndBond(bool isSendToCA)
 	msgToSend = createMessage(m_ID, CA_NAME,
 	OPCODE_CLIENT_TO_CA_VALIDATE_BOND, content.length(), content);
 
-	SocketWrapper sock_to_server(m_CA_IP, CA_TCP_PORT_NUM); //open a sock
+	SocketWrapper sock_to_server(m_CA_IP, g_CA_Port); //open a sock
 	sock_to_server.sendToSocket(msgToSend.c_str(), msgToSend.length()); //send the request
 
 	vector<string> parsed_reply = readAndParseMessageFromSocket(
@@ -269,7 +271,7 @@ int ClientMachine::UI_Callback_requestSM_FromServer()
 	//create a message header:
 	sm_request = createMessage(m_ID,SERVER_NAME,OPCODE_CLIENT_TO_SERVER_REQUEST_SM,content.length(),CONTENT_SM_REQUEST);
 
-	SocketWrapper sock_to_server(m_ServerIP,SERVER_TCP_PORT_NUM); //open a sock
+	SocketWrapper sock_to_server(m_ServerIP,g_serverPort); //open a sock
 	sock_to_server.sendToSocket(sm_request.c_str(),sm_request.length()); //send the request
 
 	vector<string> parsed_reply = readAndParseMessageFromSocket(sock_to_server); //receive the reply
@@ -303,7 +305,7 @@ int ClientMachine::UI_Callback_requestSM_FromServer()
  */
 void ClientMachine::run()
 {
-#if !DEBUG
+
 	bool isUI_ServerUp=false;
 
 	printSplash();
@@ -315,24 +317,7 @@ void ClientMachine::run()
 	if (!isUI_ServerUp)
 		cout << "UNABLE TO START THE CLIENT UI SERVER!";
 
-#else
-	string toSend = "valid request";
-	SocketWrapper sock(0);
-	m_UI_Server->handleRequestSM_FromServer(sock);
-	m_UI_Server->handleRequestToCreateSK_AndBond(sock);
-	m_UI_Server->handleRequestToSendSK_AndBondToCA(sock);
-	m_UI_Server->handleRequestToSendSK_AndBondToServer(sock);
-	m_UI_Server->handleRequestToSendMsgToServer(sock,toSend);
-
-	toSend = "abc";
-	m_UI_Server->handleRequestToSendMsgToServer(sock,toSend);
-
-	toSend = "def";
-	m_UI_Server->handleRequestToSendMsgToServer(sock,toSend);
-
-	toSend = "virus";
-	m_UI_Server->handleRequestToSendMsgToServer(sock,toSend);
-#endif
+	while(1); //loop forever
 
 }//end of run()
 

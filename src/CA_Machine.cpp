@@ -12,12 +12,14 @@
 #include "CA_Machine.h"
 
 //Constructor
-CA_Machine::CA_Machine(string& Server_IP_addr) : BasicMultithreadedServer(CA_TCP_PORT_NUM)
+CA_Machine::CA_Machine(string& Server_IP_addr) : BasicMultithreadedServer(g_selfPort)
 {
 	m_users = new map<string,CA_Machine::User>;  //the user DB
 	m_Server_IP_addr = Server_IP_addr;
 	m_mapper = new BilinearMappingHandler(PARAM_FILE_PATH); //we require a mapper to deserialize the SM string
 	m_serializer = new ObjectSerializer(*m_mapper);
+
+	printSplash();
 
 	cout << "Trying to get an SM from the server." << endl;
 	while (getSM_FromServer()==-1) //keep looping while the CA didn't receive a valid SM
@@ -207,7 +209,7 @@ bool CA_Machine::HandleSK_AndBondValidation(CA_Machine::User& user)
  */
 int CA_Machine::updateTheServerWithClientDetails(string& clientDetails)
 {
-	SocketWrapper sockToServer(m_Server_IP_addr,SERVER_TCP_PORT_NUM);
+	SocketWrapper sockToServer(m_Server_IP_addr,g_serverPort);
 	int i;
 
 	for (i=0; sockToServer.getSocketDescriptor() == -1 && i<MAX_NUM_OF_SOCK_CONNECT_RETRIES ; i++)
@@ -242,7 +244,7 @@ int CA_Machine::updateTheServerWithClientDetails(string& clientDetails)
  */
 void CA_Machine::run()
 {
-	printSplash();
+
 	runWelcomeSocket(NULL);   //start the welcome socket
 }//end of run()
 
@@ -252,7 +254,7 @@ void CA_Machine::run()
  */
 int CA_Machine::getSM_FromServer()
 {
-	SocketWrapper sockToServer(m_Server_IP_addr,SERVER_TCP_PORT_NUM);
+	SocketWrapper sockToServer(m_Server_IP_addr,g_serverPort);
 	int ctr=0;
 
 	while (sockToServer.getSocketDescriptor() == -1) //keep looping until we open a socket to the server

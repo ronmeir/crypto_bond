@@ -6,7 +6,7 @@
 import socket
 
 def getPort():
-	return 12346
+	return 60001
 	
 def startMSG():
 		return 'start_msg'
