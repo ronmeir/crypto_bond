@@ -65,7 +65,6 @@ int Client_UI_Server::execOnWorkerThread (SocketWrapper sock, void* arg)
 	* opcode twice.
 	*/
 
-	//todo remove after debugging
 	string temp = parsed_request[2];
 
 	//if the ui has requested to request an SM from the server
