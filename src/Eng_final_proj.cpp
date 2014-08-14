@@ -203,10 +203,14 @@ bool loadGlobalParamsFromFile(char* filePath)
  */
 void printFileGlobalParams()
 {
+
+	cout << endl << endl << "### Global program parameters: ###" << endl;
 	cout << "The global params that were read from the global_param_file:" << endl;
 	cout << PARAM_FROM_FILE_MAX_MSG_LEN << ": " << g_maxMessageLength << endl;
 	cout << PARAM_FROM_FILE_SM_SIZE << ": " << g_stateMachineSize << endl;
 	cout << PARAM_FROM_FILE_VIRUS_STRING << ": " << g_virus_string << endl;
+	cout << "#######################################################" << endl << endl;
+
 }//end of printFileGlobalParams()
 
 void launchGuiThread()

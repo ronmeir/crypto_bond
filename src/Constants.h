@@ -29,8 +29,8 @@ using namespace std;
 #define BUF_SIZE 5242880  					 	//define a max buffer size of 5 MiBi for all messages
 #define PBC_PARAM_FILE_PATH "./param/a.param" 	//the relative path of the PBC parameter file
 #define GLOBAL_PARAM_FILE_PATH "./param/global_param_file" 	    //the relative path of the Global parameter file
-#define VIRUS_STRING "virus"					//a string that is accepted by the SM
-#define MAX_MSG_LENGTH 10						//the maximal length of a message between a client and a server
+//#define VIRUS_STRING "virus"					//a string that is accepted by the SM
+//#define MAX_MSG_LENGTH 10						//the maximal length of a message between a client and a server
 #define ALPHABET_SIZE 256						//one of the enc. params
 #define SYN_REQUEST_QUEUE_SIZE 10				//Max num of pending syn requests
 //#define SERVER_TCP_PORT_NUM 8000   				//define a port number for the welcome socket on the server

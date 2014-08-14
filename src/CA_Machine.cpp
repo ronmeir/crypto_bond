@@ -175,7 +175,7 @@ bool CA_Machine::HandleSK_AndBondValidation(CA_Machine::User& user)
 
 	//creating a new empty CT:
 	EncryptionHandler::CT deserializedBond(m_encHandlder->getBilinearMappingHandler(),
-			MAX_MSG_LENGTH, false);
+			g_maxMessageLength, false);
 
 	m_serializer->deserializeBond(deserializedBond, user.Bond); //deserialize
 
