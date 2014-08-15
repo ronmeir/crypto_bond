@@ -389,25 +389,25 @@ bool checkIfPortIsValid(char* portString)
 
 void helpMenu(){
 	cout<<"==========================================================================="<<endl;
-	cout<<"\t\t\t**************************\n\t\t\t**welcome to CryptoBond!**\n\t\t\t**************************"<<endl;
+	cout<<"\t\t\t**************************\n\t\t\t**Welcome to CryptoBond!**\n\t\t\t**************************"<<endl;
 	cout<<"---------------------------------------------------------------------------"<<endl;
-	cout<<"\tthis is the program instruction:"<<endl;
+	cout<<"\tThis is the program instruction:"<<endl;
 	cout<<"----------------------------------------------------------------"<<endl;
 
-	cout<<"\t to run as Client:"<<endl;
+	cout<<"\t To run as Client:"<<endl;
 	cout<<"\t\tclient [Server IP]:[Server PORT] [CA IP]:[CA PORT] [Name]"<<endl;
 	cout<<"\tExample: client 10.0.0.1:12345 10.0.0.2:12346 mr.user"<<endl;
 	cout<<"\t-> Please note that the maximum user-name length is "<< MAX_USER_NAME_LENGTH << " chars!"<<endl;
 	cout<<"\t---------------------------------------------------------"<<endl;
 
 
-	cout<<"\t to run as Server:"<<endl;
+	cout<<"\t To run as Server:"<<endl;
 	cout<<"\t\tserver [Self port] [CA IP]:[CA PORT]"<<endl;
 	cout<<"\tExample: server 8000 10.0.0.2:12346"<<endl;
 	cout<<"\t---------------------------------------------------------"<<endl;
 
 
-	cout<<"\t to run as CA:"<<endl;
+	cout<<"\t To run as CA:"<<endl;
 	cout<<"\t\tca [Self port] [Server IP]:[Server PORT]"<<endl;
 	cout<<"\tExample: ca 8000 10.0.0.1:12345"<<endl;
 	cout<<"\t---------------------------------------------------------"<<endl;
