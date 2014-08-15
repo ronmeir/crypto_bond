@@ -17,14 +17,13 @@ ServerMachine::ServerMachine(string& CA_IP_addr) : BasicMultithreadedServer(g_se
 	//todo machine size should depend on a global var
 	m_SM = new StateMachine(g_stateMachineSize,0);  //creating a new SM with 6 states
 
-
+	//init the SM from the global_cfg_file
 	if (!initializeStateMachine(m_SM)) //init
 	{
 		cout << "Failed to init the state machine from the file!" << endl << \
 				"Make sure the file is written according to the required format! Exiting." << endl;
 		Quit(1);
 	}
-
 
 	m_encHandlder = new EncryptionHandler(PBC_PARAM_FILE_PATH,m_SM,false);
 

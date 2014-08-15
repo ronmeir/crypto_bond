@@ -69,7 +69,7 @@ void State::updateTransitionTable(int userFormatTable[][2], int numOfRows)
 	for (i=0; i<numOfRows ;i++) //for every transition given by the user
 	{
 		transition = new Transition(userFormatTable[i][0],userFormatTable[i][1]); //create a new transition
-		mTransitionTable[transition->mInput] = transition;  //save the new transition in the state's transition table
+		mTransitionTable[transition->mInput] = transition;  //save the new transition in the state's transition table.
 		//At the state's level, sigma allows a direct access to the transition
 	}
 
