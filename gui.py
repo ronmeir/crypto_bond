@@ -210,9 +210,8 @@ def addOptionsToOptionList(l=[]):
 
 #called when the "send" button is preesed
 def send_was_pressed():
-	insert_text("please wait...\nthis process might take some time!!\n","orange")
-	for i in range(100000):
-		a=i
+
+
 
 	#check what msg do we want to send
 	msg = om_selected_var.get()
@@ -290,8 +289,14 @@ def connect_was_pressed():
 #it can be one of these colors only: {'green','blue','black','red'}
 #if we don't choose coler the msg we be painted black
 '''
-def insert_text(txt,color='black'):
-	textbox.insert(tk.INSERT, txt+"\n",color)
+def insert_text(txt,color='black',endLine=True):
+	if(endLine==True):
+		textbox.insert(tk.INSERT, txt+"\n",color)
+	if(endLine==False):
+		textbox.insert(tk.INSERT, txt,color)	
+
+	textbox.see('end')
+	textbox.update_idletasks()
 	textbox.see('end')
 	
 '''
@@ -320,11 +325,26 @@ def send(msg):
 	
 	#print("printing msg:"+str(msg))	
 	#insert_text(msg,color) 
-	
+	s.settimeout(0.75)	
 	s.send(msg[0].encode())
-	#recv=str(s.recv(getReadSize()).decode('utf-8'))
-	recv=str(s.recv(getReadSize()).decode('utf-8', 'ignore'))
+	insert_text("\nplease wait...\n","orange")
 
+	hasData=False
+	ctr=0
+	text=".."
+	while(not hasData):
+		try:
+			recv=str(s.recv(getReadSize()).decode('utf-8', 'ignore'))
+			hasData=True
+		except (socket.timeout):
+			ctr+=1
+			ctr%=30
+			if(ctr==0):
+				insert_text(text,endLine=True)
+			else:
+				insert_text(text,endLine=False)	
+		 	
+	insert_text("",endLine=True)
 	#when we get a startMSG as echo it means the server work and we have connection
 	#all the buttons and be enabled!!
 	if(recv==str(startMSG())):
@@ -332,7 +352,7 @@ def send(msg):
 
 	color='blue'
 	insert_text(MSG_parseMSG(recv)[4],color)
-	insert_text("--------------------------------------------------------------------------------\n")
+	insert_text("--------------------------------------------------------------------------------\n",endLine=True)
 	
 	
 	#print(msg)
@@ -370,6 +390,7 @@ def background_stuff():
 			msgbox.delete('1.0', 'end')
 
 
+		
 		time.sleep(0.5)
     		
 def kill():
