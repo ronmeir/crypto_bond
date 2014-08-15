@@ -211,6 +211,8 @@ def addOptionsToOptionList(l=[]):
 #called when the "send" button is preesed
 def send_was_pressed():
 	insert_text("please wait...\nthis process might take some time!!\n","orange")
+	for i in xrange(100000):
+		a=i
 
 	#check what msg do we want to send
 	msg = om_selected_var.get()
