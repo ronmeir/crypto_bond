@@ -5,9 +5,9 @@ To run the python part of the code you need:
 3.	ttk	(python package)
 4.	easygui	(python package)
 
-If you want to run the GUI alon open a terminal ,go to the gui program location and type:
+If you want to run the GUI alone: open a terminal ,go to GUI_final_project folder location and type:
 	python3 [gui_program_name]
 	ex: python3 gui.py
 
-*There is no need to run the program this way, because it is started anyway by the cpp part of code (by the Client).
+*There is no need to run the gui program this way, because it is started anyway by the cpp part of code (by the Client).
 *The only reason to run it would be to make (in test) changes in the GUI. 
