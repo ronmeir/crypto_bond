@@ -7,7 +7,7 @@ import os,time,sys
 from threading import Thread
 
 ############################ IP and PORT form UI ########################################
-IP='10.0.0.11' 
+IP='127.0.0.1' 
 PORT= 60001
 #########################################################################################
 
@@ -251,6 +251,7 @@ def send_was_pressed():
 			#msg=MSG_send_to_server_sk_and_bond()
 			#msg=MSG_send_sk_and_bond_to_server()
 			msg=MSG_send_sk_and_bond_to_server()
+		insert_text("please wait...\nthis process might take some time!!\n","orange")
 		send(msg)				
 					
 			
