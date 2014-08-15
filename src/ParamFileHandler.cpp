@@ -29,6 +29,7 @@ bool ParamFileHandler::loadStateMachineFromFile(StateMachine& SM)
 	bool current_IsAcceptance = false;
 
 	int transitions[ALPHABET_SIZE][2];
+	cout<<"loading SM from file!!!!!"<<endl;
 
 	fp = fopen(m_filePath.c_str(), "r"); //open the global_param_file
 	if (fp == NULL)
@@ -52,13 +53,13 @@ bool ParamFileHandler::loadStateMachineFromFile(StateMachine& SM)
 	while ((read = getline(&line, &len, fp)) != -1 && strcmp(line,SM_END_LABEL))
 	{
 		singleLine = tokenizeSingleBuffer(line," "); //tokenize the current line
-
 		/*if there are more then 3 or less then 2
 	 	 arguments in a single line: */
 		if (singleLine.size()!=2 || singleLine.size()!=3)
 		{
 			return false;
 		}
+
 
 		if (!singleLine.at(0).compare("State")) //if this line is the beginning of a new state
 		{
@@ -186,7 +187,6 @@ bool ParamFileHandler::loadGlobalParamsFromFile()
 		singleLine = tokenizeSingleBuffer(line," "); //tokenize the current line
 
 		//checking to see what parameter we've just read:
-
 		if (!singleLine.at(0).compare(PARAM_FROM_FILE_MAX_MSG_LEN))
 		{
 			int len = singleLine.at(2).size();

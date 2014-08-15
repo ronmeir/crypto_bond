@@ -1,7 +1,7 @@
 # comments. ignored
 # Global params:
 max_message_len = 15
-num_of_states_in_SM = 6
+num_of_states_in_SM = 3
 virus_string = virus
 
 # State machine description:
@@ -24,8 +24,15 @@ virus_string = virus
 
 *SM Start*
 State 0 false
- 
-
-
-
+0 0
+1 1
+2 2
+State 1 false
+0 0
+1 1
+2 2
+State 2 false
+0 0
+1 1
+2 2
 *SM End*

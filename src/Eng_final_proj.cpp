@@ -84,6 +84,7 @@ switch (argc)
 				string destIP;
 				if (isServer)
 				{
+
 					destIP = g_CA_IP;
 					ServerMachine server(destIP);
 					server.run();
