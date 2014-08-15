@@ -29,7 +29,7 @@ bool ParamFileHandler::loadStateMachineFromFile(StateMachine& SM)
 	bool current_IsAcceptance = false;
 
 	int transitions[ALPHABET_SIZE][2];
-	cout<<"loading SM from file!!!!!"<<endl;
+	cout<<"Loading state machine from file!"<<endl;
 
 	fp = fopen(m_filePath.c_str(), "r"); //open the global_param_file
 	if (fp == NULL)
@@ -38,8 +38,8 @@ bool ParamFileHandler::loadStateMachineFromFile(StateMachine& SM)
 	}
 
 	//search for the beginning of the SM in the file:
-	while ((read = getline(&line, &len, fp)) != -1 \
-			&& strcmp(line,SM_START_LABEL))
+	while (( (read = getline(&line, &len, fp)) != -1) \
+			&& strncmp(line,SM_START_LABEL,strlen(SM_START_LABEL)))
 	{}
 
 	if (!read)  //the end of file was reached before an SM_START_LABEL was found
@@ -50,12 +50,13 @@ bool ParamFileHandler::loadStateMachineFromFile(StateMachine& SM)
 	//The next line should be the 1st state.
 
 	//continue reading until the end of the file or the end of the SM
-	while ((read = getline(&line, &len, fp)) != -1 && strcmp(line,SM_END_LABEL))
+	while (( (read = getline(&line, &len, fp)) != -1) \
+			&& strncmp(line,SM_END_LABEL,strlen(SM_END_LABEL)))
 	{
 		singleLine = tokenizeSingleBuffer(line," "); //tokenize the current line
 		/*if there are more then 3 or less then 2
 	 	 arguments in a single line: */
-		if (singleLine.size()!=2 || singleLine.size()!=3)
+		if (singleLine.size()!=2 && singleLine.size()!=3)
 		{
 			return false;
 		}
