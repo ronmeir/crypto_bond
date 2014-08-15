@@ -210,6 +210,8 @@ def addOptionsToOptionList(l=[]):
 
 #called when the "send" button is preesed
 def send_was_pressed():
+	insert_text("please wait...\nthis process might take some time!!\n","orange")
+
 	#check what msg do we want to send
 	msg = om_selected_var.get()
 	#if it's a freeText msg we need to send the text in the msgbox 
@@ -251,7 +253,6 @@ def send_was_pressed():
 			#msg=MSG_send_to_server_sk_and_bond()
 			#msg=MSG_send_sk_and_bond_to_server()
 			msg=MSG_send_sk_and_bond_to_server()
-		insert_text("please wait...\nthis process might take some time!!\n","orange")
 		send(msg)				
 					
 			
