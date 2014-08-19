@@ -1,0 +1,37 @@
+# comments are ignored
+# Global params:
+max_message_len = 15
+num_of_states_in_SM = 6
+virus_string = virus
+
+# State machine description:
+# An SM is a collection of states, when every state should be described according to the following pattern:
+#
+#  *SM Start*
+#  State [state number] [isAcceptance]
+#  [input value] [next state number]
+#  [input value] [next state number]
+#  [input value] [next state number]
+#  [input value] [next state number]
+#  .
+#  .
+#  .
+#
+#  *SM End*
+#
+# Note that unmentioned input possibilities will be treated as self-loops by default (meaning these inputs
+# will keep the machine in it's current state). 
+
+*SM Start*
+State 0 false
+v 1
+State 1 false
+i 2
+State 2 false
+r 3
+State 3 false
+u 4
+State 4 false
+s 5
+State 5 true
+*SM End*
