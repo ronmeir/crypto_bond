@@ -1,0 +1,3 @@
+Please note that the program was compiled on Linux Ubuntu 12.04.
+Recompilations might be needed before running on different OS versions.
+Compilation instructions can be found in the Final Report document.
