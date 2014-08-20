@@ -28,5 +28,7 @@ Links~
 .gitignore~
 .keyAndBond.proto.kate-swp
 
+#all other temp files:
+*~
 
 /Release

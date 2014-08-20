@@ -2,6 +2,7 @@
 # Global params:
 max_message_len = 15
 num_of_states_in_SM = 6
+# Note that only a single virus string is required (the actual amount of viruses is unlimited): 
 virus_string = virus
 
 # State machine description:
