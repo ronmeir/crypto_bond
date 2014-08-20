@@ -1,4 +1,4 @@
-# comments. ignored
+# comments are ignored
 # Global params:
 max_message_len = 15
 num_of_states_in_SM = 6

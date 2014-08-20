@@ -13,6 +13,11 @@ virus_string = virus
 #  [input value] [next state number]
 #  [input value] [next state number]
 #  [input value] [next state number]
+#  State [state number] [isAcceptance]
+#  [input value] [next state number]
+#  [input value] [next state number]
+#  [input value] [next state number]
+#  [input value] [next state number]
 #  .
 #  .
 #  .
