@@ -5,7 +5,7 @@ To run the python part of the code you need:
 3.	ttk	(python package)
 4.	easygui	(python package)
 
-If you want to run the GUI alone, run it using the Pyhton interpreter:
+If you want to run the GUI alone, run it using the Python interpreter:
 	python3 [gui_program_name]
 	ex: python3 gui.py
 
